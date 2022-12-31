@@ -1,6 +1,7 @@
 import Waiting from "../screen/Waiting/Waiting";
 import Welcome from "../screen/Welcome/Welcome";
 import Login from "../screen/Login/Login";
+import SignUp from "../screen/SignUp/SignUp";
 import BottomTabs from "../screen/MainScreen/BottomTabs/BottomTabs";
 
 // Không cần đăng nhập
@@ -13,6 +14,7 @@ const publicRoutes = [
     animation: "slide_from_right",
   },
   { name: "Login", component: Login, header: false },
+  { name: "SignUp", component: SignUp, header: false },
   { name: "BottomTabs", component: BottomTabs, header: false },
 ];
 // Đăng nhập để xem được

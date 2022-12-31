@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   mainGreen: "#04AF46",
   grey: "#7A7A7A",
   lightGrey: "rgb(245,245,245)",
+  darkGrey: "rgb(200,200,200)",
 });
 
 export default styles;
