@@ -60,7 +60,7 @@ export default function MyInput({
             />
             {encodePass ? (
               <Ionicons
-                name="eye"
+                name="eye-off"
                 size={24}
                 color="black"
                 style={styles.iconHide}
@@ -68,7 +68,7 @@ export default function MyInput({
               />
             ) : (
               <Ionicons
-                name="eye-off"
+                name="eye"
                 size={24}
                 color="black"
                 style={styles.iconHide}

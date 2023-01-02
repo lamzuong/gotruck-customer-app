@@ -8,6 +8,10 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     alignItems: "center",
     justifyContent: "center",
+    text: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
   },
   medium: {
     width: Dimensions.get("window").width / 2 - 30,

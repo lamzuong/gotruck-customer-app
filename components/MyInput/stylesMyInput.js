@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
   },
   iconHide: {
     paddingRight: 20,
-    // paddingTop: 10,
   },
   error: {
     marginLeft: 30,

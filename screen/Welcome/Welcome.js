@@ -51,7 +51,7 @@ export default function Welcome({ navigation }) {
         />
         <MyButton
           type="medium"
-          btnColor="green"
+          btnColor="black"
           text="ĐĂNG NHẬP"
           txtColor="white"
           action={() => {

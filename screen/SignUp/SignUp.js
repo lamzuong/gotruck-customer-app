@@ -1,8 +1,7 @@
 import { View, Text, Image, ScrollView } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./stylesSignUp";
 import stylesGlobal from "../../global/stylesGlobal";
-import MyInput from "../../components/MyInput/MyInput";
 import MyButton from "../../components/MyButton/MyButton";
 import Screen01 from "./Screen01/Screen01";
 import Screen02 from "./Screen02/Screen02";
