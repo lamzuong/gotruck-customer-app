@@ -40,16 +40,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-around",
-  },
-  txtForgetPass: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
-  },
-  viewSavePass: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: -6,
+
+    txtAction: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: "white",
+    },
+    viewSavePass: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: -6,
+    },
   },
   viewButton: {
     marginVertical: 20,

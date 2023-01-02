@@ -1,7 +1,4 @@
-import { publicRoutes } from "../routes/routes";
-import stylesGlobal from "../../../global/stylesGlobal";
-
-import { View, Text } from "react-native";
+import { publicRoutes } from "./routes/routes";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 

@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@fawazahmed/react-native-read-more": "^3.0.0",
     "@react-navigation/bottom-tabs": "^6.5.2",
     "@react-navigation/material-top-tabs": "^6.5.1",
     "@react-navigation/native": "^6.1.1",
@@ -20,6 +21,7 @@
     "react-native": "0.70.5",
     "react-native-pager-view": "6.0.1",
     "react-native-paper": "^5.1.2",
+    "react-native-read-more-text": "^1.1.2",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.3.4"
   },

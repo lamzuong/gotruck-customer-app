@@ -1,12 +1,10 @@
-import styles from "./stylesHome";
-
 import { View, Text } from "react-native";
 import React from "react";
 
-export default function Home() {
+export default function SavedPlace() {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>SavedPlace</Text>
     </View>
   );
 }

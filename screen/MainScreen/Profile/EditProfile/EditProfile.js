@@ -1,12 +1,10 @@
-import styles from "./stylesHome";
-
 import { View, Text } from "react-native";
 import React from "react";
 
-export default function Home() {
+export default function EditProfile() {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>EditProfile</Text>
     </View>
   );
 }

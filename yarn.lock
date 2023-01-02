@@ -1367,6 +1367,13 @@
     "find-up" "^5.0.0"
     "js-yaml" "^4.1.0"
 
+"@fawazahmed/react-native-read-more@^3.0.0":
+  "integrity" "sha512-KcF3gjN58zZIzb/OqrzofmHaZhnTaOUa7oRfpFMgqilHhSWyE4s9r1JrtmsFkWGKF1BdNd2oGeX2HOmTWKtJbQ=="
+  "resolved" "https://registry.npmjs.org/@fawazahmed/react-native-read-more/-/react-native-read-more-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "@gar/promisify@^1.0.1":
   "integrity" "sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw=="
   "resolved" "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
@@ -5509,6 +5516,11 @@
     "@callstack/react-theme-provider" "^3.0.8"
     "color" "^3.1.2"
     "use-event-callback" "^0.1.0"
+
+"react-native-read-more-text@^1.1.2":
+  "integrity" "sha512-FIQhOpvikUanwPRl9QVBYmx6Wx7IXxXH/jlzElOLcP+NSgFLw2fRzSekQUq0yicymZsi7cAWW5TtIj8FHWtNDw=="
+  "resolved" "https://registry.npmjs.org/react-native-read-more-text/-/react-native-read-more-text-1.1.2.tgz"
+  "version" "1.1.2"
 
 "react-native-safe-area-context@*", "react-native-safe-area-context@>= 3.0.0":
   "integrity" "sha512-N9XTjiuD73ZpVlejHrUWIFZc+6Z14co1K/p1IFMkImU7+avD69F3y+lhkqA2hN/+vljdZrBSiOwXPkuo43nFQA=="

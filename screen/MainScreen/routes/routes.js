@@ -1,6 +1,6 @@
 import Home from "../Home/Home";
 import Order from "../Order/Order";
-import Chat from "../Chat/Chat";
+import Message from "../Message/Message";
 import Profile from "../Profile/Profile";
 
 import {
@@ -42,8 +42,8 @@ const publicRoutes = [
     title: "Đơn hàng",
   },
   {
-    name: "Chat",
-    component: Chat,
+    name: "Message",
+    component: Message,
     header: false,
     iconActive: (
       <MaterialCommunityIcons

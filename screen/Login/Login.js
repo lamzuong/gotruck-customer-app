@@ -70,9 +70,9 @@ export default function Login({ navigation }) {
         </View>
         <View style={styles.viewAction}>
           <TouchableOpacity>
-            <Text style={styles.txtForgetPass}>Quên mật khẩu ?</Text>
+            <Text style={styles.viewAction.txtAction}>Quên mật khẩu ?</Text>
           </TouchableOpacity>
-          <Pressable style={styles.viewSavePass}>
+          <Pressable style={styles.viewAction.viewSavePass}>
             <Checkbox
               status={checked ? "checked" : "unchecked"}
               onPress={() => {
@@ -80,7 +80,7 @@ export default function Login({ navigation }) {
               }}
               color="white"
             />
-            <Text style={styles.txtForgetPass}>Lưu mật khẩu</Text>
+            <Text style={styles.viewAction.txtAction}>Lưu mật khẩu</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -91,7 +91,7 @@ export default function Login({ navigation }) {
           btnColor="black"
           txtColor={"white"}
           action={() => {
-            checkValid() ? navigation.navigate("BottomTabs") : null;
+            checkValid() ? navigation.navigate("MainScreen") : null;
           }}
         />
       </TouchableOpacity>

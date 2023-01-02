@@ -4,7 +4,7 @@ import stylesGlobal from "../../global/stylesGlobal";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: stylesGlobal.black,
+    backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
   },
