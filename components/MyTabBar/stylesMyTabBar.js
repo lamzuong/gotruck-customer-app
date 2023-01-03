@@ -4,7 +4,8 @@ import stylesGlobal from "../../global/stylesGlobal";
 const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
-    marginHorizontal: 20,
+    justifyContent: "center",
+    marginHorizontal: 10,
     padding: 10,
     borderRadius: 20,
 
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
 
     isSelected: {
       color: "white",

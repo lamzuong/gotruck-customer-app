@@ -1,7 +1,9 @@
 import { publicRoutes } from "./routes/routes";
+import stylesGlobal from "./global/stylesGlobal";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Text, TouchableOpacity, View } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +19,23 @@ export default function App() {
               options={{
                 headerShown: route.header,
                 animation: route.animation ? route.animation : null,
+                headerTitle: () => (
+                  <View style={{ alignItems: "center", width: "80%" }}>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: 18,
+                      }}
+                    >
+                      {route.title}
+                    </Text>
+                  </View>
+                ),
+                headerTintColor: "#fff",
+                headerStyle: {
+                  backgroundColor: stylesGlobal.mainGreen,
+                },
               }}
               key={index}
             />

@@ -4,6 +4,8 @@ import Login from "../screen/Login/Login";
 import SignUp from "../screen/SignUp/SignUp";
 import MainScreen from "../screen/MainScreen/MainScreen";
 
+import OrderDetail from "../screen/MainScreen/Order/OrderDetail/OrderDetail";
+
 import EditProfile from "../screen/MainScreen/Profile/EditProfile/EditProfile";
 import SavedPlace from "../screen/MainScreen/Profile/SavedPlace/SavedPlace";
 import ChangePassword from "../screen/MainScreen/Profile/ChangePassword/ChangePassword";
@@ -21,6 +23,14 @@ const publicRoutes = [
   { name: "Login", component: Login, header: false },
   { name: "SignUp", component: SignUp, header: false },
   { name: "MainScreen", component: MainScreen, header: false },
+
+  // Screen options in Order
+  {
+    name: "OrderDetail",
+    component: OrderDetail,
+    header: true,
+    title: "Chi tiết đơn hàng",
+  },
 
   // Screen options in Profile
   { name: "EditProfile", component: EditProfile, header: false },

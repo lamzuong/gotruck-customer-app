@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 10,
     text: {
       fontSize: 16,
       fontWeight: "bold",
