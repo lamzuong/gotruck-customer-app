@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: stylesGlobal.lightDarkGrey,
 
-    avatar: {
+    deal: {
       width: 50,
       height: 50,
       borderRadius: 100,
@@ -22,6 +22,15 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
+    order: {
+      width: 50,
+      height: 50,
+      borderRadius: 100,
+      backgroundColor: stylesGlobal.lightGreen,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+
     rightItem: {
       width: "80%",
       marginLeft: 15,

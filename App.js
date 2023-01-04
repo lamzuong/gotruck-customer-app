@@ -3,14 +3,14 @@ import stylesGlobal from "./global/stylesGlobal";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="MainScreen">
         {publicRoutes.map((route, index) => {
           return (
             <Stack.Screen
@@ -20,16 +20,8 @@ export default function App() {
                 headerShown: route.header,
                 animation: route.animation ? route.animation : null,
                 headerTitle: () => (
-                  <View style={{ alignItems: "center", width: "80%" }}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: 18,
-                      }}
-                    >
-                      {route.title}
-                    </Text>
+                  <View style={styles.viewHeader}>
+                    <Text style={styles.txtHeader}>{route.title}</Text>
                   </View>
                 ),
                 headerTintColor: "#fff",
@@ -45,3 +37,11 @@ export default function App() {
     </NavigationContainer>
   );
 }
+const styles = StyleSheet.create({
+  viewHeader: { alignItems: "center", width: "80%" },
+  txtHeader: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+});

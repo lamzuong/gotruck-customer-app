@@ -1,8 +1,6 @@
 import styles from "./stylesOrder";
-import NotFinish from "./NotFinish/NotFinish";
-import Finished from "./Finished/Finished";
-import Cancelled from "./Cancelled/Cancelled";
-import MyTabBar from "../../../components/MyTabBar/MyTabBar";
+import stylesGlobal from "../../../global/stylesGlobal";
+import { publicRoutes } from "./routes/routes";
 
 import { View, Text } from "react-native";
 import React from "react";
@@ -16,27 +14,42 @@ export default function Order() {
       <Text style={styles.title}>Đơn hàng</Text>
 
       <TopTab.Navigator
-        tabBar={(props) => <MyTabBar {...props} />}
-        style={{ backgroundColor: "white" }}
+        screenOptions={{
+          tabBarScrollEnabled: true,
+          tabBarActiveTintColor: stylesGlobal.mainGreen,
+          tabBarInactiveTintColor: stylesGlobal.darkGrey,
+          tabBarIndicatorStyle: {
+            backgroundColor: stylesGlobal.mainGreen,
+            height: 2,
+          },
+          tabBarStyle: {
+            backgroundColor: "#fff",
+          },
+          tabBarItemStyle: {
+            width: "auto",
+            alignItems: "center",
+          },
+          tabBarLabelStyle: {
+            textTransform: "capitalize",
+          },
+        }}
       >
-        <TopTab.Screen
-          name="NotFinish"
-          component={NotFinish}
-          options={{ tabBarLabel: "Chưa hoàn thành" }}
-          key={"NotFinish"}
-        />
-        <TopTab.Screen
-          name="Finished"
-          component={Finished}
-          options={{ tabBarLabel: "Hoàn thành" }}
-          key={"Finished"}
-        />
-        <TopTab.Screen
-          name="Cancelled"
-          component={Cancelled}
-          options={{ tabBarLabel: "Đã hủy" }}
-          key={"Cancelled"}
-        />
+        {publicRoutes.map((route, key) => {
+          return (
+            <TopTab.Screen
+              name={route.name}
+              component={route.component}
+              options={{
+                tabBarLabel: ({ focused }) => (
+                  <Text style={focused ? styles.textFocus : styles.text}>
+                    {route.title}
+                  </Text>
+                ),
+              }}
+              key={key}
+            />
+          );
+        })}
       </TopTab.Navigator>
     </>
   );

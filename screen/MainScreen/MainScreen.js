@@ -1,10 +1,9 @@
 import { publicRoutes } from "./routes/routes";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabs() {
+export default function MainScreen() {
   return (
     <Tab.Navigator
       screenOptions={{

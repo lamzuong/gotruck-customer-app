@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  // Color
   mainGreen: "#04AF46",
   lightGreen: "rgb(192,243,207)",
   darkGreen: "rgb(20,108,47)",
@@ -12,6 +13,15 @@ const styles = StyleSheet.create({
 
   lightOrange: "rgb(254,244,235)",
   darkOrange: "rgb(246,103,11)",
+
+  // Layout
+  inline: {
+    flexDirection: "row",
+  },
+  inlineBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
 
 export default styles;

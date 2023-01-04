@@ -1,4 +1,5 @@
 import styles from "./stylesMyOrder";
+import stylesGlobal from "../../global/stylesGlobal";
 import MyButton from "../MyButton/MyButton";
 
 import { View, Text } from "react-native";
@@ -65,11 +66,18 @@ export default function MyOrder({ order }) {
         </ReadMore>
       </View>
       <View style={styles.inlineBetween}>
-        {order.status == "Chưa nhận" || order.status == "Đang giao" ? (
+        {order.status == "Chưa nhận" || order.status == "Đã nhận" ? (
           <MyButton
             type={"small"}
             text={"Hủy đơn"}
             btnColor={"red"}
+            txtColor={"white"}
+          />
+        ) : order.status == "Đã giao" ? (
+          <MyButton
+            type={"small"}
+            text={"Đánh giá"}
+            btnColor={stylesGlobal.mainGreen}
             txtColor={"white"}
           />
         ) : (

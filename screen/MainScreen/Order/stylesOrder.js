@@ -11,6 +11,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     backgroundColor: "white",
   },
+  textFocus: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: stylesGlobal.mainGreen,
+    textAlign: "center",
+  },
+  text: {
+    fontSize: 16,
+    color: stylesGlobal.darkGrey,
+    marginHorizontal: 5,
+  },
 });
 
 export default styles;

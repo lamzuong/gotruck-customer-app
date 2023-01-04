@@ -44,7 +44,12 @@ export default function Chat({ navigation }) {
         data={mess}
         renderItem={({ item, index }) => {
           return (
-            <TouchableOpacity style={styles.itemChat} key={index + "@"}>
+            <TouchableOpacity
+              style={styles.itemChat}
+              onPress={() => {
+                navigation.navigate("ChatRoom", { item: item });
+              }}
+            >
               <Image
                 source={{
                   uri: item.ava,
