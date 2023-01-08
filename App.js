@@ -10,7 +10,9 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="MainScreen">
+      <Stack.Navigator
+      // initialRouteName="MainScreen"
+      >
         {publicRoutes.map((route, index) => {
           return (
             <Stack.Screen

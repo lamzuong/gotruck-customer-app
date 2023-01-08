@@ -8,7 +8,7 @@ export default function Screen04() {
   return (
     <View style={styles.screen04}>
       <Text style={styles.screen04.title}>
-        Hãy bắt đầu những đơn hàng{"\n"}đầu tiên nào{"\t"}
+        Hãy bắt đầu những đơn hàng đầu tiên nào{"\t\t"}
         <MaterialCommunityIcons name="truck-fast" size={25} color="white" />
       </Text>
       <Image

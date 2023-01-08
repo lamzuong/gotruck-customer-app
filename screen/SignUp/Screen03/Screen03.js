@@ -2,7 +2,10 @@ import styles from "../stylesSignUp";
 import MyInput from "../../../components/MyInput/MyInput";
 
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
+
+const widthScreen = Dimensions.get("window").width;
+const heightScreen = Dimensions.get("window").height;
 
 export default function Screen03({ validCallback }) {
   const [validName, setValidName] = useState();
@@ -35,7 +38,7 @@ export default function Screen03({ validCallback }) {
         placeholder={"Nhập họ tên đầy đủ"}
         error={"Họ tên không hợp lệ"}
         regex={/^[a-zA-Z ]{1,30}$/}
-        width={390}
+        width={widthScreen - 60}
         validCallback={callbackValidName}
       />
       <View style={{ marginVertical: 10 }}>
@@ -45,7 +48,7 @@ export default function Screen03({ validCallback }) {
           regex={
             /^(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}$/
           }
-          width={390}
+          width={widthScreen - 60}
           validCallback={callbackValidPass}
           valueCallback={callbackValuePass}
           password={true}
@@ -55,7 +58,7 @@ export default function Screen03({ validCallback }) {
         placeholder={"Nhập lại mật khẩu"}
         error={"Nhập lại mật khẩu không trùng khớp"}
         valueCompare={valuePass}
-        width={390}
+        width={widthScreen - 60}
         validCallback={callbackValidRepass}
         password={true}
       />

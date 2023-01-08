@@ -2,7 +2,10 @@ import styles from "../stylesSignUp";
 import MyInput from "../../../components/MyInput/MyInput";
 
 import React, { useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Dimensions } from "react-native";
+
+const widthScreen = Dimensions.get("window").width;
+const heightScreen = Dimensions.get("window").height;
 
 export default function Screen02({ validCallback, valueCallback }) {
   const [valueInput, setValueInput] = useState();
@@ -23,7 +26,7 @@ export default function Screen02({ validCallback, valueCallback }) {
         placeholder={"Nhập mã OTP"}
         error={"Mã OTP không hợp lệ"}
         regex={/^[0-9]{6}$/g}
-        width={390}
+        width={widthScreen - 60}
         valueCallback={callbackValue}
         validCallback={callbackValid}
         value={valueInput}

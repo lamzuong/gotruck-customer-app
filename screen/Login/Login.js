@@ -49,9 +49,9 @@ export default function Login({ navigation }) {
               />
               <Text style={styles.phone.phoneVn}>+84</Text>
             </View>
-            <View style={{ width: 220 }}>
+            <View style={{ width: 220, marginRight: 30 }}>
               <MyInput
-                placeholder={"Nhập số điện thoại"}
+                placeholder={"Số điện thoại"}
                 width={250}
                 valueCallback={callbackPhone}
                 value={phoneNumber}
@@ -61,7 +61,7 @@ export default function Login({ navigation }) {
           <View style={{ marginTop: 10 }}>
             <MyInput
               placeholder={"Mật khẩu"}
-              width={382}
+              width={360}
               password={true}
               valueCallback={callbackPass}
               value={password}

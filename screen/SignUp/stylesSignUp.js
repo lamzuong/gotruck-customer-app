@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
-    marginLeft: 10,
 
     viewFlagVn: {
       width: 100,
       height: 50,
+      marginRight: 10,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   otp: {
     marginTop: 20,
     marginLeft: 10,
+    paddingHorizontal: 20,
   },
   button: {
     alignItems: "center",
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
   },
   screen04: {
     padding: 40,
-    alignItems: "center",
     title: {
       fontSize: 25,
       fontWeight: "bold",

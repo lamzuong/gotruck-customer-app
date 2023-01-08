@@ -25,15 +25,17 @@ export default function Screen01({ validCallback }) {
         />
         <Text style={styles.phone.phoneVn}>+84</Text>
       </View>
+      {/* <View style={{ marginRight: 10 }}> */}
       <MyInput
-        placeholder={"Nhập số điện thoại"}
+        placeholder={"Số điện thoại"}
         error={"Số điện thoại không hợp lệ"}
         regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
-        width={250}
+        width={220}
         valueCallback={callbackValue}
         validCallback={callbackValid}
         value={valueInput}
       />
+      {/* </View> */}
     </View>
   );
 }

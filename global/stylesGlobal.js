@@ -14,13 +14,17 @@ const styles = StyleSheet.create({
   lightOrange: "rgb(254,244,235)",
   darkOrange: "rgb(246,103,11)",
 
+  skyBlue: "#0DBEBE",
+
   // Layout
   inline: {
     flexDirection: "row",
+    alignItems: "center",
   },
   inlineBetween: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 

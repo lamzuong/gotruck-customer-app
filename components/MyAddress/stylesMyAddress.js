@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../global/stylesGlobal";
+import stylesGlobal from "../../global/stylesGlobal";
 
 const widthScreen = Dimensions.get("window").width;
 const heightScreen = Dimensions.get("window").height;
@@ -7,17 +7,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    alignItems: "center",
+    borderWidth: 1,
+    borderColor: stylesGlobal.lightDarkGrey,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
   },
-  bgImg: {
-    width: "100%",
-    height: 200,
-    justifyContent: "flex-end",
+  label: {
+    width: 90,
+    fontSize: 16,
+    fontWeight: "bold",
   },
-  imgAdvertise: {
-    width: 300,
-    height: 200,
-    marginVertical: 10,
+  content: {
+    width: "70%",
+    fontSize: 16,
   },
 });
 

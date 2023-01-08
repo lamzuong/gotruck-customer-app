@@ -9,9 +9,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+    flexDirection: "row",
     text: {
       fontSize: 16,
       fontWeight: "bold",
+      marginHorizontal: 5,
     },
   },
   medium: {
@@ -21,9 +23,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+    flexDirection: "row",
     text: {
       fontSize: 18,
       fontWeight: "bold",
+      marginHorizontal: 5,
     },
   },
   large: {
@@ -33,9 +37,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+    flexDirection: "row",
     text: {
       fontSize: 18,
       fontWeight: "bold",
+      marginHorizontal: 5,
     },
   },
 });

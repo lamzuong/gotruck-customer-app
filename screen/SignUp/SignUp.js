@@ -88,7 +88,7 @@ export default function SignUp({ navigation }) {
             txtColor="white"
             action={() => {
               screen == 4
-                ? navigation.navigate("BottomTabs")
+                ? navigation.navigate("MainScreen")
                 : screen == 2
                 ? checkOTP()
                   ? (setScreen(++i.current), setValidData(false))

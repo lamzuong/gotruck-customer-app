@@ -9,6 +9,8 @@ export default function MyButton({
   txtColor,
   borderWidth,
   borderColor,
+  iconLeft,
+  iconRight,
   action,
   disable,
   ...props
@@ -47,7 +49,9 @@ export default function MyButton({
       onPress={action}
       {...props}
     >
+      {iconLeft}
       <Text style={[typeButton.text, { color: txtColor }]}>{text}</Text>
+      {iconRight}
     </TouchableOpacity>
   );
 }
