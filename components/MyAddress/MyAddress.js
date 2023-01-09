@@ -22,10 +22,6 @@ export default function MyAddress({ item }) {
         <Text style={styles.label}>Điện thoại</Text>
         <Text style={styles.content}>{item.phone}</Text>
       </View>
-      <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
-        <Text style={styles.label}>Ghi chú</Text>
-        <Text style={styles.content}>{item.note}</Text>
-      </View>
       <View style={stylesGlobal.inlineBetween}>
         <MyButton
           type={"small"}

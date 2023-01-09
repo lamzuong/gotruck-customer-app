@@ -43,6 +43,7 @@ export default function NewOrder({ navigation }) {
     "https://upload.wikimedia.org/wikipedia/vi/f/f8/Nami_face.jpg",
   ]);
 
+  const [distance, setDistance] = useState("14 km");
   const [time, setTime] = useState("3-5 ngày");
   const [price, setPrice] = useState(1230100);
 
@@ -186,6 +187,10 @@ export default function NewOrder({ navigation }) {
       {/* Thời gian, chi phí */}
       <View style={{ marginTop: 30 }}>
         <View style={stylesGlobal.inlineBetween}>
+          <Text style={styles.font18}>Khoảng cách</Text>
+          <Text style={styles.font18}>{distance}</Text>
+        </View>
+        <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
           <Text style={styles.font18}>Thời gian dự kiến</Text>
           <Text style={styles.font18}>{time}</Text>
         </View>

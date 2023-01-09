@@ -40,12 +40,6 @@ export default function FormSavedPlace({ navigation }) {
             <MyInput border={true} />
           </View>
         </View>
-        <View style={styles.componentInput}>
-          <Text style={styles.label}>Ghi chú</Text>
-          <View style={{ marginTop: 10 }}>
-            <MyInput border={true} />
-          </View>
-        </View>
       </ScrollView>
       <View style={{ alignItems: "center", marginVertical: 10 }}>
         <MyButton
