@@ -7,16 +7,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: stylesGlobal.mainGreen,
-    alignItems: "center",
   },
   logoName: {
     marginLeft: -widthScreen / 5,
     width: Dimensions.get("window").width,
     height: 120,
   },
+  txtHeader: {
+    marginTop: 50,
+    marginLeft: 40,
+    lineHeight: 28,
+    color: "white",
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+  txtLabel: {
+    marginTop: 50,
+    marginLeft: 40,
+    color: "white",
+    fontSize: 17,
+  },
   phone: {
     flexDirection: "row",
     justifyContent: "center",
+    marginVertical: 20,
 
     viewFlagVn: {
       width: 100,
@@ -37,24 +51,26 @@ const styles = StyleSheet.create({
       paddingHorizontal: 5,
     },
   },
-  viewAction: {
-    marginTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-around",
-
-    txtAction: {
-      fontSize: 16,
+  viewNormal: {
+    marginVertical: 20,
+    marginLeft: 10,
+    paddingHorizontal: 20,
+  },
+  viewFinish: {
+    padding: 40,
+    title: {
+      fontSize: 25,
       fontWeight: "bold",
       color: "white",
     },
-    viewSavePass: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: -6,
+    logoTruck: {
+      width: 300,
+      height: 200,
     },
   },
-  viewButton: {
-    marginVertical: 20,
+  buttonFooter: {
+    alignItems: "center",
+    marginBottom: 20,
   },
 });
 

@@ -1,33 +1,58 @@
 import styles from "./stylesLogin";
-import MyInput from "../../components/MyInput/MyInput";
+import stylesGlobal from "../../global/stylesGlobal";
 import MyButton from "../../components/MyButton/MyButton";
 
 import {
   View,
   Text,
-  ScrollView,
   Image,
-  TouchableOpacity,
-  Pressable,
+  ScrollView,
+  Dimensions,
+  BackHandler,
 } from "react-native";
-import React, { useRef, useState } from "react";
-import { Checkbox } from "react-native-paper";
+import React, { useEffect, useRef, useState } from "react";
+import MyInput from "../../components/MyInput/MyInput";
 
+const widthScreen = Dimensions.get("window").width;
+const heightScreen = Dimensions.get("window").height;
 export default function Login({ navigation }) {
+  const [screen, setScreen] = useState(1);
+  const label = [
+    "Vui lòng nhập số điện thoại để tiếp tục",
+    "Nhập mã OTP để đăng nhập nào ^^ !!!",
+  ];
   const scrollViewRef = useRef();
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [password, setPassword] = useState();
-  const [checked, setChecked] = useState(true);
-  const callbackPhone = (childData) => {
-    setPhoneNumber(childData);
-  };
-  const callbackPass = (childData) => {
-    setPassword(childData);
-  };
-  const checkValid = () => {
-    return true;
-  };
 
+  const [validData, setValidData] = useState(false);
+  const [valueData, setValueData] = useState("");
+
+  const checkOTP = () => {
+    if (valueData) return true;
+    else return false;
+  };
+  const backScreen = () => {
+    setScreen((prev) => prev - 1);
+  };
+  const nextScreen = () => {
+    setValueData(""), setValidData(false);
+    setScreen((prev) => prev + 1);
+  };
+  const toMainScreen = () => {
+    navigation.navigate("MainScreen");
+  };
+  //----------Back Button----------
+  useEffect(() => {
+    const backAction = () => {
+      screen == 1 ? navigation.navigate("Welcome") : backScreen();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, [screen]);
+  //------------------------------
   return (
     <View style={styles.container}>
       <ScrollView
@@ -35,12 +60,18 @@ export default function Login({ navigation }) {
         onContentSizeChange={() =>
           scrollViewRef.current.scrollToEnd({ animated: true })
         }
+        onLayout={() => scrollViewRef.current.scrollToEnd({ animated: true })}
       >
         <Image
           source={require("../../assets/images/logo-name-white.png")}
           style={styles.logoName}
         />
-        <View style={{ alignItems: "center" }}>
+        <Text style={styles.txtHeader}>
+          Chào mừng bạn đã đến{"\n"}với GOTRUCK !!
+        </Text>
+
+        <Text style={styles.txtLabel}>{label[screen - 1]}</Text>
+        {screen == 1 ? (
           <View style={styles.phone}>
             <View style={styles.phone.viewFlagVn}>
               <Image
@@ -49,52 +80,55 @@ export default function Login({ navigation }) {
               />
               <Text style={styles.phone.phoneVn}>+84</Text>
             </View>
-            <View style={{ width: 220, marginRight: 30 }}>
-              <MyInput
-                placeholder={"Số điện thoại"}
-                width={250}
-                valueCallback={callbackPhone}
-                value={phoneNumber}
-              />
-            </View>
-          </View>
-          <View style={{ marginTop: 10 }}>
             <MyInput
-              placeholder={"Mật khẩu"}
-              width={360}
-              password={true}
-              valueCallback={callbackPass}
-              value={password}
+              placeholder={"Số điện thoại"}
+              error={"Số điện thoại không hợp lệ"}
+              regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
+              width={230}
+              value={setValueData}
+              valid={setValidData}
+              screen={screen}
             />
           </View>
-        </View>
-        <View style={styles.viewAction}>
-          <TouchableOpacity>
-            <Text style={styles.viewAction.txtAction}>Quên mật khẩu ?</Text>
-          </TouchableOpacity>
-          <Pressable style={styles.viewAction.viewSavePass}>
-            <Checkbox
-              status={checked ? "checked" : "unchecked"}
-              onPress={() => {
-                setChecked(!checked);
-              }}
-              color="white"
+        ) : (
+          <View style={styles.viewNormal}>
+            <MyInput
+              placeholder={"Nhập mã OTP"}
+              error={"Mã OTP không hợp lệ"}
+              regex={/^[0-9]{6}$/g}
+              width={widthScreen - 60}
+              value={setValueData}
+              valid={setValidData}
+              screen={screen}
             />
-            <Text style={styles.viewAction.txtAction}>Lưu mật khẩu</Text>
-          </Pressable>
-        </View>
+          </View>
+        )}
       </ScrollView>
-      <TouchableOpacity style={styles.viewButton}>
-        <MyButton
-          type="large"
-          text={"Đăng nhập"}
-          btnColor="black"
-          txtColor={"white"}
-          action={() => {
-            checkValid() ? navigation.navigate("MainScreen") : null;
-          }}
-        />
-      </TouchableOpacity>
+      <View style={styles.buttonFooter}>
+        {validData ? (
+          <MyButton
+            type="large"
+            text={screen == 2 ? "Xác nhận" : "Tiếp tục"}
+            btnColor="black"
+            txtColor="white"
+            action={() => {
+              screen == 2
+                ? checkOTP()
+                  ? toMainScreen()
+                  : null // alert error if invalid OTP
+                : nextScreen();
+            }}
+          />
+        ) : (
+          <MyButton
+            type="large"
+            text={screen == 2 ? "Xác nhận" : "Tiếp tục"}
+            btnColor="grey"
+            txtColor={stylesGlobal.darkGrey}
+            disable={true}
+          />
+        )}
+      </View>
     </View>
   );
 }

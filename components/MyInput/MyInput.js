@@ -1,7 +1,7 @@
-import { View, Text, TextInput } from "react-native";
-import React, { useEffect, useState } from "react";
-import styles from "./stylesMyInput";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { View, Text, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import styles from './stylesMyInput';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 export default function MyInput({
   placeholder,
@@ -13,136 +13,101 @@ export default function MyInput({
   iconLeft,
   iconRight,
   clear = true,
-  border = false,
-  borderColor = "black",
+  borderWidth = null,
+  borderColor = 'black',
   onlyBorderBottom = false,
   autoFocus = false,
-  value = "",
-  validCallback,
-  valueCallback,
-  password = false,
-  small = false,
-  valueCompare,
-  style = null,
+  initialValue = '',
+  value,
+  valid,
+  inputName = false,
+  screen,
 }) {
-  const [valueInput, setValueInput] = useState(value);
+  useEffect(() => {
+    setValueInput('');
+    setHideError(true);
+  }, [screen]);
+
+  const [valueInput, setValueInput] = useState(initialValue);
   const [hideError, setHideError] = useState(true);
-  const [encodePass, setEncodePass] = useState(true);
 
-  const validate = (text) => regex.test(text);
-  const compare = (text) => valueCompare === text;
+  const removeAscent = (str) => {
+    if (str === null || str === undefined) return str;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+    str = str.replace(/đ/g, 'd');
+    return str;
+  };
 
-  const callError = () => (setHideError(false), validCallback(false));
-  const callValid = () => (setHideError(true), validCallback(true));
+  const validate = (text) => {
+    if (inputName) return regex.test(removeAscent(text));
+    else return regex.test(text);
+  };
+  const callValid = () => (valid(true), setHideError(true));
+  const callError = () => (valid(false), setHideError(false));
 
   return (
-    <View style={[{ width: width }, style]}>
-      <View style={[styles.input, small ? { paddingRight: 30 } : null]}>
-        {password ? (
-          <>
+    <View style={styles.wrapper}>
+      <View
+        style={[
+          styles.viewInput,
+          { width: width },
+          borderWidth
+            ? onlyBorderBottom
+              ? {
+                  borderBottomWidth: borderWidth,
+                  borderColor: borderColor,
+                }
+              : {
+                  borderWidth: borderWidth,
+                  borderRadius: 10,
+                  borderColor: borderColor,
+                }
+            : null,
+        ]}
+      >
+        <View style={styles.viewInputHaveClear}>
+          <View style={styles.insideInput}>
+            {iconLeft ? <View style={{ marginRight: 10 }}>{iconLeft}</View> : null}
+
             <TextInput
-              style={[styles.txtInput, { paddingRight: 50 }]}
+              style={styles.txtInput}
               placeholder={placeholder}
               onChangeText={(text) => {
                 setValueInput(text);
+                value(text);
+
                 if (regex) {
-                  if (!validate(text)) {
-                    setHideError(false);
-                    validCallback(false);
-                  } else {
-                    setHideError(true);
-                    validCallback(true);
-                  }
+                  if (!validate(text)) callError();
+                  else callValid();
                 }
-                if (valueCompare) {
-                  if (!compare(text)) {
-                    setHideError(false);
-                    validCallback(false);
-                  } else {
-                    setHideError(true);
-                    validCallback(true);
-                  }
-                }
-                if (valueCallback) valueCallback(text);
               }}
               value={valueInput}
-              secureTextEntry={encodePass}
               autoFocus={autoFocus}
             />
-            {encodePass ? (
-              <Ionicons
-                name="eye-off"
-                size={24}
-                color="black"
-                style={styles.iconHide}
-                onPress={() => setEncodePass(!encodePass)}
-              />
-            ) : (
-              <Ionicons
-                name="eye"
-                size={24}
-                color="black"
-                style={styles.iconHide}
-                onPress={() => setEncodePass(!encodePass)}
-              />
-            )}
-          </>
-        ) : (
-          <View
-            style={[
-              styles.insideInput,
-              border
-                ? { borderWidth: 1, borderRadius: 10, borderColor: borderColor }
-                : null,
-              onlyBorderBottom
-                ? { borderBottomWidth: 1, borderColor: borderColor }
-                : null,
-            ]}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {iconLeft ? (
-                <View style={{ marginLeft: 10 }}>{iconLeft}</View>
-              ) : null}
-
-              <TextInput
-                style={[
-                  styles.txtInput,
-                  clear ? styles.txtInput.haveClear : null,
-                ]}
-                placeholder={placeholder}
-                onChangeText={(text) => {
-                  setValueInput(text);
-                  if (regex)
-                    if (!validate(text)) callError();
-                    else callValid();
-                  if (valueCallback) valueCallback(text);
-                }}
-                value={valueInput}
-                autoFocus={autoFocus}
-              />
-
-              {iconRight ? (
-                <View style={{ marginRight: 10 }}>{iconRight}</View>
-              ) : null}
-            </View>
-            {clear
-              ? valueInput && (
-                  <View style={{ marginRight: 20, marginLeft: -30 }}>
-                    <AntDesign
-                      name="closecircle"
-                      size={16}
-                      color="grey"
-                      onPress={() => {
-                        setValueInput("");
-                        if (regex) callError();
-                      }}
-                    />
-                  </View>
-                )
-              : null}
           </View>
-        )}
+          {clear
+            ? valueInput && (
+                <AntDesign
+                  name="closecircle"
+                  size={16}
+                  color="grey"
+                  onPress={() => {
+                    setValueInput('');
+                    if (regex) callError();
+                  }}
+                />
+              )
+            : null}
+        </View>
+        {iconRight ? <View style={{ marginLeft: 10 }}>{iconRight}</View> : null}
       </View>
+      {/* Show Error */}
       {!hideError && showError ? (
         <Text style={styleError ? styleError : styles.error}>{error}</Text>
       ) : null}

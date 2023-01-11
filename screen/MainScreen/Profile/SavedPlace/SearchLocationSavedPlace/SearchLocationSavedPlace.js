@@ -1,5 +1,5 @@
-import styles from "./stylesSearchLocationSavedPlace";
-import stylesGlobal from "../../../../../global/stylesGlobal";
+import styles from './stylesSearchLocationSavedPlace';
+import stylesGlobal from '../../../../../global/stylesGlobal';
 
 import {
   View,
@@ -9,29 +9,29 @@ import {
   TextInput,
   ScrollView,
   Pressable,
-} from "react-native";
-import React, { useState, useLayoutEffect } from "react";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import Geocoder from "react-native-geocoding";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import * as Location from "expo-location";
+} from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
+import Geocoder from 'react-native-geocoding';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import * as Location from 'expo-location';
 
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { GOOGLE_API_KEY } from "../../../../../global/keyGG";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
 
 export default function DiaChiNhanHang() {
   const [viTriHienTai, setViTriHienTai] = useState();
   const navigation = useNavigation();
 
   const currentLocationUser = {
-    description: "Vị trí hiện tại",
+    description: 'Vị trí hiện tại',
     geometry: {
       location: { lat: viTriHienTai?.latitude, lng: viTriHienTai?.longitude },
     },
   };
 
   const DHCongNghiep = {
-    description: "Trường Đại học Công nghiệp TPHCM",
+    description: 'Trường Đại học Công nghiệp TPHCM',
     geometry: { location: { lat: 10.820685, lng: 106.687631 } },
   };
 
@@ -41,20 +41,20 @@ export default function DiaChiNhanHang() {
       longitude: details?.geometry.location.lng || 0,
       address: data.description,
     };
-    navigation.navigate("FormSavedPlace", { addressSelected: addressSelected });
-  };  
+    navigation.navigate('FormSavedPlace', { addressSelected: addressSelected });
+  };
 
   useLayoutEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
-      let addressTemp = "";
+      let addressTemp = '';
       Geocoder.init(GOOGLE_API_KEY, {
-        language: "vn",
+        language: 'vn',
       });
       Geocoder.from({
         latitude: location.coords.latitude,
@@ -79,7 +79,7 @@ export default function DiaChiNhanHang() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons
-          style={{ top: 10 }}
+          style={styles.iconBack}
           name="arrow-back"
           size={25}
           color={stylesGlobal.mainGreen}
@@ -87,8 +87,8 @@ export default function DiaChiNhanHang() {
         />
 
         <GooglePlacesAutocomplete
-          styles={{ textInput: styles.input }}
-          placeholder={"Nhập địa chỉ cần lưu"}
+          styles={{ textInput: styles.txtSearch, description: styles.txtResult }}
+          placeholder={'Nhập địa chỉ cần lưu'}
           enablePoweredByContainer={false}
           timeout={5000}
           fetchDetails
@@ -98,18 +98,16 @@ export default function DiaChiNhanHang() {
           onFail={(error) => console.error(error)}
           query={{
             key: GOOGLE_API_KEY,
-            language: "vn",
-            components: "country:vn",
+            language: 'vn',
+            components: 'country:vn',
           }}
-          predefinedPlaces={
-            viTriHienTai ? [currentLocationUser, DHCongNghiep] : []
-          }
+          predefinedPlaces={viTriHienTai ? [currentLocationUser, DHCongNghiep] : []}
         />
       </View>
       <Pressable
         style={styles.buttonFooter}
         onPress={() => {
-          navigation.navigate("GoogleMapSavedPlace");
+          navigation.navigate('GoogleMapSavedPlace');
         }}
       >
         <Ionicons name="location" size={24} color="red" />

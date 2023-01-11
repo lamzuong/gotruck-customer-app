@@ -1,15 +1,27 @@
-import styles from "./stylesFormSavedPlace";
-import stylesGlobal from "../../../../../global/stylesGlobal";
-import MyInput from "../../../../../components/MyInput/MyInput";
-import MyButton from "../../../../../components/MyButton/MyButton";
+import styles from './stylesFormSavedPlace';
+import stylesGlobal from '../../../../../global/stylesGlobal';
+import MyInput from '../../../../../components/MyInput/MyInput';
+import MyButton from '../../../../../components/MyButton/MyButton';
 
-import { View, Text, ScrollView, Pressable } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
-import ReadMore from "react-native-read-more-text";
-import { useRoute } from "@react-navigation/native";
+import { View, Text, ScrollView, Pressable, BackHandler } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import ReadMore from 'react-native-read-more-text';
+import { useRoute } from '@react-navigation/native';
 
 export default function FormSavedPlace({ navigation }) {
+  //----------Back Button----------
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, []);
+  //------------------------------
   const [address, setAddress] = useState();
+  const [name, setName] = useState();
+  const [phone, setPhone] = useState();
   const route = useRoute();
 
   const { addressSelected } = route.params;
@@ -20,7 +32,7 @@ export default function FormSavedPlace({ navigation }) {
   }, [route]);
 
   const handleLuuDiaChi = () => {
-    navigation.navigate("SavedPlace");
+    navigation.navigate('SavedPlace');
   };
 
   return (
@@ -31,7 +43,7 @@ export default function FormSavedPlace({ navigation }) {
           <Pressable
             style={styles.input}
             onPress={() => {
-              navigation.navigate("SearchLocationSavedPlace");
+              navigation.navigate('SearchLocationSavedPlace');
             }}
           >
             <ReadMore numberOfLines={1} renderTruncatedFooter={() => null}>
@@ -42,22 +54,22 @@ export default function FormSavedPlace({ navigation }) {
         <View style={styles.componentInput}>
           <Text style={styles.label}>Họ tên</Text>
           <View style={{ marginTop: 10 }}>
-            <MyInput border={true} />
+            <MyInput borderWidth={1} value={setName} />
           </View>
         </View>
         <View style={styles.componentInput}>
           <Text style={styles.label}>Số điện thoại</Text>
           <View style={{ marginTop: 10 }}>
-            <MyInput border={true} />
+            <MyInput borderWidth={1} value={setPhone} />
           </View>
         </View>
       </ScrollView>
-      <View style={{ alignItems: "center", marginVertical: 10 }}>
+      <View style={{ alignItems: 'center', marginVertical: 10 }}>
         <MyButton
-          type={"large"}
+          type={'large'}
           btnColor={stylesGlobal.mainGreen}
           txtColor="white"
-          text={"Lưu địa chỉ"}
+          text={'Lưu địa chỉ'}
           action={() => handleLuuDiaChi()}
         />
       </View>

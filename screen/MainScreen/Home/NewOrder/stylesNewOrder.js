@@ -1,21 +1,21 @@
-import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../../global/stylesGlobal";
+import { Dimensions, StyleSheet } from 'react-native';
+import stylesGlobal from '../../../../global/stylesGlobal';
 
-const widthScreen = Dimensions.get("window").width;
-const heightScreen = Dimensions.get("window").height;
+const widthScreen = Dimensions.get('window').width;
+const heightScreen = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 25,
   },
   label: {
     fontSize: 18,
-    color: "grey",
+    color: 'grey',
   },
   input: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 8,
     paddingLeft: 10,
     paddingRight: 50,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     height: 50,
 
     addition: {
-      justifyContent: "space-between",
+      justifyContent: 'space-between',
       paddingRight: 10,
     },
   },
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
 
     addition: {
-      width: "85%",
+      width: '85%',
       marginRight: 10,
     },
   },
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-  map:{
-    position:"absolute",
-    height:1,
-    width:1,
-  }
+  map: {
+    position: 'absolute',
+    height: 1,
+    width: 1,
+  },
 });
 
 export default styles;

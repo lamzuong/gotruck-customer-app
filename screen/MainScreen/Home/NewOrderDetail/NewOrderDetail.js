@@ -1,24 +1,14 @@
-import styles from "./stylesNewOrderDetail";
-import stylesGlobal from "../../../../global/stylesGlobal";
-import MyInput from "../../../../components/MyInput/MyInput";
-import MyButton from "../../../../components/MyButton/MyButton";
+import styles from './stylesNewOrderDetail';
+import stylesGlobal from '../../../../global/stylesGlobal';
+import MyInput from '../../../../components/MyInput/MyInput';
+import MyButton from '../../../../components/MyButton/MyButton';
 
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
-import React, { useState } from "react";
-import {
-  Collapse,
-  CollapseHeader,
-  CollapseBody,
-} from "accordion-collapse-react-native";
-import { Foundation, Entypo, Ionicons } from "@expo/vector-icons";
-import { RadioButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Collapse, CollapseHeader, CollapseBody } from 'accordion-collapse-react-native';
+import { Foundation, Entypo, Ionicons } from '@expo/vector-icons';
+import { RadioButton } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 export default function NewOrderDetail({ route }) {
   const navigation = useNavigation();
@@ -26,29 +16,19 @@ export default function NewOrderDetail({ route }) {
   const { item } = route.params;
   const [expandFrom, setExpandFrom] = useState(true);
   const [expandTo, setExpandTo] = useState(true);
-  const [checked, setChecked] = useState("send");
+  const [checked, setChecked] = useState('receive');
 
   const [validNameF, setValidNameF] = useState();
   const [validPhoneF, setValidPhoneF] = useState();
-  const [valueNameF, setValueNameF] = useState("");
-  const [valuePhoneF, setValuePhoneF] = useState("");
-
-  const callbackValidNameF = (childData) => setValidNameF(childData);
-  const callbackValidPhoneF = (childData) => setValidPhoneF(childData);
-  const callbackValueNameF = (childData) => setValueNameF(childData);
-  const callbackValuePhoneF = (childData) => setValuePhoneF(childData);
+  const [valueNameF, setValueNameF] = useState('');
+  const [valuePhoneF, setValuePhoneF] = useState('');
 
   const checkValidF = () => validNameF && validPhoneF;
 
   const [validNameT, setValidNameT] = useState();
   const [validPhoneT, setValidPhoneT] = useState();
-  const [valueNameT, setValueNameT] = useState("");
-  const [valuePhoneT, setValuePhoneT] = useState("");
-
-  const callbackValidNameT = (childData) => setValidNameT(childData);
-  const callbackValidPhoneT = (childData) => setValidPhoneT(childData);
-  const callbackValueNameT = (childData) => setValueNameT(childData);
-  const callbackValuePhoneT = (childData) => setValuePhoneT(childData);
+  const [valueNameT, setValueNameT] = useState('');
+  const [valuePhoneT, setValuePhoneT] = useState('');
 
   const checkValidT = () => validNameT && validPhoneT;
 
@@ -66,11 +46,7 @@ export default function NewOrderDetail({ route }) {
           >
             <CollapseHeader>
               <View style={styles.header}>
-                <Foundation
-                  name="record"
-                  size={24}
-                  color={stylesGlobal.skyBlue}
-                />
+                <Foundation name="record" size={24} color={stylesGlobal.skyBlue} />
                 <Text style={styles.labelHeader}>Người gửi</Text>
                 {expandFrom ? (
                   <Entypo name="chevron-small-up" size={24} color="black" />
@@ -80,31 +56,33 @@ export default function NewOrderDetail({ route }) {
               </View>
               {expandFrom ? null : (
                 <Text style={styles.info}>
-                  {valueNameF + "\n" + valuePhoneF + item.addressFrom}
+                  {valueNameF + '\n' + valuePhoneF + '\n' + item.addressFrom}
                 </Text>
               )}
             </CollapseHeader>
             <CollapseBody>
               <View>
                 <MyInput
-                  placeholder={"Họ tên"}
-                  validCallback={callbackValidNameF}
-                  valueCallback={callbackValueNameF}
+                  placeholder={'Họ tên'}
+                  valid={setValidNameF}
+                  value={setValueNameF}
                   regex={/^[a-zA-Z ]{1,30}$/}
-                  error={"Tên không hợp lệ"}
+                  error={'Tên không hợp lệ'}
                   styleError={styles.error}
-                  value={valueNameF}
                   onlyBorderBottom={true}
+                  borderWidth={1}
+                  borderColor={stylesGlobal.darkGrey}
                 />
                 <MyInput
-                  placeholder={"Số điện thoại"}
-                  validCallback={callbackValidPhoneF}
-                  valueCallback={callbackValuePhoneF}
+                  placeholder={'Số điện thoại'}
+                  valid={setValidPhoneF}
+                  value={setValuePhoneF}
                   regex={/^((09|03|07|08|05)([0-9]{8}))$/g}
-                  error={"Số điện thoại không hợp lệ"}
+                  error={'Số điện thoại không hợp lệ'}
                   styleError={styles.error}
-                  value={valuePhoneF}
                   onlyBorderBottom={true}
+                  borderWidth={1}
+                  borderColor={stylesGlobal.darkGrey}
                 />
                 <View style={styles.input}>
                   <Text style={styles.address}>{item.addressFrom}</Text>
@@ -134,31 +112,33 @@ export default function NewOrderDetail({ route }) {
               </View>
               {expandTo ? null : (
                 <Text style={styles.info}>
-                  {valueNameT + "\n" + valuePhoneT + item.addressTo}
+                  {valueNameT + '\n' + valuePhoneT + '\n' + item.addressTo}
                 </Text>
               )}
             </CollapseHeader>
             <CollapseBody>
               <View>
                 <MyInput
-                  placeholder={"Họ tên"}
-                  validCallback={callbackValidNameT}
-                  valueCallback={callbackValueNameT}
+                  placeholder={'Họ tên'}
+                  valid={setValidNameT}
+                  value={setValueNameT}
                   regex={/^[a-zA-Z ]{1,30}$/}
-                  error={"Tên không hợp lệ"}
+                  error={'Tên không hợp lệ'}
                   styleError={styles.error}
-                  value={valueNameT}
                   onlyBorderBottom={true}
+                  borderWidth={1}
+                  borderColor={stylesGlobal.darkGrey}
                 />
                 <MyInput
-                  placeholder={"Số điện thoại"}
-                  validCallback={callbackValidPhoneT}
-                  valueCallback={callbackValuePhoneT}
+                  placeholder={'Số điện thoại'}
+                  valid={setValidPhoneT}
+                  value={setValuePhoneT}
                   regex={/^((09|03|07|08|05)([0-9]{8}))$/g}
-                  error={"Số điện thoại không hợp lệ"}
+                  error={'Số điện thoại không hợp lệ'}
                   styleError={styles.error}
-                  value={valuePhoneT}
                   onlyBorderBottom={true}
+                  borderWidth={1}
+                  borderColor={stylesGlobal.darkGrey}
                 />
                 <View style={styles.input}>
                   <Text style={styles.address}>{item.addressTo}</Text>
@@ -185,25 +165,19 @@ export default function NewOrderDetail({ route }) {
         {/* Người thanh toán */}
         <View style={stylesGlobal.inline}>
           <Text style={{ fontSize: 16, width: 150 }}>Người thanh toán:</Text>
-          <TouchableOpacity
-            style={stylesGlobal.inline}
-            onPress={() => setChecked("send")}
-          >
+          <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('send')}>
             <RadioButton
               value="send"
-              status={checked === "send" ? "checked" : "unchecked"}
-              onPress={() => setChecked("send")}
+              status={checked === 'send' ? 'checked' : 'unchecked'}
+              onPress={() => setChecked('send')}
             />
             <Text>Người gửi</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={stylesGlobal.inline}
-            onPress={() => setChecked("receive")}
-          >
+          <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('receive')}>
             <RadioButton
               value="receive"
-              status={checked === "receive" ? "checked" : "unchecked"}
-              onPress={() => setChecked("receive")}
+              status={checked === 'receive' ? 'checked' : 'unchecked'}
+              onPress={() => setChecked('receive')}
             />
             <Text>Người nhận</Text>
           </TouchableOpacity>
@@ -212,27 +186,26 @@ export default function NewOrderDetail({ route }) {
         <View style={stylesGlobal.inlineBetween}>
           <Text style={{ fontSize: 16, width: 150 }}>Chi phí vận chuyển:</Text>
           <Text style={styles.price}>
-            {item.price.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")}{" "}
-            VNĐ
+            {item.price.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} VNĐ
           </Text>
         </View>
         <View style={{ marginTop: 10 }}>
           {checkValidF() && checkValidT() ? (
             <MyButton
-              type={"large"}
+              type={'large'}
               btnColor={stylesGlobal.mainGreen}
-              txtColor={"white"}
+              txtColor={'white'}
               text="Đặt giao đơn hàng"
               action={() => {
-                navigation.navigate("FinishPage");
+                navigation.navigate('FinishPage');
               }}
             />
           ) : (
             <MyButton
               disable={true}
-              type={"large"}
+              type={'large'}
               btnColor={stylesGlobal.lightGreen}
-              txtColor={"white"}
+              txtColor={'white'}
               text="Đặt giao đơn hàng"
             />
           )}

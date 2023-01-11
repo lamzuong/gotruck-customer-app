@@ -2,32 +2,32 @@ import { Dimensions, StyleSheet } from "react-native";
 import stylesGlobal from "../../global/stylesGlobal";
 
 const styles = StyleSheet.create({
-  input: {
-    borderRadius: 10,
-    backgroundColor: "white",
+  // CSS View
+  wrapper: {},
+  viewInput: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  viewInputHaveClear: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "95%",
   },
   insideInput: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
   },
+  //------------------
   txtInput: {
     width: "100%",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingRight: 10,
     fontSize: 18,
-
-    haveClear: {
-      paddingRight: 40,
-    },
-  },
-  iconHide: {
-    paddingRight: 20,
-    marginLeft: -40,
   },
   error: {
     marginVertical: 8,

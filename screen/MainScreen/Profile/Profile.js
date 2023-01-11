@@ -59,7 +59,7 @@ export default function Profile({ navigation }) {
             <TouchableOpacity
               style={styles.item}
               onPress={() => {
-                item.navigateTo === "Login"
+                item.title === "Đăng xuất"
                   ? confirmRequest(item.navigateTo)
                   : navigation.navigate(item.navigateTo);
               }}

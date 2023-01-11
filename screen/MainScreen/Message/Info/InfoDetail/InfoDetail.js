@@ -1,24 +1,29 @@
-import styles from "./stylesInfoDetail";
+import styles from './stylesInfoDetail';
 
-import { View, Text, ScrollView, Image } from "react-native";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, ScrollView, Image, BackHandler } from 'react-native';
+import React, { useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function InfoDetail({ route }) {
+  //----------Back Button----------
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, []);
+  //------------------------------
   const { item } = route.params;
   const navigation = useNavigation();
   return (
     <>
       <View style={styles.header}>
-        <Ionicons
-          name="arrow-back"
-          size={24}
-          color="white"
-          onPress={() => navigation.goBack()}
-        />
+        <Ionicons name="arrow-back" size={24} color="white" onPress={() => navigation.goBack()} />
         <Text style={styles.header.txtHeader}>
-          {item.type == "Order" ? "Đơn hàng" : "Khuyến mãi"}
+          {item.type == 'Order' ? 'Đơn hàng' : 'Khuyến mãi'}
         </Text>
         <View style={{ width: 24 }}></View>
       </View>

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   phone: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    marginVertical: 20,
 
     viewFlagVn: {
       width: 100,
@@ -51,16 +51,12 @@ const styles = StyleSheet.create({
       paddingHorizontal: 5,
     },
   },
-  otp: {
-    marginTop: 20,
+  viewNormal: {
+    marginVertical: 20,
     marginLeft: 10,
     paddingHorizontal: 20,
   },
-  button: {
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  screen04: {
+  viewFinish: {
     padding: 40,
     title: {
       fontSize: 25,
@@ -71,6 +67,10 @@ const styles = StyleSheet.create({
       width: 300,
       height: 200,
     },
+  },
+  buttonFooter: {
+    alignItems: "center",
+    marginBottom: 20,
   },
 });
 

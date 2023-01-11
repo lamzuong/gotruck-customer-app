@@ -11,7 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-      initialRouteName="MainScreen"
+      // initialRouteName="MainScreen"
       >
         {publicRoutes.map((route, index) => {
           return (

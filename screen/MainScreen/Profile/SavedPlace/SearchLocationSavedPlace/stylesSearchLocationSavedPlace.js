@@ -1,39 +1,43 @@
-import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../../../global/stylesGlobal";
+import { Dimensions, StyleSheet } from 'react-native';
+import stylesGlobal from '../../../../../global/stylesGlobal';
 
-const widthScreen = Dimensions.get("window").width;
-const heightScreen = Dimensions.get("window").height;
+const widthScreen = Dimensions.get('window').width;
+const heightScreen = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "space-between",
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 15,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    // alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  viewInput: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "95%",
-    marginLeft: 30,
+  //--------------------------------
+  iconBack: {
+    position: 'absolute',
+    top: 10,
   },
-  txtInput: {
-    paddingRight: 10,
-    fontSize: 18,
-    width: "95%",
+  txtSearch: {
+    borderColor: '#888',
+    borderWidth: 1,
+    borderRadius: 10,
+    fontSize: 16,
+    marginLeft: 40,
   },
+  txtResult: {
+    fontSize: 16,
+  },
+  //--------------------------------
   buttonFooter: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     height: 45,
-    width: "100%",
+    width: '100%',
     borderTopWidth: 1,
     bottom: 15,
     borderColor: stylesGlobal.lightDarkGrey,
@@ -41,11 +45,6 @@ const styles = StyleSheet.create({
   txtFooter: {
     marginLeft: 10,
     fontSize: 16,
-  },
-
-  input: {
-    borderColor: "#888",
-    borderWidth: 1,
   },
 });
 

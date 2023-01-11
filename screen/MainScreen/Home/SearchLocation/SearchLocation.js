@@ -1,5 +1,5 @@
-import styles from "./stylesSearchLocation";
-import stylesGlobal from "../../../../global/stylesGlobal";
+import styles from './stylesSearchLocation';
+import stylesGlobal from '../../../../global/stylesGlobal';
 
 import {
   View,
@@ -9,22 +9,22 @@ import {
   TextInput,
   ScrollView,
   Pressable,
-} from "react-native";
-import React, { useState, useLayoutEffect } from "react";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import Geocoder from "react-native-geocoding";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import * as Location from "expo-location";
+} from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
+import Geocoder from 'react-native-geocoding';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import * as Location from 'expo-location';
 
-import { GOOGLE_API_KEY } from "../../../../global/keyGG";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import { useNavigation, useRoute } from '@react-navigation/native';
 export default function DiaChiNhanHang() {
   const route = useRoute();
   const { noiLayHang, addressFrom, currentLocation } = route.params;
   const navigation = useNavigation();
 
   const currentLocationUser = {
-    description: "Vị trí hiện tại",
+    description: 'Vị trí hiện tại',
     geometry: {
       location: {
         lat: currentLocation?.latitude,
@@ -34,7 +34,7 @@ export default function DiaChiNhanHang() {
   };
 
   const DHCongNghiep = {
-    description: "Trường Đại học Công nghiệp TPHCM",
+    description: 'Trường Đại học Công nghiệp TPHCM',
     geometry: { location: { lat: 10.820685, lng: 106.687631 } },
   };
 
@@ -45,11 +45,11 @@ export default function DiaChiNhanHang() {
       address: data.description,
     };
     if (noiLayHang) {
-      navigation.navigate("NewOrder", {
+      navigation.navigate('NewOrder', {
         addressRecieve: addressSelected,
       });
     } else {
-      navigation.navigate("GoogleMap", {
+      navigation.navigate('GoogleMap', {
         addressRecieve: addressFrom,
         addressDelivery: addressSelected,
       });
@@ -60,7 +60,7 @@ export default function DiaChiNhanHang() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons
-          style={{ top: 10 }}
+          style={styles.iconBack}
           name="arrow-back"
           size={25}
           color={stylesGlobal.mainGreen}
@@ -68,8 +68,8 @@ export default function DiaChiNhanHang() {
         />
 
         <GooglePlacesAutocomplete
-          styles={{ textInput: styles.input }}
-          placeholder={"Nhập địa chỉ nhận hàng"}
+          styles={{ textInput: styles.txtSearch, description: styles.txtResult }}
+          placeholder={'Nhập địa chỉ nhận hàng'}
           enablePoweredByContainer={false}
           timeout={5000}
           fetchDetails
@@ -79,8 +79,8 @@ export default function DiaChiNhanHang() {
           onFail={(error) => console.error(error)}
           query={{
             key: GOOGLE_API_KEY,
-            language: "vn",
-            components: "country:vn",
+            language: 'vn',
+            components: 'country:vn',
           }}
           predefinedPlaces={[currentLocationUser, DHCongNghiep]}
         />
@@ -88,10 +88,9 @@ export default function DiaChiNhanHang() {
       <Pressable
         style={styles.buttonFooter}
         onPress={() => {
-          if (noiLayHang)
-            navigation.navigate("SelectLocationOnMap", { noiLayHang: true });
+          if (noiLayHang) navigation.navigate('SelectLocationOnMap', { noiLayHang: true });
           else
-            navigation.navigate("SelectLocationOnMap", {
+            navigation.navigate('SelectLocationOnMap', {
               noiLayHang: false,
               addressFrom: addressFrom,
             });

@@ -23,7 +23,7 @@ const options = [
   },
   {
     title: "Đăng xuất",
-    navigateTo: "Login",
+    navigateTo: "Welcome",
     icon: <Ionicons name="log-out-outline" size={30} color="red" />,
     color: "red",
   },

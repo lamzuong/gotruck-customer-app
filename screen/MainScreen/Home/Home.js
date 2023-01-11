@@ -38,7 +38,7 @@ export default function Home({ navigation }) {
           <MyInput
             placeholder={"Tìm kiếm"}
             iconLeft={<AntDesign name="search1" size={24} color="black" />}
-            border={true}
+            borderWidth={1}
             borderColor={"grey"}
           />
         </View>

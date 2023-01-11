@@ -1,13 +1,13 @@
-import styles from "./stylesGoogleMap";
-import stylesGlobal from "../../../../global/stylesGlobal";
+import styles from './stylesGoogleMap';
+import stylesGlobal from '../../../../global/stylesGlobal';
 
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { View, Dimensions, Text } from "react-native";
-import { useEffect, useRef, useState } from "react";
-import MapViewDirections from "react-native-maps-directions";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { GOOGLE_API_KEY } from "../../../../global/keyGG";
-import MyButton from "../../../../components/MyButton/MyButton";
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, Dimensions, Text } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import MapViewDirections from 'react-native-maps-directions';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import MyButton from '../../../../components/MyButton/MyButton';
 
 export default function GoogleMap() {
   const [origin, setOrigin] = useState();
@@ -19,7 +19,7 @@ export default function GoogleMap() {
   const route = useRoute();
   const { addressRecieve, addressDelivery } = route.params;
 
-  const { width, height } = Dimensions.get("window");
+  const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -62,11 +62,7 @@ export default function GoogleMap() {
         zoomEnabled={true}
       >
         {origin && (
-          <Marker
-            coordinate={origin}
-            description={origin.address}
-            title="Vị trí nhận hàng"
-          />
+          <Marker coordinate={origin} description={origin.address} title="Vị trí nhận hàng" />
         )}
         {destination && (
           <Marker
@@ -87,21 +83,20 @@ export default function GoogleMap() {
             onReady={() => zoomMap()}
             onError={(e) => {
               console.log(e);
-              alert("Vị trí bạn chọn không được hỗ trợ vận chuyển");
+              alert('Vị trí bạn chọn không được hỗ trợ vận chuyển');
             }}
           />
         )}
       </MapView>
       {showButtonTiepTuc && (
-        <View style={{ position: "absolute", bottom: 10 }}>
+        <View style={{ position: 'absolute', bottom: 10 }}>
           <MyButton
-            type={"large"}
+            type={'large'}
             text="Tiếp tục"
             btnColor={stylesGlobal.mainGreen}
-            txtColor={"white"}
-            iconRight={null}
+            txtColor={'white'}
             action={() =>
-              navigation.navigate("NewOrder", {
+              navigation.navigate('NewOrder', {
                 addressRecieve: addressRecieve,
                 addressDelivery: addressDelivery,
               })
