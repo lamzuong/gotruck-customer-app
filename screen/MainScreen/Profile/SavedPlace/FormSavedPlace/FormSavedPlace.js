@@ -4,13 +4,24 @@ import MyInput from "../../../../../components/MyInput/MyInput";
 import MyButton from "../../../../../components/MyButton/MyButton";
 
 import { View, Text, ScrollView, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import ReadMore from "react-native-read-more-text";
+import { useRoute } from "@react-navigation/native";
 
 export default function FormSavedPlace({ navigation }) {
-  const [address, setAddress] = useState(
-    "336/15 Lê Hồng Phong P.12 Q.5 TP. Hồ Chí Minh"
-  );
+  const [address, setAddress] = useState();
+  const route = useRoute();
+
+  const { addressSelected } = route.params;
+  useLayoutEffect(() => {
+    if (addressSelected != undefined) {
+      setAddress(addressSelected.address);
+    }
+  }, [route]);
+
+  const handleLuuDiaChi = () => {
+    navigation.navigate("SavedPlace");
+  };
 
   return (
     <View style={styles.container}>
@@ -47,7 +58,7 @@ export default function FormSavedPlace({ navigation }) {
           btnColor={stylesGlobal.mainGreen}
           txtColor="white"
           text={"Lưu địa chỉ"}
-          action={() => {}}
+          action={() => handleLuuDiaChi()}
         />
       </View>
     </View>

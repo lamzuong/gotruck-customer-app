@@ -22,6 +22,10 @@ import SearchLocationSavedPlace from "../screen/MainScreen/Profile/SavedPlace/Se
 import ChangePassword from "../screen/MainScreen/Profile/ChangePassword/ChangePassword";
 import Support from "../screen/MainScreen/Profile/Support/Support";
 
+
+import SelectLocationOnMap from "../screen/MainScreen/Home/SelectLocationOnMap/SelectLocationOnMap";
+import GoogleMapSavedPlace from "../screen/MainScreen/Profile/SavedPlace/GoogleMapSavedPlace/GoogleMapSavedPlace"
+
 // Không cần đăng nhập
 const publicRoutes = [
   { name: "Waiting", component: Waiting, header: false },
@@ -52,6 +56,13 @@ const publicRoutes = [
     name: "SearchLocation",
     component: SearchLocation,
     header: false,
+    animation: "fade",
+  },
+  {
+    name: "SelectLocationOnMap",
+    component: SelectLocationOnMap,
+    header: false,
+    title: "Chọn vị trí",
     animation: "fade",
   },
   { name: "GoogleMap", component: GoogleMap, header: false },
@@ -89,6 +100,13 @@ const publicRoutes = [
     header: true,
     title: "Địa điểm cần lưu",
   },
+  {
+    name: "GoogleMapSavedPlace",
+    component: GoogleMapSavedPlace,
+    header: false,
+    
+  },
+
   { name: "ChangePassword", component: ChangePassword, header: false },
   { name: "Support", component: Support, header: false },
 ];

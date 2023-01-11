@@ -45,6 +45,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
   },
+  map:{
+    position:"absolute",
+    height:1,
+    width:1,
+  }
 });
 
 export default styles;

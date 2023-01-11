@@ -1,6 +1,5 @@
-import styles from "./stylesGoogleMapSavedPlace";
-import stylesGlobal from "../../../../../global/stylesGlobal";
-
+import styles from "./stylesSelectLocationOnMap";
+import stylesGlobal from "../../../../global/stylesGlobal";
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   StyleSheet,
@@ -16,12 +15,16 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Geocoder from "react-native-geocoding";
 import * as Location from "expo-location";
 
-import { GOOGLE_API_KEY } from "../../../../../global/keyGG";
-import MyButton from "../../../../../components/MyButton/MyButton";
+import { GOOGLE_API_KEY } from "../../../../global/keyGG";
+import MyButton from "../../../../components/MyButton/MyButton";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
-export default function GoogleMapSavedPlace() {
+export default function SelectLocationOnMap() {
   const mapRef = useRef();
   const navigation = useNavigation();
+
+  const route = useRoute();
+  const { noiLayHang, addressFrom } = route.params;
 
   const { width, height } = Dimensions.get("window");
   const ASPECT_RATIO = width / height;
@@ -42,15 +45,27 @@ export default function GoogleMapSavedPlace() {
     });
     Geocoder.from(camera.center)
       .then((json) => {
+        console.log(json.results[0].formatted_address);
+        let checkLocation = json.results[0].formatted_address.split(" ");
+        if (checkLocation[checkLocation.length - 1] != "Vietnam") {
+          alert("Vị trí bạn chọn không được hỗ trợ vận chuyển");
+          return;
+        }
         let addressSelected = {
           latitude: camera.center.latitude || 0,
           longitude: camera.center.longitude || 0,
           address: json.results[0].formatted_address,
         };
-
-        navigation.navigate("FormSavedPlace", {
-          addressSelected: addressSelected,
-        });
+        if (noiLayHang) {
+          navigation.navigate("NewOrder", {
+            addressRecieve: addressSelected,
+          });
+        } else {
+          navigation.navigate("GoogleMap", {
+            addressRecieve: addressFrom,
+            addressDelivery: addressSelected,
+          });
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -71,7 +86,7 @@ export default function GoogleMapSavedPlace() {
       />
 
       <Image
-        source={require("../../../../../assets/images/iconLocation.png")}
+        source={require("../../../../assets/images/iconLocation.png")}
         style={styles.marker}
       ></Image>
 

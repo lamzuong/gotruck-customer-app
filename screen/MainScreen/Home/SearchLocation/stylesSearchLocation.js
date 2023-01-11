@@ -8,16 +8,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
+    paddingTop: 15,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    height: 55,
-    paddingHorizontal: 18,
-    borderBottomWidth: 1,
-    borderColor: stylesGlobal.lightDarkGrey,
+    // alignItems: "center",
   },
   viewInput: {
     flexDirection: "row",
@@ -33,15 +31,21 @@ const styles = StyleSheet.create({
   buttonFooter: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-end",
     height: 45,
     width: "100%",
     borderTopWidth: 1,
+    bottom: 15,
     borderColor: stylesGlobal.lightDarkGrey,
   },
   txtFooter: {
     marginLeft: 10,
     fontSize: 16,
+  },
+
+  input: {
+    borderColor: "#888",
+    borderWidth: 1,
   },
 });
 

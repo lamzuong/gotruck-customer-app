@@ -8,19 +8,26 @@ import ButtonAdd from "../../../../components/ButtonAdd/ButtonAdd";
 
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { TextInput, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Foundation, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ReadMore from "react-native-read-more-text";
 import DropDownPicker from "react-native-dropdown-picker";
+import { useRoute } from "@react-navigation/native";
+
+import { GOOGLE_API_KEY } from "../../../../global/keyGG";
+import { Dimensions } from "react-native";
+import MapViewDirections from "react-native-maps-directions";
+import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+
+import * as Location from "expo-location";
+import Geocoder from "react-native-geocoding";
 
 export default function NewOrder({ navigation }) {
-  const [addressFrom, setAddressFrom] = useState(
-    "336/15 Lê Hồng Phong P.12 Q.5 TP. Hồ Chí Minh"
-  );
-  const [addressTo, setAddressTo] = useState(
-    "336/15 Lê Hồng Phong P.12 Q.5 TP. Hồ Chí Minh"
-  );
+  const [addressFrom, setAddressFrom] = useState();
+  // "336/15 Lê Hồng Phong P.12 Q.5 TP. Hồ Chí Minh"
+  const [addressTo, setAddressTo] = useState();
+  // "336/15 Lê Hồng Phong P.12 Q.5 TP. Hồ Chí Minh"
 
   const [openTruck, setOpenTruck] = useState(false);
   const [valueTruck, setValueTruck] = useState(truckTypes[0].value);
@@ -43,9 +50,86 @@ export default function NewOrder({ navigation }) {
     "https://upload.wikimedia.org/wikipedia/vi/f/f8/Nami_face.jpg",
   ]);
 
-  const [distance, setDistance] = useState("14 km");
-  const [time, setTime] = useState("3-5 ngày");
+  const [distance, setDistance] = useState(0);
+  const [time, setTime] = useState(0);
   const [price, setPrice] = useState(1230100);
+  const route = useRoute();
+
+  const mapRef = useRef();
+
+  const { width, height } = Dimensions.get("window");
+  const ASPECT_RATIO = width / height;
+  const LATITUDE_DELTA = 0.02;
+  const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+  let INITIAL_POSITION = {
+    latitude: 10.820685,
+    longitude: 106.687631,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  };
+
+  const traceRouteOnReady = (args) => {
+    if (args) {
+      let distanceTemp = args.distance.toFixed(1);
+      let timeTemp = args.duration.toFixed(1);
+
+      setDistance(distanceTemp);
+      setTime(timeTemp);
+    }
+  };
+
+  const handleGetLocationCurrentAndNavigation = async (
+    navigateToScreen,
+    noiLayHang,
+    addressRecieve
+  ) => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    Geocoder.init(GOOGLE_API_KEY, {
+      language: "vn",
+    });
+    Geocoder.from({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    })
+      .then((json) => {
+        let currentLocation = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          address: json.results[0].formatted_address,
+        };
+        if (noiLayHang) {
+          navigation.navigate(navigateToScreen, {
+            noiLayHang: noiLayHang,
+            currentLocation: currentLocation,
+          });
+        } else {
+          if (!addressFrom) addressRecieve = currentLocation;
+          navigation.navigate(navigateToScreen, {
+            noiLayHang: noiLayHang,
+            currentLocation: currentLocation,
+            addressFrom: addressRecieve,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return;
+      });
+  };
+
+  useEffect(() => {
+    if (route.params) {
+      const { addressRecieve, addressDelivery } = route.params;
+      if (addressRecieve != undefined) setAddressFrom(addressRecieve);
+      if (addressDelivery != undefined) setAddressTo(addressDelivery);
+    }
+  }, [route]);
 
   const renderRowImage = (arr, listImages = [], column = 3) => {
     return (
@@ -71,13 +155,29 @@ export default function NewOrder({ navigation }) {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Dùng để tính thời gian và khoảng cách  */}
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={INITIAL_POSITION}
+      >
+        <MapViewDirections
+          origin={addressFrom}
+          destination={addressTo}
+          apikey={GOOGLE_API_KEY}
+          onReady={traceRouteOnReady}
+          onError={(e) => console.log(e)}
+        />
+      </MapView>
+
       {/* Nơi lấy hàng */}
       <View>
         <Text style={styles.label}>Nơi lấy hàng</Text>
         <Pressable
           style={styles.input}
           onPress={() => {
-            navigation.navigate("SearchLocation");
+            handleGetLocationCurrentAndNavigation("SearchLocation", true, null);
           }}
         >
           <Foundation
@@ -87,7 +187,7 @@ export default function NewOrder({ navigation }) {
             style={{ width: 30 }}
           />
           <ReadMore numberOfLines={1} renderTruncatedFooter={() => null}>
-            <Text style={styles.font18}>{addressFrom}</Text>
+            <Text style={styles.font18}>{addressFrom?.address}</Text>
           </ReadMore>
           <MaterialIcons name="navigate-next" size={24} color="black" />
         </Pressable>
@@ -95,10 +195,15 @@ export default function NewOrder({ navigation }) {
       {/* Giao tới */}
       <View style={{ marginTop: 20 }}>
         <Text style={styles.label}>Giao tới</Text>
+
         <Pressable
           style={styles.input}
           onPress={() => {
-            navigation.navigate("SearchLocation");
+            handleGetLocationCurrentAndNavigation(
+              "SearchLocation",
+              false,
+              addressFrom
+            );
           }}
         >
           <Ionicons
@@ -108,7 +213,7 @@ export default function NewOrder({ navigation }) {
             style={{ width: 30 }}
           />
           <ReadMore numberOfLines={1} renderTruncatedFooter={() => null}>
-            <Text style={styles.font18}>{addressTo}</Text>
+            <Text style={styles.font18}>{addressTo?.address}</Text>
           </ReadMore>
           <MaterialIcons name="navigate-next" size={24} color="black" />
         </Pressable>
@@ -188,11 +293,11 @@ export default function NewOrder({ navigation }) {
       <View style={{ marginTop: 30 }}>
         <View style={stylesGlobal.inlineBetween}>
           <Text style={styles.font18}>Khoảng cách</Text>
-          <Text style={styles.font18}>{distance}</Text>
+          <Text style={styles.font18}>{distance} km</Text>
         </View>
         <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
           <Text style={styles.font18}>Thời gian dự kiến</Text>
-          <Text style={styles.font18}>{time}</Text>
+          <Text style={styles.font18}>{time} phút</Text>
         </View>
         <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
           <Text style={styles.font18}>Phí vận chuyển</Text>

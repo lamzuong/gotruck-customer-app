@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../../../global/stylesGlobal";
-
+import stylesGlobal from "../../../../global/stylesGlobal";
 
 const widthScreen = Dimensions.get("window").width;
 const heightScreen = Dimensions.get("window").height;
@@ -20,16 +19,16 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     position: "absolute",
-    // top: Dimensions.get("window").height / 2.7,
+    top: Dimensions.get("window").height / 2 ,
   },
   chonTrenBanDo: {
     position: "absolute",
     width: "90%",
-    padding:5,
+    padding: 5,
     backgroundColor: "#04AF46",
     borderRadius: 8,
     bottom: 10,
-    alignItems:"center"
+    alignItems: "center",
   },
 });
 
