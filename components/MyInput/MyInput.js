@@ -10,11 +10,14 @@ export default function MyInput({
   showError = true,
   styleError,
   width,
+  height,
   iconLeft,
   iconRight,
   clear = true,
   borderWidth = null,
   borderColor = 'black',
+  multiline = false,
+  numberOfLines = 1,
   onlyBorderBottom = false,
   autoFocus = false,
   initialValue = '',
@@ -27,6 +30,10 @@ export default function MyInput({
     setValueInput('');
     setHideError(true);
   }, [screen]);
+  useEffect(() => {
+    setValueInput(initialValue);
+    setHideError(true);
+  }, [initialValue]);
 
   const [valueInput, setValueInput] = useState(initialValue);
   const [hideError, setHideError] = useState(true);
@@ -56,7 +63,7 @@ export default function MyInput({
       <View
         style={[
           styles.viewInput,
-          { width: width },
+          { width: width, height: height },
           borderWidth
             ? onlyBorderBottom
               ? {
@@ -89,6 +96,8 @@ export default function MyInput({
               }}
               value={valueInput}
               autoFocus={autoFocus}
+              multiline={multiline}
+              numberOfLines={numberOfLines}
             />
           </View>
           {clear

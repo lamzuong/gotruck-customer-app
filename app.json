@@ -4,12 +4,12 @@
     "slug": "gotruck-customer-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-name-green.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/logo-welcome.png",
+    "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/logo-name-green.png",
+      "image": "./assets/images/logo-welcome.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "black"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,12 +22,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo-name-green.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/images/logo-welcome.png",
+        "backgroundColor": "black"
       }
     },
     "web": {
-      "favicon": "./assets/images/logo-name-green.png"
+      "favicon": "./assets/images/logo-welcome.png"
     }
   }
 }

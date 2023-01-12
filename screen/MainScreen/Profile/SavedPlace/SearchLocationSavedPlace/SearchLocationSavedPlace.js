@@ -101,6 +101,9 @@ export default function DiaChiNhanHang() {
             language: 'vn',
             components: 'country:vn',
           }}
+          textInputProps={{
+            autoFocus: true,
+          }}
           predefinedPlaces={viTriHienTai ? [currentLocationUser, DHCongNghiep] : []}
         />
       </View>

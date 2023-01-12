@@ -1,6 +1,6 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import styles from "./stylesMyButton";
+import { Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import styles from './stylesMyButton';
 
 export default function MyButton({
   type,
@@ -13,17 +13,18 @@ export default function MyButton({
   iconRight,
   action,
   disable,
+  style,
   ...props
 }) {
   let typeButton;
   switch (type) {
-    case "small":
+    case 'small':
       typeButton = styles.small;
       break;
-    case "medium":
+    case 'medium':
       typeButton = styles.medium;
       break;
-    case "large":
+    case 'large':
       typeButton = styles.large;
       break;
     default:
@@ -31,10 +32,7 @@ export default function MyButton({
   }
   return disable ? (
     <View
-      style={[
-        typeButton,
-        { backgroundColor: btnColor, borderColor, borderWidth },
-      ]}
+      style={[typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
       onPress={action}
       {...props}
     >
@@ -42,10 +40,7 @@ export default function MyButton({
     </View>
   ) : (
     <TouchableOpacity
-      style={[
-        typeButton,
-        { backgroundColor: btnColor, borderColor, borderWidth },
-      ]}
+      style={[typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
       onPress={action}
       {...props}
     >

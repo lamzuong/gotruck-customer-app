@@ -1,23 +1,16 @@
-import styles from "./stylesSelectLocationOnMap";
-import stylesGlobal from "../../../../global/stylesGlobal";
-import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Text,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import { useRef } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import Geocoder from "react-native-geocoding";
-import * as Location from "expo-location";
+import styles from './stylesSelectLocationOnMap';
+import stylesGlobal from '../../../../global/stylesGlobal';
+import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
+import { useRef } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import Geocoder from 'react-native-geocoding';
+import * as Location from 'expo-location';
 
-import { GOOGLE_API_KEY } from "../../../../global/keyGG";
-import MyButton from "../../../../components/MyButton/MyButton";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import MyButton from '../../../../components/MyButton/MyButton';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 export default function SelectLocationOnMap() {
   const mapRef = useRef();
@@ -26,7 +19,7 @@ export default function SelectLocationOnMap() {
   const route = useRoute();
   const { noiLayHang, addressFrom } = route.params;
 
-  const { width, height } = Dimensions.get("window");
+  const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -41,14 +34,14 @@ export default function SelectLocationOnMap() {
   const handleAddress = async () => {
     const camera = await mapRef.current?.getCamera();
     Geocoder.init(GOOGLE_API_KEY, {
-      language: "vn",
+      language: 'vn',
     });
     Geocoder.from(camera.center)
       .then((json) => {
         console.log(json.results[0].formatted_address);
-        let checkLocation = json.results[0].formatted_address.split(" ");
-        if (checkLocation[checkLocation.length - 1] != "Vietnam") {
-          alert("Vị trí bạn chọn không được hỗ trợ vận chuyển");
+        let checkLocation = json.results[0].formatted_address.split(' ');
+        if (checkLocation[checkLocation.length - 1] != 'Vietnam') {
+          alert('Vị trí bạn chọn không được hỗ trợ vận chuyển');
           return;
         }
         let addressSelected = {
@@ -57,11 +50,11 @@ export default function SelectLocationOnMap() {
           address: json.results[0].formatted_address,
         };
         if (noiLayHang) {
-          navigation.navigate("NewOrder", {
+          navigation.navigate('NewOrder', {
             addressRecieve: addressSelected,
           });
         } else {
-          navigation.navigate("GoogleMap", {
+          navigation.navigate('GoogleMap', {
             addressRecieve: addressFrom,
             addressDelivery: addressSelected,
           });
@@ -85,16 +78,10 @@ export default function SelectLocationOnMap() {
         }}
       />
 
-      <Image
-        source={require("../../../../assets/images/iconLocation.png")}
-        style={styles.marker}
-      ></Image>
+      <Ionicons name="location" size={30} color="red" style={styles.marker} />
 
-      <TouchableOpacity
-        style={styles.chonTrenBanDo}
-        onPress={() => handleAddress()}
-      >
-        <Text style={{ fontSize: 17, color: "white", padding: 5 }}>OK</Text>
+      <TouchableOpacity style={styles.chonTrenBanDo} onPress={() => handleAddress()}>
+        <Text style={{ fontSize: 17, color: 'white', padding: 5 }}>OK</Text>
       </TouchableOpacity>
     </View>
   );
