@@ -10,5 +10,4 @@ const sliceIntoChunks = (arr, chunkSize) => {
   }
   return res;
 };
-
 export { sliceIntoChunks };

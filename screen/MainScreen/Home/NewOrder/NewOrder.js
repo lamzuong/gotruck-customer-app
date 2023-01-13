@@ -276,7 +276,7 @@ export default function NewOrder({ navigation }) {
             color="black"
             style={{ width: 30 }}
           />
-          <Pressable style={{ flexDirection: 'row' }} onPress={() => {}}>
+          <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => {}}>
             <TextInput
               textAlign="right"
               style={[
@@ -291,7 +291,7 @@ export default function NewOrder({ navigation }) {
               value={weight}
               placeholder="VD: 1200"
             />
-            <Text style={[styles.font18, { marginTop: 1 }]}>KG</Text>
+            <Text style={[styles.font18, { marginRight: -70 }]}>KG</Text>
           </Pressable>
         </View>
       </View>
@@ -320,7 +320,7 @@ export default function NewOrder({ navigation }) {
         </View>
       </View>
       {/* Button */}
-      <View style={{ marginTop: 10, marginBottom: 50 }}>
+      <View style={{ marginTop: 10, marginBottom: 50, alignItems: 'center' }}>
         <MyButton
           text={'Tiếp theo'}
           type="large"
