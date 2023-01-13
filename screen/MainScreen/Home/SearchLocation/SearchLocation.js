@@ -20,19 +20,39 @@ import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import { useNavigation, useRoute } from '@react-navigation/native';
 export default function DiaChiNhanHang() {
   const route = useRoute();
-  const { noiLayHang, addressFrom, currentLocation } = route.params;
+  const { noiLayHang, addressFrom, addressTo,currentLocation } = route.params;
+  console.log(currentLocation);
   const navigation = useNavigation();
 
-  const currentLocationUser = {
+  const addressFromUser = {
     description: 'Vị trí hiện tại',
     geometry: {
       location: {
-        lat: currentLocation?.latitude,
-        lng: currentLocation?.longitude,
+        lat: addressFrom?.latitude,
+        lng: addressFrom?.longitude,
       },
     },
   };
-
+  const address = [
+    {
+      name: 'Nguyễn Văn A',
+      phone: '079948511',
+      address: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
+      note: 'Trường Đại học Công Nghiệp TPHCM',
+    },
+    {
+      name: 'Lê Văn B',
+      phone: '091212111',
+      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
+      note: 'Gần nhà sách Cây Gõ',
+    },
+    {
+      name: 'Lê Văn B',
+      phone: '091212111',
+      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
+      note: 'Gần nhà sách Cây Gõ',
+    },
+  ];
   const DHCongNghiep = {
     description: 'Trường Đại học Công nghiệp TPHCM',
     geometry: { location: { lat: 10.820685, lng: 106.687631 } },
@@ -85,7 +105,7 @@ export default function DiaChiNhanHang() {
           textInputProps={{
             autoFocus: true,
           }}
-          predefinedPlaces={[currentLocationUser, DHCongNghiep]}
+          predefinedPlaces={[addressFromUser, DHCongNghiep]}
         />
       </View>
       <ScrollView></ScrollView>

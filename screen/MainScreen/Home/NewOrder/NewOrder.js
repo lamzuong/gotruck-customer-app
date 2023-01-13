@@ -9,7 +9,7 @@ import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 
 import { View, Text, Pressable, ScrollView, BackHandler } from 'react-native';
 import { TextInput, Image } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Foundation, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ReadMore from 'react-native-read-more-text';
@@ -61,6 +61,8 @@ export default function NewOrder({ navigation }) {
   const [distance, setDistance] = useState(0);
   const [time, setTime] = useState(0);
   const [price, setPrice] = useState(1230100);
+  const [currentLocation, setCurrentLocation] = useState();
+
   const route = useRoute();
 
   const mapRef = useRef();
@@ -86,50 +88,37 @@ export default function NewOrder({ navigation }) {
       setTime(timeTemp);
     }
   };
-
-  const handleGetLocationCurrentAndNavigation = async (
-    navigateToScreen,
-    noiLayHang,
-    addressRecieve,
-  ) => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Permission to access location was denied');
-      return;
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    Geocoder.init(GOOGLE_API_KEY, {
-      language: 'vn',
-    });
-    Geocoder.from({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    })
-      .then((json) => {
-        let currentLocation = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          address: json.results[0].formatted_address,
-        };
-        if (noiLayHang) {
-          navigation.navigate(navigateToScreen, {
-            noiLayHang: noiLayHang,
-            currentLocation: currentLocation,
-          });
-        } else {
-          if (!addressFrom) addressRecieve = currentLocation;
-          navigation.navigate(navigateToScreen, {
-            noiLayHang: noiLayHang,
-            currentLocation: currentLocation,
-            addressFrom: addressRecieve,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+  useLayoutEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
         return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      Geocoder.init(GOOGLE_API_KEY, {
+        language: 'vn',
       });
-  };
+      Geocoder.from({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      })
+        .then((json) => {
+          let currentLocationTemp = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            address: json.results[0].formatted_address,
+          };
+          console.log(currentLocationTemp);
+          setCurrentLocation(currentLocationTemp);
+          setAddressFrom(currentLocationTemp);
+        })
+        .catch((error) => {
+          console.log(error);
+          return;
+        });
+    })();
+  }, []);
 
   useEffect(() => {
     if (route.params) {
@@ -183,7 +172,12 @@ export default function NewOrder({ navigation }) {
         <Pressable
           style={[styles.input, styles.input.addition]}
           onPress={() => {
-            handleGetLocationCurrentAndNavigation('SearchLocation', true, null);
+            navigation.navigate('SearchLocation', {
+              noiLayHang: true,
+              addressFrom: addressFrom,
+              addressTo: addressTo,
+              currentLocation: currentLocation,
+            });
           }}
         >
           <View style={stylesGlobal.inline}>
@@ -207,7 +201,12 @@ export default function NewOrder({ navigation }) {
         <Pressable
           style={[styles.input, styles.input.addition]}
           onPress={() => {
-            handleGetLocationCurrentAndNavigation('SearchLocation', false, addressFrom);
+            navigation.navigate('SearchLocation', {
+              noiLayHang: false,
+              addressFrom: addressFrom,
+              addressTo: addressTo,
+              currentLocation: currentLocation,
+            });
           }}
         >
           <View style={stylesGlobal.inline}>
