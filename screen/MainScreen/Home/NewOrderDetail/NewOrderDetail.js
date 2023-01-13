@@ -72,6 +72,7 @@ export default function NewOrderDetail({ route }) {
                   onlyBorderBottom={true}
                   borderWidth={1}
                   borderColor={stylesGlobal.darkGrey}
+                  inputName={true}
                 />
                 <MyInput
                   placeholder={'Số điện thoại'}
@@ -128,6 +129,7 @@ export default function NewOrderDetail({ route }) {
                   onlyBorderBottom={true}
                   borderWidth={1}
                   borderColor={stylesGlobal.darkGrey}
+                  inputName={true}
                 />
                 <MyInput
                   placeholder={'Số điện thoại'}
@@ -163,24 +165,26 @@ export default function NewOrderDetail({ route }) {
       {/* Footer */}
       <View style={styles.footer}>
         {/* Người thanh toán */}
-        <View style={stylesGlobal.inline}>
-          <Text style={{ fontSize: 16, width: 150 }}>Người thanh toán:</Text>
-          <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('send')}>
-            <RadioButton
-              value="send"
-              status={checked === 'send' ? 'checked' : 'unchecked'}
-              onPress={() => setChecked('send')}
-            />
-            <Text>Người gửi</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('receive')}>
-            <RadioButton
-              value="receive"
-              status={checked === 'receive' ? 'checked' : 'unchecked'}
-              onPress={() => setChecked('receive')}
-            />
-            <Text>Người nhận</Text>
-          </TouchableOpacity>
+        <View style={stylesGlobal.inlineBetween}>
+          <Text style={{ fontSize: 16, width: 135 }}>Người thanh toán:</Text>
+          <View style={stylesGlobal.inline}>
+            <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('send')}>
+              <RadioButton
+                value="send"
+                status={checked === 'send' ? 'checked' : 'unchecked'}
+                onPress={() => setChecked('send')}
+              />
+              <Text>Người gửi</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={stylesGlobal.inline} onPress={() => setChecked('receive')}>
+              <RadioButton
+                value="receive"
+                status={checked === 'receive' ? 'checked' : 'unchecked'}
+                onPress={() => setChecked('receive')}
+              />
+              <Text>Người nhận</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         {/* Giá vận chuyển */}
         <View style={stylesGlobal.inlineBetween}>
@@ -189,7 +193,7 @@ export default function NewOrderDetail({ route }) {
             {item.price.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} VNĐ
           </Text>
         </View>
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 10, alignItems: 'center' }}>
           {checkValidF() && checkValidT() ? (
             <MyButton
               type={'large'}

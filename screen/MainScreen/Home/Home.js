@@ -2,13 +2,22 @@ import styles from './stylesHome';
 import stylesGlobal from '../../../global/stylesGlobal';
 import MyButton from '../../../components/MyButton/MyButton';
 import advertise from './data/advertiseNews';
+import { AuthContext } from '../../../context/AuthContext';
+import { getLocationUserNow } from '../../../global/functionGlobal';
 
 import { View, Text, StatusBar, ImageBackground, Image, ScrollView } from 'react-native';
 import { TouchableOpacity, Pressable } from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
+import * as Location from 'expo-location';
+import Geocoder from 'react-native-geocoding';
+import { GOOGLE_API_KEY } from '../../../global/keyGG';
+
 export default function Home({ navigation }) {
+  const { user, locationNow } = useContext(AuthContext);
+  console.log(locationNow);
+
   return (
     <View style={styles.container}>
       <StatusBar />
