@@ -35,11 +35,10 @@ const styles = StyleSheet.create({
   buttonFooter: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    height: 45,
+    alignItems: 'center',
+    height: 50,
     width: '100%',
     borderTopWidth: 1,
-    bottom: 15,
     borderColor: stylesGlobal.lightDarkGrey,
   },
   txtFooter: {

@@ -88,6 +88,11 @@ export default function DiaChiNhanHang() {
           predefinedPlaces={[currentLocationUser, DHCongNghiep]}
         />
       </View>
+      <ScrollView></ScrollView>
+      <Pressable style={styles.buttonFooter} onPress={() => {}}>
+        <Ionicons name="save" size={24} color={stylesGlobal.skyBlue} />
+        <Text style={styles.txtFooter}>Chọn vị trí đã lưu</Text>
+      </Pressable>
       <Pressable
         style={styles.buttonFooter}
         onPress={() => {
