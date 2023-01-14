@@ -34,7 +34,6 @@ export default function MyInput({
     setValueInput(initialValue);
     setHideError(true);
   }, [initialValue]);
-
   const [valueInput, setValueInput] = useState(initialValue);
   const [hideError, setHideError] = useState(true);
 

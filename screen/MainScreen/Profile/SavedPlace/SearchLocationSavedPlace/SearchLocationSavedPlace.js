@@ -10,70 +10,49 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useContext } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Geocoder from 'react-native-geocoding';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import * as Location from 'expo-location';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
+import { AuthContext } from '../../../../../context/AuthContext';
 
 export default function DiaChiNhanHang() {
-  const [viTriHienTai, setViTriHienTai] = useState();
   const navigation = useNavigation();
+  const { locationNow } = useContext(AuthContext);
+  const route = useRoute();
 
-  const currentLocationUser = {
+  const locationNowUser = {
     description: 'Vị trí hiện tại',
     geometry: {
-      location: { lat: viTriHienTai?.latitude, lng: viTriHienTai?.longitude },
+      location: {
+        lat: locationNow?.latitude,
+        lng: locationNow?.longitude,
+      },
     },
   };
 
-  const DHCongNghiep = {
-    description: 'Trường Đại học Công nghiệp TPHCM',
-    geometry: { location: { lat: 10.820685, lng: 106.687631 } },
-  };
-
   const handleAddress = (data, details) => {
+    if (data.description == locationNowUser.description) {
+      data.description = locationNow.address;
+    }
     let addressSelected = {
       latitude: details?.geometry.location.lat || 0,
       longitude: details?.geometry.location.lng || 0,
       address: data.description,
     };
-    navigation.navigate('FormSavedPlace', { addressSelected: addressSelected });
-  };
-
-  useLayoutEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      let location = await Location.getCurrentPositionAsync({});
-      let addressTemp = '';
-      Geocoder.init(GOOGLE_API_KEY, {
-        language: 'vn',
+    if (route.params != undefined) {
+      navigation.navigate('FormSavedPlace', {
+        addressSelected: addressSelected,
+        item: route.params.item,
       });
-      Geocoder.from({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      })
-        .then((json) => {
-          addressTemp = json.results[0].formatted_address;
-
-          let currentLocation = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            address: addressTemp,
-          };
-
-          setViTriHienTai(currentLocation);
-        })
-        .catch((error) => console.log(error));
-    })();
-  }, []);
+    } else
+      navigation.navigate('FormSavedPlace', {
+        addressSelected: addressSelected,
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -104,13 +83,15 @@ export default function DiaChiNhanHang() {
           textInputProps={{
             autoFocus: true,
           }}
-          predefinedPlaces={viTriHienTai ? [currentLocationUser, DHCongNghiep] : []}
+          predefinedPlaces={[locationNowUser]}
         />
       </View>
       <Pressable
         style={styles.buttonFooter}
         onPress={() => {
-          navigation.navigate('GoogleMapSavedPlace');
+          if (route.params != undefined) {
+            navigation.navigate('GoogleMapSavedPlace', { item: route.params.item });
+          } else navigation.navigate('GoogleMapSavedPlace');
         }}
       >
         <Ionicons name="location" size={24} color="red" />

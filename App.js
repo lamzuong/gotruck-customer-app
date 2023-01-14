@@ -13,13 +13,14 @@ export default function App() {
     <AuthContextProvider>
       <NavigationContainer>
         <Stack.Navigator
-        // initialRouteName="MainScreen"
+        initialRouteName="MainScreen"
         >
           {publicRoutes.map((route, index) => {
             return (
               <Stack.Screen
                 name={route.name}
                 component={route.component}
+                
                 options={{
                   headerShown: route.header,
                   animation: route.animation ? route.animation : null,

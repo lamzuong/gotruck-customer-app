@@ -17,7 +17,7 @@ export default function SelectLocationOnMap() {
   const navigation = useNavigation();
 
   const route = useRoute();
-  const { noiLayHang, addressFrom } = route.params;
+  const { noiLayHang, addressTo, addressFrom } = route.params;
 
   const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -38,10 +38,10 @@ export default function SelectLocationOnMap() {
     });
     Geocoder.from(camera.center)
       .then((json) => {
-        console.log(json.results[0].formatted_address);
         let checkLocation = json.results[0].formatted_address.split(' ');
         if (checkLocation[checkLocation.length - 1] != 'Vietnam') {
-          alert('Vị trí bạn chọn không được hỗ trợ vận chuyển');
+          Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+
           return;
         }
         let addressSelected = {
@@ -49,15 +49,27 @@ export default function SelectLocationOnMap() {
           longitude: camera.center.longitude || 0,
           address: json.results[0].formatted_address,
         };
+
         if (noiLayHang) {
-          navigation.navigate('NewOrder', {
-            addressRecieve: addressSelected,
-          });
+          if (addressTo)
+            navigation.navigate('GoogleMap', {
+              addressRecieve: addressSelected,
+              addressDelivery: addressTo,
+            });
+          else
+            navigation.navigate('NewOrder', {
+              addressRecieve: addressSelected,
+            });
         } else {
-          navigation.navigate('GoogleMap', {
-            addressRecieve: addressFrom,
-            addressDelivery: addressSelected,
-          });
+          if (addressFrom)
+            navigation.navigate('GoogleMap', {
+              addressRecieve: addressFrom,
+              addressDelivery: addressSelected,
+            });
+          else
+            navigation.navigate('NewOrder', {
+              addressDelivery: addressSelected,
+            });
         }
       })
       .catch((error) => console.log(error));

@@ -2,19 +2,18 @@ import styles from './stylesGoogleMapSavedPlace';
 import stylesGlobal from '../../../../../global/stylesGlobal';
 
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Geocoder from 'react-native-geocoding';
-import * as Location from 'expo-location';
 
 import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
-import MyButton from '../../../../../components/MyButton/MyButton';
 
 export default function GoogleMapSavedPlace() {
   const mapRef = useRef();
   const navigation = useNavigation();
+  const route = useRoute();
 
   const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
@@ -35,15 +34,27 @@ export default function GoogleMapSavedPlace() {
     });
     Geocoder.from(camera.center)
       .then((json) => {
+        let checkLocation = json.results[0].formatted_address.split(' ');
+        if (checkLocation[checkLocation.length - 1] != 'Vietnam') {
+          Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+          return;
+        }
+
         let addressSelected = {
           latitude: camera.center.latitude || 0,
           longitude: camera.center.longitude || 0,
           address: json.results[0].formatted_address,
         };
 
-        navigation.navigate('FormSavedPlace', {
-          addressSelected: addressSelected,
-        });
+        if (route.params != undefined) {
+          navigation.navigate('FormSavedPlace', {
+            addressSelected: addressSelected,
+            item: route.params.item,
+          });
+        } else
+          navigation.navigate('FormSavedPlace', {
+            addressSelected: addressSelected,
+          });
       })
       .catch((error) => console.log(error));
   };

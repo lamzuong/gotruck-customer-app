@@ -1,24 +1,24 @@
-import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../../global/stylesGlobal";
+import { Dimensions, StyleSheet } from 'react-native';
+import stylesGlobal from '../../../../global/stylesGlobal';
 
-const widthScreen = Dimensions.get("window").width;
-const heightScreen = Dimensions.get("window").height;
+const widthScreen = Dimensions.get('window').width;
+const heightScreen = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   searchContainer: {
-    position: "absolute",
-    width: "90%",
-    backgroundColor: "white",
-    shadowColor: "black",
+    position: 'absolute',
+    width: '90%',
+    backgroundColor: 'white',
+    shadowColor: 'black',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
@@ -28,27 +28,31 @@ const styles = StyleSheet.create({
     top: 20,
   },
   searchContainer2: {
-    position: "absolute",
+    position: 'absolute',
     // width: "90%",
-    backgroundColor: "#228B22",
+    backgroundColor: '#228B22',
     top: 20,
     padding: 8,
     borderRadius: 8,
   },
   input: {
-    borderColor: "#888",
+    borderColor: '#888',
     borderWidth: 1,
   },
   button: {
-    backgroundColor: "#228B22",
+    backgroundColor: '#228B22',
     paddingVertical: 12,
     marginTop: 16,
     borderRadius: 4,
   },
   buttonText: {
-    textAlign: "center",
-    color: "white",
+    textAlign: 'center',
+    color: 'white',
     fontSize: 17,
+  },
+  iconBack: {
+    position: 'absolute',
+    top: 10,
   },
 });
 

@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 50,
   },
+  error: {
+    marginLeft: 10,
+    color: 'red',
+   
+  },
 });
 
 export default styles;

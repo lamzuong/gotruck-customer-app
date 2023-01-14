@@ -16,7 +16,7 @@ import { GOOGLE_API_KEY } from '../../../global/keyGG';
 
 export default function Home({ navigation }) {
   const { user, locationNow } = useContext(AuthContext);
-  console.log(locationNow);
+  console.log("Home.js:"+locationNow.address);
 
   return (
     <View style={styles.container}>

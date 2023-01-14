@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     alignItems: "center",
   },
+
 });
 
 export default styles;

@@ -33,8 +33,13 @@ export const AuthContextProvider = ({ children }) => {
         longitude: location.coords.longitude,
       })
         .then((json) => {
-          setAddress(json.results[0].formatted_address);
-          return json.results[0].formatted_address;
+          let currentLocationTemp = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            address: json.results[0].formatted_address,
+          };
+          setAddress(currentLocationTemp);
+          return currentLocationTemp;
         })
         .catch((error) => {
           console.log(error);
@@ -42,7 +47,7 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     getLocationUserNow();
-  }, [address]);
+  }, []);
   return (
     <AuthContext.Provider
       value={{

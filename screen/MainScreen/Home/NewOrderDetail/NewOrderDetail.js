@@ -56,7 +56,7 @@ export default function NewOrderDetail({ route }) {
               </View>
               {expandFrom ? null : (
                 <Text style={styles.info}>
-                  {valueNameF + '\n' + valuePhoneF + '\n' + item.addressFrom}
+                  {valueNameF + '\n' + valuePhoneF + '\n' + item.addressFrom.address}
                 </Text>
               )}
             </CollapseHeader>
@@ -66,6 +66,7 @@ export default function NewOrderDetail({ route }) {
                   placeholder={'Họ tên'}
                   valid={setValidNameF}
                   value={setValueNameF}
+                  initialValue={item.addressFrom.name}
                   regex={/^[a-zA-Z ]{1,30}$/}
                   error={'Tên không hợp lệ'}
                   styleError={styles.error}
@@ -78,6 +79,7 @@ export default function NewOrderDetail({ route }) {
                   placeholder={'Số điện thoại'}
                   valid={setValidPhoneF}
                   value={setValuePhoneF}
+                  initialValue={item.addressFrom.phone}
                   regex={/^((09|03|07|08|05)([0-9]{8}))$/g}
                   error={'Số điện thoại không hợp lệ'}
                   styleError={styles.error}
@@ -86,7 +88,7 @@ export default function NewOrderDetail({ route }) {
                   borderColor={stylesGlobal.darkGrey}
                 />
                 <View style={styles.input}>
-                  <Text style={styles.address}>{item.addressFrom}</Text>
+                  <Text style={styles.address}>{item.addressFrom.address}</Text>
                 </View>
               </View>
             </CollapseBody>
@@ -113,7 +115,7 @@ export default function NewOrderDetail({ route }) {
               </View>
               {expandTo ? null : (
                 <Text style={styles.info}>
-                  {valueNameT + '\n' + valuePhoneT + '\n' + item.addressTo}
+                  {valueNameT + '\n' + valuePhoneT + '\n' + item.addressTo.address}
                 </Text>
               )}
             </CollapseHeader>
@@ -123,6 +125,7 @@ export default function NewOrderDetail({ route }) {
                   placeholder={'Họ tên'}
                   valid={setValidNameT}
                   value={setValueNameT}
+                  initialValue={item.addressTo.name}
                   regex={/^[a-zA-Z ]{1,30}$/}
                   error={'Tên không hợp lệ'}
                   styleError={styles.error}
@@ -135,6 +138,7 @@ export default function NewOrderDetail({ route }) {
                   placeholder={'Số điện thoại'}
                   valid={setValidPhoneT}
                   value={setValuePhoneT}
+                  initialValue={item.addressTo.phone}
                   regex={/^((09|03|07|08|05)([0-9]{8}))$/g}
                   error={'Số điện thoại không hợp lệ'}
                   styleError={styles.error}
@@ -143,7 +147,7 @@ export default function NewOrderDetail({ route }) {
                   borderColor={stylesGlobal.darkGrey}
                 />
                 <View style={styles.input}>
-                  <Text style={styles.address}>{item.addressTo}</Text>
+                  <Text style={styles.address}>{item.addressTo.address}</Text>
                 </View>
               </View>
             </CollapseBody>

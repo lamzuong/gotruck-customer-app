@@ -1,10 +1,10 @@
-import styles from "./stylesMyAddress";
-import stylesGlobal from "../../global/stylesGlobal";
-import MyButton from "../MyButton/MyButton";
+import styles from './stylesMyAddress';
+import stylesGlobal from '../../global/stylesGlobal';
+import MyButton from '../MyButton/MyButton';
 
-import { View, Text } from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text } from 'react-native';
+import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function MyAddress({ item }) {
   const navigation = useNavigation();
@@ -23,21 +23,16 @@ export default function MyAddress({ item }) {
         <Text style={styles.content}>{item.phone}</Text>
       </View>
       <View style={stylesGlobal.inlineBetween}>
+        <MyButton type={'small'} text="Xóa" btnColor={'red'} txtColor="white" action={() => {}} />
         <MyButton
-          type={"small"}
-          text="Xóa"
-          btnColor={"red"}
-          txtColor="white"
-          action={() => {}}
-        />
-        <MyButton
-          type={"small"}
+          type={'small'}
           text="Sửa"
-          btnColor={"orange"}
+          btnColor={'orange'}
           txtColor="white"
           action={() => {
-            navigation.navigate("FormSavedPlace", {
+            navigation.navigate('FormSavedPlace', {
               item: item,
+          
             });
           }}
         />

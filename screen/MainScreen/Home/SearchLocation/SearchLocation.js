@@ -10,7 +10,7 @@ import {
   ScrollView,
   Pressable,
 } from 'react-native';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useContext } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import Geocoder from 'react-native-geocoding';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -18,61 +18,72 @@ import * as Location from 'expo-location';
 
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { AuthContext } from '../../../../context/AuthContext';
+
 export default function DiaChiNhanHang() {
   const route = useRoute();
-  const { noiLayHang, addressFrom, addressTo,currentLocation } = route.params;
-  console.log(currentLocation);
+  const { noiLayHang, addressFrom, addressTo } = route.params;
   const navigation = useNavigation();
+  const { locationNow } = useContext(AuthContext);
 
-  const addressFromUser = {
+  const locationNowUser = {
     description: 'Vị trí hiện tại',
     geometry: {
       location: {
-        lat: addressFrom?.latitude,
-        lng: addressFrom?.longitude,
+        lat: locationNow?.latitude,
+        lng: locationNow?.longitude,
       },
     },
   };
-  const address = [
-    {
-      name: 'Nguyễn Văn A',
-      phone: '079948511',
-      address: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
-      note: 'Trường Đại học Công Nghiệp TPHCM',
-    },
-    {
-      name: 'Lê Văn B',
-      phone: '091212111',
-      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
-      note: 'Gần nhà sách Cây Gõ',
-    },
-    {
-      name: 'Lê Văn B',
-      phone: '091212111',
-      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
-      note: 'Gần nhà sách Cây Gõ',
-    },
-  ];
   const DHCongNghiep = {
-    description: 'Trường Đại học Công nghiệp TPHCM',
+    description: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
     geometry: { location: { lat: 10.820685, lng: 106.687631 } },
+    name: 'Nguyễn Văn A',
+    phone: '0359224745',
   };
-
+  const NhaSachCayGo = {
+    description: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
+    geometry: { location: { lat: 10.751087765680198, lng: 106.64291057824333 } },
+    name: 'Nguyễn Văn B',
+    phone: '0359434745',
+  };
   const handleAddress = (data, details) => {
+    //convert "Vi tri hien tai" to address
+    if (data.description == locationNowUser.description) {
+      data.description = locationNow.address;
+    }
     let addressSelected = {
       latitude: details?.geometry.location.lat || 0,
       longitude: details?.geometry.location.lng || 0,
       address: data.description,
     };
+    //Neu la vi tri da luu thi them name, phone
+    if (data.phone) {
+      addressSelected.description = data.address;
+      addressSelected.name = data.name;
+      addressSelected.phone = data.phone;
+    }
+ 
     if (noiLayHang) {
-      navigation.navigate('NewOrder', {
-        addressRecieve: addressSelected,
-      });
+      if (addressTo)
+        navigation.navigate('GoogleMap', {
+          addressRecieve: addressSelected,
+          addressDelivery: addressTo,
+        });
+      else
+        navigation.navigate('NewOrder', {
+          addressRecieve: addressSelected,
+        });
     } else {
-      navigation.navigate('GoogleMap', {
-        addressRecieve: addressFrom,
-        addressDelivery: addressSelected,
-      });
+      if (addressFrom)
+        navigation.navigate('GoogleMap', {
+          addressRecieve: addressFrom,
+          addressDelivery: addressSelected,
+        });
+      else
+        navigation.navigate('NewOrder', {
+          addressDelivery: addressSelected,
+        });
     }
   };
 
@@ -105,7 +116,7 @@ export default function DiaChiNhanHang() {
           textInputProps={{
             autoFocus: true,
           }}
-          predefinedPlaces={[addressFromUser, DHCongNghiep]}
+          predefinedPlaces={[locationNowUser, DHCongNghiep, NhaSachCayGo]}
         />
       </View>
       <ScrollView></ScrollView>
@@ -116,12 +127,11 @@ export default function DiaChiNhanHang() {
       <Pressable
         style={styles.buttonFooter}
         onPress={() => {
-          if (noiLayHang) navigation.navigate('SelectLocationOnMap', { noiLayHang: true });
-          else
-            navigation.navigate('SelectLocationOnMap', {
-              noiLayHang: false,
-              addressFrom: addressFrom,
-            });
+          navigation.navigate('SelectLocationOnMap', {
+            noiLayHang: noiLayHang,
+            addressFrom: addressFrom,
+            addressTo: addressTo,
+          });
         }}
       >
         <Ionicons name="location" size={24} color="red" />
