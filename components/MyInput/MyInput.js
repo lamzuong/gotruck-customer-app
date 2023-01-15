@@ -32,7 +32,12 @@ export default function MyInput({
   }, [screen]);
   useEffect(() => {
     setValueInput(initialValue);
-    setHideError(true);
+
+    value(initialValue);
+    if (!validate(initialValue)) callError();
+    else callValid();
+
+    if (initialValue == '') setHideError(true);
   }, [initialValue]);
   const [valueInput, setValueInput] = useState(initialValue);
   const [hideError, setHideError] = useState(true);

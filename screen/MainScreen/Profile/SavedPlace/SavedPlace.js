@@ -11,7 +11,7 @@ export default function SavedPlace({ navigation }) {
     {
       id: 0,
       name: 'Nguyễn Văn A',
-      phone: '079948511',
+      phone: '0791948511',
       address: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
       latitude: 10.820685,
       longitude: 106.687631,
@@ -20,7 +20,7 @@ export default function SavedPlace({ navigation }) {
     {
       id: 1,
       name: 'Lê Văn B',
-      phone: '091212111',
+      phone: '0912112111',
       address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
       latitude: 10.751087765680198,
       longitude: 106.64291057824333,
@@ -52,7 +52,7 @@ export default function SavedPlace({ navigation }) {
   }, []);
   useEffect(() => {
     if (route.params != undefined) {
-      //Khi có server thì Gọi api để setListAddress 
+      //Khi có server thì Gọi api để setListAddress
       const { infoSavePlace } = route.params;
       setListAddress([...listAddress, infoSavePlace]);
     }

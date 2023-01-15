@@ -70,7 +70,7 @@ export default function Login({ navigation }) {
               width={230}
               value={setValueData}
               valid={setValidData}
-              initialValue={'0794861181'}
+              // initialValue={'0794861181'}
               screen={screen}
             />
           </View>
@@ -83,7 +83,7 @@ export default function Login({ navigation }) {
               width={widthScreen - 60}
               value={setValueData}
               valid={setValidData}
-              initialValue={'123456'}
+              // initialValue={'123456'}
               screen={screen}
             />
           </View>

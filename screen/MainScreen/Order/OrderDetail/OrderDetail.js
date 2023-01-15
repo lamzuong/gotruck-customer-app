@@ -26,7 +26,7 @@ export default function OrderDetail({ route, navigation }) {
           <Text style={styles.label}>Mã đơn</Text>
           <Text style={styles.contentHeader}>{order.id}</Text>
         </View>
-        {/* Tàu xế */}
+        {/* Tài xế */}
         <View style={styles.inline}>
           <Text style={styles.label}>Tài xế nhận đơn</Text>
           <Text style={styles.contentHeader}>
