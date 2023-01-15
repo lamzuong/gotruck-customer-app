@@ -77,7 +77,8 @@ export default function SelectLocationOnMap() {
                       '"',
                   );
                   return;
-                } else if (responseJson.status == 'NOT_FOUND') {
+                } else {
+                  // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
                   Alert.alert(
                     'Thông báo',
                     'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
@@ -103,7 +104,6 @@ export default function SelectLocationOnMap() {
             fetch(url)
               .then((response) => response.json())
               .then((responseJson) => {
-                console.log(responseJson.routes[0].legs);
                 if (responseJson.status == 'OK' )
                   navigation.navigate('GoogleMap', {
                     addressRecieve: addressFrom,
@@ -119,7 +119,8 @@ export default function SelectLocationOnMap() {
                       '"',
                   );
                   return;
-                } else if (responseJson.status == 'NOT_FOUND') {
+                } else {
+                  // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
                   Alert.alert(
                     'Thông báo',
                     'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',

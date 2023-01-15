@@ -7,7 +7,7 @@ import MyButton from '../../../../components/MyButton/MyButton';
 import ButtonAdd from '../../../../components/ButtonAdd/ButtonAdd';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 
-import { View, Text, Pressable, ScrollView, BackHandler } from 'react-native';
+import { View, Text, Pressable, ScrollView, BackHandler, Alert } from 'react-native';
 import { TextInput, Image } from 'react-native';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Foundation, MaterialIcons, Ionicons } from '@expo/vector-icons';
@@ -33,14 +33,7 @@ export default function NewOrder({ navigation }) {
   }, []);
   //------------------------------
   const { locationNow } = useContext(AuthContext);
-  // if( locationNow ==""){
-  //   let currentLocationTemp = {
-  //     latitude: 10.820685,
-  //     longitude:  106.687631,
-  //     address: 'Trường Đại học Công nghiệp TPHCM',
-  //   };
-  //   locationNow=currentLocationTemp;
-  // }
+
   const [addressFrom, setAddressFrom] = useState(locationNow);
   const [addressTo, setAddressTo] = useState();
 
@@ -72,8 +65,6 @@ export default function NewOrder({ navigation }) {
   const route = useRoute();
   const mapRef = useRef();
 
- 
-
   const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
@@ -85,7 +76,7 @@ export default function NewOrder({ navigation }) {
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   };
-  
+
   const traceRouteOnReady = (args) => {
     if (args) {
       let distanceTemp = args.distance.toFixed(1);
@@ -137,7 +128,13 @@ export default function NewOrder({ navigation }) {
           destination={addressTo}
           apikey={GOOGLE_API_KEY}
           onReady={traceRouteOnReady}
-          onError={(e) => console.log(e)}
+          onError={(e) => {
+            Alert.alert(
+              'Thông báo',
+              "Lỗi không xác định"
+            );
+            console.log("NewOrder: "+e);
+          }}
         />
       </MapView>
 

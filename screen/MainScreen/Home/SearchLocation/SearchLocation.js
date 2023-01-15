@@ -36,18 +36,7 @@ export default function DiaChiNhanHang() {
       },
     },
   };
-  const DHCongNghiep = {
-    description: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
-    geometry: { location: { lat: 10.820685, lng: 106.687631 } },
-    name: 'Nguyễn Văn A',
-    phone: '0359224745',
-  };
-  const NhaSachCayGo = {
-    description: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
-    geometry: { location: { lat: 10.751087765680198, lng: 106.64291057824333 } },
-    name: 'Nguyễn Văn B',
-    phone: '0359434745',
-  };
+
   const handleAddress = (data, details) => {
     //convert "Vi tri hien tai" to address
     if (data.description == locationNowUser.description) {
@@ -60,7 +49,6 @@ export default function DiaChiNhanHang() {
     };
     //Neu la vi tri da luu thi them name, phone
     if (data.phone) {
-      addressSelected.description = data.address;
       addressSelected.name = data.name;
       addressSelected.phone = data.phone;
     }
@@ -89,7 +77,8 @@ export default function DiaChiNhanHang() {
                   '"',
               );
               return;
-            } else if (responseJson.status == 'NOT_FOUND') {
+            } else {
+              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
               Alert.alert(
                 'Thông báo',
                 'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
@@ -130,7 +119,9 @@ export default function DiaChiNhanHang() {
                   '"',
               );
               return;
-            } else if (responseJson.status == 'NOT_FOUND') {
+
+            } else {
+              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
               Alert.alert(
                 'Thông báo',
                 'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
@@ -178,11 +169,20 @@ export default function DiaChiNhanHang() {
           textInputProps={{
             autoFocus: true,
           }}
-          predefinedPlaces={[locationNowUser, DHCongNghiep, NhaSachCayGo]}
+          predefinedPlaces={[locationNowUser]}
         />
       </View>
       <ScrollView></ScrollView>
-      <Pressable style={styles.buttonFooter} onPress={() => {}}>
+      <Pressable
+        style={styles.buttonFooter}
+        onPress={() => {
+          navigation.navigate('SelectSavedPlace', {
+            noiLayHang: noiLayHang,
+            addressFrom: addressFrom,
+            addressTo: addressTo,
+          });
+        }}
+      >
         <Ionicons name="save" size={24} color={stylesGlobal.skyBlue} />
         <Text style={styles.txtFooter}>Chọn vị trí đã lưu</Text>
       </Pressable>

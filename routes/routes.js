@@ -25,6 +25,7 @@ import FormSupportSent from '../screen/MainScreen/Profile/Support/FormSupportSen
 
 import SelectLocationOnMap from '../screen/MainScreen/Home/SelectLocationOnMap/SelectLocationOnMap';
 import GoogleMapSavedPlace from '../screen/MainScreen/Profile/SavedPlace/GoogleMapSavedPlace/GoogleMapSavedPlace';
+import SelectSavedPlace from "../screen/MainScreen/Home/SelectSavedPlace/SelectSavedPlace"
 
 // Không cần đăng nhập
 const publicRoutes = [
@@ -64,6 +65,14 @@ const publicRoutes = [
     title: 'Chọn vị trí',
     animation: 'fade',
   },
+  {
+    name: 'SelectSavedPlace',
+    component: SelectSavedPlace,
+    header: true,
+    title: 'Chọn vị trí đã lưu',
+    animation: 'fade',
+  },
+  
   { name: 'GoogleMap', component: GoogleMap, header: false },
   { name: 'FinishPage', component: FinishPage, header: false },
 
