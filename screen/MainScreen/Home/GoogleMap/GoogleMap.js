@@ -2,7 +2,7 @@ import styles from './stylesGoogleMap';
 import stylesGlobal from '../../../../global/stylesGlobal';
 
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { View, Dimensions, Text } from 'react-native';
+import { View, Dimensions, Text, Alert } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -83,7 +83,7 @@ export default function GoogleMap() {
             onReady={() => zoomMap()}
             onError={(e) => {
               console.log(e);
-              alert('Vị trí bạn chọn không được hỗ trợ vận chuyển');
+              Alert.alert("Thông báo",'Vị trí bạn chọn không được hỗ trợ vận chuyển');
             }}
           />
         )}

@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Pressable,
+  Alert,
 } from 'react-native';
 import React, { useState, useLayoutEffect, useContext } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
@@ -63,24 +64,85 @@ export default function DiaChiNhanHang() {
       addressSelected.name = data.name;
       addressSelected.phone = data.phone;
     }
- 
     if (noiLayHang) {
-      if (addressTo)
-        navigation.navigate('GoogleMap', {
-          addressRecieve: addressSelected,
-          addressDelivery: addressTo,
-        });
-      else
+      if (addressTo) {
+        if (addressTo.address == addressSelected.address) {
+          Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
+          return;
+        }
+        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressSelected.address}&destination=${addressTo.address}&key=${GOOGLE_API_KEY}&mode=driving`;
+        fetch(url)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if (responseJson.status == 'OK')
+              navigation.navigate('GoogleMap', {
+                addressRecieve: addressSelected,
+                addressDelivery: addressTo,
+              });
+            else if (responseJson.status == 'ZERO_RESULTS') {
+              Alert.alert(
+                'Thông báo',
+                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+                  addressSelected.address +
+                  '" đến "' +
+                  addressTo.address +
+                  '"',
+              );
+              return;
+            } else if (responseJson.status == 'NOT_FOUND') {
+              Alert.alert(
+                'Thông báo',
+                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
+              );
+              return;
+            }
+          })
+          .catch((e) => {
+            console.warn(e);
+            return;
+          });
+      } else
         navigation.navigate('NewOrder', {
           addressRecieve: addressSelected,
         });
     } else {
-      if (addressFrom)
-        navigation.navigate('GoogleMap', {
-          addressRecieve: addressFrom,
-          addressDelivery: addressSelected,
-        });
-      else
+      if (addressFrom) {
+        if (addressFrom.address == addressSelected.address) {
+          Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
+          return;
+        }
+        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressFrom.address}&destination=${addressSelected.address}&key=${GOOGLE_API_KEY}&mode=driving`;
+        fetch(url)
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if (responseJson.status == 'OK')
+              navigation.navigate('GoogleMap', {
+                addressRecieve: addressFrom,
+                addressDelivery: addressSelected,
+              });
+            else if (responseJson.status == 'ZERO_RESULTS') {
+              Alert.alert(
+                'Thông báo',
+                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+                  addressFrom.address +
+                  '" đến "' +
+                  addressSelected.address +
+                  '"',
+              );
+              return;
+            } else if (responseJson.status == 'NOT_FOUND') {
+              Alert.alert(
+                'Thông báo',
+                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
+              );
+              return;
+            }
+          })
+          .catch((e) => {
+            console.warn(e);
+            return;
+          });
+      } else
         navigation.navigate('NewOrder', {
           addressDelivery: addressSelected,
         });
