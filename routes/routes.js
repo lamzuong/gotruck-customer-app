@@ -22,10 +22,11 @@ import Support from '../screen/MainScreen/Profile/Support/Support';
 import Feedback from '../screen/MainScreen/Profile/Support/Feedback/Feedback';
 import Help from '../screen/MainScreen/Profile/Support/Help/Help';
 import FormSupportSent from '../screen/MainScreen/Profile/Support/FormSupportSent/FormSupportSent';
+import FormSupportDetail from '../screen/MainScreen/Profile/Support/FormSupportSent/FormSupportDetail/FormSupportDetail';
 
 import SelectLocationOnMap from '../screen/MainScreen/Home/SelectLocationOnMap/SelectLocationOnMap';
 import GoogleMapSavedPlace from '../screen/MainScreen/Profile/SavedPlace/GoogleMapSavedPlace/GoogleMapSavedPlace';
-import SelectSavedPlace from "../screen/MainScreen/Home/SelectSavedPlace/SelectSavedPlace"
+import SelectSavedPlace from '../screen/MainScreen/Home/SelectSavedPlace/SelectSavedPlace';
 
 // Không cần đăng nhập
 const publicRoutes = [
@@ -72,7 +73,7 @@ const publicRoutes = [
     title: 'Chọn vị trí đã lưu',
     animation: 'fade',
   },
-  
+
   { name: 'GoogleMap', component: GoogleMap, header: false },
   { name: 'FinishPage', component: FinishPage, header: false },
 
@@ -142,6 +143,13 @@ const publicRoutes = [
     component: FormSupportSent,
     header: true,
     title: 'Đơn đã gửi',
+    animation: 'slide_from_right',
+  },
+  {
+    name: 'FormSupportDetail',
+    component: FormSupportDetail,
+    header: true,
+    title: 'Chi tiết đơn hỗ trợ',
     animation: 'slide_from_right',
   },
 ];

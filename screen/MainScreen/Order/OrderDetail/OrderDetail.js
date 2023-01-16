@@ -18,6 +18,7 @@ export default function OrderDetail({ route, navigation }) {
   }, []);
   //------------------------------
   const { order } = route.params;
+  const idShipper = 'SHP2310001';
   return (
     <View style={styles.container}>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
@@ -85,6 +86,20 @@ export default function OrderDetail({ route, navigation }) {
             </Text>
           </View>
         </View>
+        {order.status == 'Đã hủy' ? (
+          <View style={{ paddingBottom: 20 }}>
+            <View style={styles.inline}>
+              <Text style={[styles.label, { width: 120 }]}>Lý do hủy</Text>
+              <Text style={styles.content}>{order.reason}</Text>
+            </View>
+            <View style={styles.inline}>
+              <Text style={[styles.label, { width: 120 }]}>Người hủy</Text>
+              <Text style={styles.content}>
+                {order.idCancel == idShipper ? 'Shipper' : 'Khách hàng'}
+              </Text>
+            </View>
+          </View>
+        ) : null}
       </ScrollView>
       {order.status == 'Chưa nhận' || order.status == 'Đã nhận' ? (
         <View style={styles.viewButton}>

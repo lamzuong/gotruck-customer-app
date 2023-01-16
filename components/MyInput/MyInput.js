@@ -34,8 +34,10 @@ export default function MyInput({
     setValueInput(initialValue);
 
     value(initialValue);
-    if (!validate(initialValue)) callError();
-    else callValid();
+    if (regex) {
+      if (!validate(initialValue)) callError();
+      else callValid();
+    }
 
     if (initialValue == '') setHideError(true);
   }, [initialValue]);
