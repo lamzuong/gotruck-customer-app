@@ -12,7 +12,9 @@ export default function App() {
   return (
     <AuthContextProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MainScreen">
+        <Stack.Navigator 
+        // initialRouteName="MainScreen"
+        >
           {publicRoutes.map((route, index) => {
             return (
               <Stack.Screen

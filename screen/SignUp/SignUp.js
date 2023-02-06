@@ -1,57 +1,117 @@
-import styles from "./stylesSignUp";
-import stylesGlobal from "../../global/stylesGlobal";
-import MyButton from "../../components/MyButton/MyButton";
-import MyInput from "../../components/MyInput/MyInput";
+import styles from './stylesSignUp';
+import stylesGlobal from '../../global/stylesGlobal';
+import MyButton from '../../components/MyButton/MyButton';
+import MyInput from '../../components/MyInput/MyInput';
 
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  Dimensions,
-  BackHandler,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const widthScreen = Dimensions.get("window").width;
-const heightScreen = Dimensions.get("window").height;
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import { firebaseConfig } from '../../config';
+import firebase from 'firebase/compat';
+
+import axiosClient from '../../api/axiosClient';
+
+const widthScreen = Dimensions.get('window').width;
+const heightScreen = Dimensions.get('window').height;
 export default function SignUp({ navigation }) {
   const [screen, setScreen] = useState(1);
+
   const [validData, setValidData] = useState(false);
-  const [valueData, setValueData] = useState("");
+  const [codeOTP, setCodeOTP] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [nameUser, setNameUser] = useState('');
+
+  const [verificationId, setVerificationId] = useState();
 
   const label = [
-    "Vui lòng nhập số điện thoại để tiếp tục",
-    "Nhập mã OTP để tiếp tục",
-    "Nhập họ tên để hoàn tất đăng ký !!",
+    'Vui lòng nhập số điện thoại để tiếp tục',
+    'Nhập mã OTP để tiếp tục',
+    'Nhập họ tên để hoàn tất đăng ký !!',
   ];
   const scrollViewRef = useRef();
 
-  const checkOTP = () => {
-    if (valueData) return true;
-    else return false;
+  const recaptchaVerifier = useRef(null);
+  const sendVerification = async () => {
+    try {
+      const res = await axiosClient.get('/gotruck/auth/checkUser/' + phoneNumber);
+      if (res.phone) {
+        customAlert('Thông báo', 'Số điện thoại này đã được đăng kí!', null);
+      } else {
+        const phoneProvider = new firebase.auth.PhoneAuthProvider();
+        phoneProvider
+          .verifyPhoneNumber('+84' + phoneNumber, recaptchaVerifier.current)
+          .then((result) => {
+            customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
+            setVerificationId(result);
+            nextScreen();
+          })
+          .catch((error) => {
+            console.log(error);
+            // customAlert('Thông báo', 'Lỗi không xác định', null);
+          });
+      }
+    } catch (error) {
+      customAlert('Thông báo', 'Lỗi không xác định', null);
+    }
   };
+
+  const checkOTP = () => {
+    if (codeOTP) {
+      const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, codeOTP);
+      return firebase
+        .auth()
+        .signInWithCredential(credential)
+        .then(() => {
+          nextScreen();
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert('Thông báo', 'Mã OTP không chính xác');
+        });
+    }
+  };
+
+  const saveUser = async () => {
+    try {
+      await axiosClient.post('/gotruck/auth/register', {
+        phone: phoneNumber,
+        name: nameUser,
+      });
+      nextScreen();
+    } catch (error) {
+      customAlert('Thông báo', 'Lỗi không xác định', null);
+    }
+  };
+
   const backScreen = () => {
     setScreen((prev) => prev - 1);
   };
   const nextScreen = () => {
-    setValueData(""), setValidData(false);
+    setValidData(false);
     setScreen((prev) => prev + 1);
   };
   const finishSignUp = () => {
-    navigation.navigate("MainScreen");
+    navigation.navigate('MainScreen');
   };
+
+  const customAlert = (type, message, option) => {
+    Alert.alert(type, message, [
+      {
+        text: 'Xác nhận',
+        style: 'cancel',
+      },
+    ]);
+  };
+
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
-      screen == 1 ? navigation.navigate("Welcome") : backScreen();
+      screen == 1 ? navigation.navigate('Welcome') : backScreen();
       return true;
     };
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
     return () => backHandler.remove();
   }, [screen]);
   //------------------------------
@@ -59,43 +119,38 @@ export default function SignUp({ navigation }) {
     <View style={styles.container}>
       <ScrollView
         ref={scrollViewRef}
-        onContentSizeChange={() =>
-          scrollViewRef.current.scrollToEnd({ animated: true })
-        }
+        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
         onLayout={() => scrollViewRef.current.scrollToEnd({ animated: true })}
       >
         <Image
-          source={require("../../assets/images/logo-name-white.png")}
+          source={require('../../assets/images/logo-name-white.png')}
           style={styles.logoName}
         />
         {screen < 4 ? (
           <>
-            <Text style={styles.txtHeader}>
-              Chào mừng bạn đã đến{"\n"}với GOTRUCK !!
-            </Text>
+            <Text style={styles.txtHeader}>Chào mừng bạn đã đến{'\n'}với GOTRUCK !!</Text>
             <Text style={styles.txtLabel}>{label[screen - 1]}</Text>
           </>
         ) : (
-          <Text style={styles.txtHeader}>
-            Chúc mừng bạn đã đăng ký {"\n"}thành công !!
-          </Text>
+          <Text style={styles.txtHeader}>Chúc mừng bạn đã đăng ký {'\n'}thành công !!</Text>
         )}
 
         {screen == 1 ? (
           <View style={styles.phone}>
             <View style={styles.phone.viewFlagVn}>
               <Image
-                source={require("../../assets/images/flag-vn.jpg")}
+                source={require('../../assets/images/flag-vn.jpg')}
                 style={styles.phone.flagVn}
               />
               <Text style={styles.phone.phoneVn}>+84</Text>
             </View>
             <MyInput
-              placeholder={"Số điện thoại"}
-              error={"Số điện thoại không hợp lệ"}
+              placeholder={'Số điện thoại'}
+              initialValue={'0359434723'}
+              error={'Số điện thoại không hợp lệ'}
               regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
               width={230}
-              value={setValueData}
+              value={setPhoneNumber}
               valid={setValidData}
               screen={screen}
             />
@@ -103,11 +158,11 @@ export default function SignUp({ navigation }) {
         ) : screen == 2 ? (
           <View style={styles.viewNormal}>
             <MyInput
-              placeholder={"Nhập mã OTP"}
-              error={"Mã OTP không hợp lệ"}
+              placeholder={'Nhập mã OTP'}
+              error={'Mã OTP không hợp lệ'}
               regex={/^[0-9]{6}$/g}
               width={widthScreen - 60}
-              value={setValueData}
+              value={setCodeOTP}
               valid={setValidData}
               screen={screen}
             />
@@ -115,11 +170,11 @@ export default function SignUp({ navigation }) {
         ) : screen == 3 ? (
           <View style={styles.viewNormal}>
             <MyInput
-              placeholder={"Nhập họ tên đầy đủ"}
-              error={"Họ tên không hợp lệ"}
+              placeholder={'Nhập họ tên đầy đủ'}
+              error={'Họ tên không hợp lệ'}
               regex={/^[a-zA-Z ]{1,30}$/}
               width={widthScreen - 60}
-              value={setValueData}
+              value={setNameUser}
               valid={setValidData}
               inputName={true}
               screen={screen}
@@ -128,15 +183,11 @@ export default function SignUp({ navigation }) {
         ) : (
           <View style={styles.viewFinish}>
             <Text style={styles.viewFinish.title}>
-              Hãy bắt đầu những đơn hàng đầu tiên nào{"\t\t"}
-              <MaterialCommunityIcons
-                name="truck-fast"
-                size={25}
-                color="white"
-              />
+              Hãy bắt đầu những đơn hàng đầu tiên nào{'\t\t'}
+              <MaterialCommunityIcons name="truck-fast" size={25} color="white" />
             </Text>
             <Image
-              source={require("../../assets/images/logo-truck.png")}
+              source={require('../../assets/images/logo-truck.png')}
               style={styles.viewFinish.logoTruck}
             />
           </View>
@@ -146,17 +197,19 @@ export default function SignUp({ navigation }) {
         {validData || screen == 4 ? (
           <MyButton
             type="large"
-            text={screen == 4 ? "Xác nhận" : "Tiếp tục"}
+            text={screen == 4 ? 'Tiếp tục' : 'Tiếp tục'}
             btnColor="black"
             txtColor="white"
             action={() => {
-              screen == 4
-                ? finishSignUp()
+              screen == 1
+                ? sendVerification()
                 : screen == 2
                 ? checkOTP()
-                  ? nextScreen()
-                  : null // alert error if invalid OTP
-                : nextScreen();
+                : screen == 3
+                ? saveUser()
+                : screen == 4
+                ? finishSignUp()
+                : null;
             }}
           />
         ) : (
@@ -169,6 +222,7 @@ export default function SignUp({ navigation }) {
           />
         )}
       </View>
+      <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
     </View>
   );
 }
