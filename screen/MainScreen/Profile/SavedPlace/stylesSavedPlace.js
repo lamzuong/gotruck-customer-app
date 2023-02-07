@@ -9,6 +9,24 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
   },
+  container2: {
+    flex: 1,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: stylesGlobal.lightDarkGrey,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+  },
+  label: {
+    width: 90,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  content: {
+    width: "70%",
+    fontSize: 16,
+  },
 });
 
 export default styles;

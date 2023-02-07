@@ -4,9 +4,11 @@ import MyInput from '../../../../../components/MyInput/MyInput';
 import MyButton from '../../../../../components/MyButton/MyButton';
 
 import { View, Text, ScrollView, Pressable, BackHandler, Alert } from 'react-native';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import ReadMore from 'react-native-read-more-text';
 import { useRoute } from '@react-navigation/native';
+import axiosClient from '../../../../../api/axiosClient';
+import { AuthContext } from '../../../../../context/AuthContext';
 
 export default function FormSavedPlace({ navigation }) {
   //----------Back Button----------
@@ -28,13 +30,15 @@ export default function FormSavedPlace({ navigation }) {
   const [validName, setValidName] = useState(item ? true : false);
   const [validPhone, setValidPhone] = useState(item ? true : false);
 
+  const { user } = useContext(AuthContext);
+
   useLayoutEffect(() => {
     if (addressSelected != undefined) {
       setAddress(addressSelected.address);
     }
   }, [route]);
 
-  const handleLuuDiaChi = () => {
+  const handleLuuDiaChi = async () => {
     if (validName && validPhone) {
       let infoSavePlace;
       if (addressSelected) {
@@ -44,7 +48,8 @@ export default function FormSavedPlace({ navigation }) {
           longitude: addressSelected.longitude,
           name: name,
           phone: phone,
-          id: item ? item.id : -1,
+          id: item ? item._id : '',
+          id_customer: user._id,
         };
       } else {
         infoSavePlace = {
@@ -53,16 +58,17 @@ export default function FormSavedPlace({ navigation }) {
           longitude: item.longitude,
           name: name,
           phone: phone,
-          id: item ? item.id : -1,
+          id: item ? item._id : '',
+          id_customer: user._id,
         };
       }
+      if (item) {
+        await axiosClient.put('/gotruck/profile/savedplace', infoSavePlace);
+      } else {
+        await axiosClient.post('/gotruck/profile/savedplace', infoSavePlace);
+      }
 
-      //Update nếu infoSavePlace.id >=0 ngược lại create 
-      //navigation bỏ param vì sẽ gọi api ở savedPlace để lấy dữ liệu mới nhất
-
-      navigation.navigate('SavedPlace', {
-        infoSavePlace: infoSavePlace,
-      });
+      navigation.navigate('SavedPlace', { toUseEffectWorking: true });
     } else {
       Alert.alert('Thông báo', 'Thông tin không hợp lệ');
     }
@@ -117,13 +123,25 @@ export default function FormSavedPlace({ navigation }) {
         </View>
       </ScrollView>
       <View style={{ alignItems: 'center', marginVertical: 10 }}>
-        <MyButton
-          type={'large'}
-          btnColor={stylesGlobal.mainGreen}
-          txtColor="white"
-          text={'Lưu địa chỉ'}
-          action={() => handleLuuDiaChi()}
-        />
+        {validName && validPhone ? (
+          <MyButton
+            type={'large'}
+            btnColor={stylesGlobal.mainGreen}
+            txtColor="white"
+            text={'Lưu địa chỉ'}
+            action={() => handleLuuDiaChi()}
+          />
+        ) : (
+          <>
+            <MyButton
+              type={'large'}
+              btnColor={stylesGlobal.lightGreen}
+              txtColor="white"
+              text={'Lưu địa chỉ'}
+              disable={true}
+            />
+          </>
+        )}
       </View>
     </View>
   );
