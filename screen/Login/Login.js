@@ -2,9 +2,17 @@ import styles from './stylesLogin';
 import stylesGlobal from '../../global/stylesGlobal';
 import MyButton from '../../components/MyButton/MyButton';
 
-import { View, Text, Image, ScrollView, Dimensions, BackHandler } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import MyInput from '../../components/MyInput/MyInput';
+
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import { firebaseConfig } from '../../config';
+import firebase from 'firebase/compat';
+
+import axiosClient from '../../api/axiosClient';
+import { AuthContext } from '../../context/AuthContext';
+import { LoginSuccess, LoginStart, LoginFailure } from '../../context/AuthAction';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
@@ -13,18 +21,70 @@ export default function Login({ navigation }) {
   const label = ['Vui lòng nhập số điện thoại để tiếp tục', 'Nhập mã OTP để đăng nhập nào ^^ !!!'];
   const scrollViewRef = useRef();
 
+  const { dispatch, user } = useContext(AuthContext);
+
   const [validData, setValidData] = useState(false);
-  const [valueData, setValueData] = useState('');
+  const [phone, setPhone] = useState('');
+  const [codeOTP, setcodeOTP] = useState('');
+
+  const [verificationId, setVerificationId] = useState();
+
+  const recaptchaVerifier = useRef(null);
+  const sendVerification = async () => {
+    try {
+      const res = await axiosClient.get('/gotruck/auth/user/' + phone);
+      if (!res.phone) {
+        customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
+      } else {
+        const phoneProvider = new firebase.auth.PhoneAuthProvider();
+        phoneProvider
+          .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
+          .then((result) => {
+            // customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
+            setVerificationId(result);
+            nextScreen();
+          })
+          .catch((error) => {
+            console.log(error);
+            // customAlert('Thông báo', 'Lỗi không xác định', null);
+          });
+      }
+    } catch (error) {
+      customAlert('Thông báo', 'Lỗi không xác định', null);
+    }
+  };
 
   const checkOTP = () => {
-    if (valueData) return true;
-    else return false;
+    if (codeOTP) {
+      const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, codeOTP);
+      return firebase
+        .auth()
+        .signInWithCredential(credential)
+        .then(async () => {
+          const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
+          dispatch(LoginSuccess(userLogin));
+          toMainScreen();
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert('Thông báo', 'Mã OTP không chính xác');
+        });
+    }
+  };
+
+  const customAlert = (type, message, option) => {
+    Alert.alert(type, message, [
+      {
+        text: 'Xác nhận',
+        style: 'cancel',
+      },
+    ]);
   };
   const backScreen = () => {
     setScreen((prev) => prev - 1);
   };
   const nextScreen = () => {
-    setValueData(''), setValidData(false);
+     setValidData(false);
     setScreen((prev) => prev + 1);
   };
   const toMainScreen = () => {
@@ -68,9 +128,9 @@ export default function Login({ navigation }) {
               error={'Số điện thoại không hợp lệ'}
               regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
               width={230}
-              value={setValueData}
+              value={setPhone}
               valid={setValidData}
-              // initialValue={'0794861181'}
+              initialValue={'0359434723'}
               screen={screen}
             />
           </View>
@@ -81,9 +141,9 @@ export default function Login({ navigation }) {
               error={'Mã OTP không hợp lệ'}
               regex={/^[0-9]{6}$/g}
               width={widthScreen - 60}
-              value={setValueData}
+              value={setcodeOTP}
               valid={setValidData}
-              // initialValue={'123456'}
+              initialValue={'123789'}
               screen={screen}
             />
           </View>
@@ -97,11 +157,8 @@ export default function Login({ navigation }) {
             btnColor="black"
             txtColor="white"
             action={() => {
-              screen == 2
-                ? checkOTP()
-                  ? toMainScreen()
-                  : null // alert error if invalid OTP
-                : nextScreen();
+              screen == 1 ? sendVerification() : screen == 2 ? checkOTP() : toMainScreen();
+              // alert error if invalid OTP
             }}
           />
         ) : (
@@ -114,6 +171,7 @@ export default function Login({ navigation }) {
           />
         )}
       </View>
+      <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
     </View>
   );
 }

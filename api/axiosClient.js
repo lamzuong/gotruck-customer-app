@@ -23,6 +23,7 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
+   
     throw error;
   }
 );

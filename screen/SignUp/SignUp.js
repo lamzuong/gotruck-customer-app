@@ -4,7 +4,7 @@ import MyButton from '../../components/MyButton/MyButton';
 import MyInput from '../../components/MyInput/MyInput';
 
 import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
@@ -12,6 +12,9 @@ import { firebaseConfig } from '../../config';
 import firebase from 'firebase/compat';
 
 import axiosClient from '../../api/axiosClient';
+import { AuthContext } from '../../context/AuthContext';
+import { LoginSuccess, LoginStart, LoginFailure } from '../../context/AuthAction';
+
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
@@ -24,7 +27,7 @@ export default function SignUp({ navigation }) {
   const [nameUser, setNameUser] = useState('');
 
   const [verificationId, setVerificationId] = useState();
-
+  const { dispatch, user } = useContext(AuthContext);
   const label = [
     'Vui lòng nhập số điện thoại để tiếp tục',
     'Nhập mã OTP để tiếp tục',
@@ -35,7 +38,7 @@ export default function SignUp({ navigation }) {
   const recaptchaVerifier = useRef(null);
   const sendVerification = async () => {
     try {
-      const res = await axiosClient.get('/gotruck/auth/checkUser/' + phoneNumber);
+      const res = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
       if (res.phone) {
         customAlert('Thông báo', 'Số điện thoại này đã được đăng kí!', null);
       } else {
@@ -92,7 +95,9 @@ export default function SignUp({ navigation }) {
     setValidData(false);
     setScreen((prev) => prev + 1);
   };
-  const finishSignUp = () => {
+  const finishSignUp = async () => {
+    const userLogin = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
+    dispatch(LoginSuccess(userLogin));
     navigation.navigate('MainScreen');
   };
 
