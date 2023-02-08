@@ -18,6 +18,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'grey',
   },
+  itemImage: {
+    width: 100,
+    height: 100,
+    borderWidth: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -180,
+  },
+  modalView: {
+    width: '70%',
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 10,
+    position:"absolute",
+    bottom:120
+  },
+  chupanh: {
+    fontSize: 20,
+    paddingVertical: 10,
+  },
 });
 
 export default styles;

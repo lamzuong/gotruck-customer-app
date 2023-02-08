@@ -28,7 +28,7 @@ import { firebaseConfig } from '../../../../config';
 import firebase from 'firebase/compat';
 
 import * as ImagePicker from 'expo-image-picker';
-
+import uuid from 'react-native-uuid';
 const widthScreen = Dimensions.get('window').width;
 export default function EditProfile({ navigation }) {
   //----------Back Button----------
@@ -77,7 +77,7 @@ export default function EditProfile({ navigation }) {
     try {
       const res = await axiosClient.get('/gotruck/auth/user/' + phone);
       if (res.phone) {
-        customAlert('Thông báo', 'Số điện thoại này đã được đăng kí!', null);
+        customAlert('Thông báo', 'Số điện thoại này đã được sử dụng!', null);
       } else {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
@@ -216,7 +216,7 @@ export default function EditProfile({ navigation }) {
       xhr.send(null);
     });
 
-    const ref = firebase.storage().ref().child(phone+".avatar");
+    const ref = firebase.storage().ref().child(uuid.v4());
     const snapshot = await ref.put(blob);
 
     // We're done with the blob, close and release it
