@@ -2,10 +2,13 @@ import styles from './stylesFormSupportSent';
 import MyReport from '../../../../../components/MyReport/MyReport';
 
 import { View, Text, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+
+import axiosClient from '../../../../../api/axiosClient';
+import { AuthContext } from '../../../../../context/AuthContext';
 
 export default function FormSupportSent({ navigation }) {
-  const listReport = [
+  const [listReport, setListReport] = useState([
     {
       id: 'SP2023001',
       subject: 'Đơn hàng',
@@ -45,7 +48,17 @@ export default function FormSupportSent({ navigation }) {
       time: '12-02-2023 5:29 P.M',
       status: 'Đã xử lý',
     },
-  ];
+  ]);
+
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    (async function () {
+      const allFeedBack = await axiosClient.get('gotruck/profile/feedback/' + user._id);
+      setListReport(allFeedBack)
+    }.call(this));
+  });
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>

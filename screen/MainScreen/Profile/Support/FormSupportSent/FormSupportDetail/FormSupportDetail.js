@@ -8,6 +8,15 @@ import React from 'react';
 export default function FormSupportDetail({ route }) {
   const { item } = route.params;
 
+  const formatTime = (time) => {
+    const dt = new Date(time);
+    const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
+
+    return `${padL(dt.getHours())}:${padL(dt.getMinutes())} ${padL(
+      dt.getMonth() + 1,
+    )}/${padL(dt.getDate())}/${dt.getFullYear()}`;
+  };
+
   const renderRowImage = (arr) => {
     return (
       <View style={{ flexDirection: 'row', marginVertical: 10 }}>
@@ -24,15 +33,15 @@ export default function FormSupportDetail({ route }) {
     <View style={styles.container}>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
         {/* Mã đơn */}
-        <View style={styles.inline}>
+        {/* <View style={styles.inline}>
           <Text style={styles.label}>Mã đơn</Text>
           <Text style={styles.content}>{item.id}</Text>
-        </View>
+        </View> */}
         {/* Ngưởi gửi */}
-        <View style={styles.inline}>
+        {/* <View style={styles.inline}>
           <Text style={styles.label}>Mã người gửi</Text>
           <Text style={styles.content}>{item.idSender}</Text>
-        </View>
+        </View> */}
         {/* Trạng thái */}
         <View style={styles.inline}>
           <Text style={styles.label}>Trạng thái</Text>
@@ -44,7 +53,7 @@ export default function FormSupportDetail({ route }) {
           <Text style={styles.content}>{item.subject}</Text>
         </View>
         {/* Ghi chú */}
-        <Text style={[styles.label, { marginTop: 10 }]}>Ghi chú</Text>
+        <Text style={[styles.label, { marginTop: 10 }]}>Nội dung</Text>
         <ScrollView style={styles.viewNote} showsVerticalScrollIndicator={false}>
           <Text style={styles.viewNote.txtNote}>{item.description}</Text>
         </ScrollView>
@@ -62,14 +71,16 @@ export default function FormSupportDetail({ route }) {
           {/* Thời gian gửi */}
           <View style={styles.inline}>
             <Text style={styles.label}>Thời gian gửi</Text>
-            <Text style={styles.content}>{item.time}</Text>
+            <Text style={styles.content}>{formatTime(item.createdAt)}</Text>
           </View>
         </View>
         {/* Hình ảnh */}
         <View style={{ marginTop: 20 }}>
           <Text style={[styles.label, { width: 180 }]}>Hình ảnh minh chứng</Text>
-          {item.images.length > 0 ? (
-            sliceIntoChunks(item.images, 3).map((e, i) => <View key={i}>{renderRowImage(e)}</View>)
+          {item.list_image.length > 0 ? (
+            sliceIntoChunks(item.list_image, 3).map((e, i) => (
+              <View key={i}>{renderRowImage(e)}</View>
+            ))
           ) : (
             <Text style={{ marginTop: 5, fontSize: 18, fontStyle: 'italic' }}>Không có</Text>
           )}

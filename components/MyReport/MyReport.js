@@ -11,10 +11,10 @@ export default function MyReport({ item }) {
   const navigation = useNavigation();
   return (
     <View style={styles.report}>
-      <View style={styles.inline}>
+      {/* <View style={styles.inline}>
         <Text style={[styles.label, styles.label.short]}>Mã đơn</Text>
         <Text style={styles.content}>{item.id}</Text>
-      </View>
+      </View> */}
       <View style={styles.inline}>
         <Text style={[styles.label, styles.label.short]}>Chủ đề</Text>
         <ReadMore
