@@ -8,9 +8,9 @@ import ButtonAdd from '../../../../components/ButtonAdd/ButtonAdd';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 
 import { View, Text, Pressable, ScrollView, BackHandler, Alert } from 'react-native';
-import { TextInput, Image,Modal,TouchableWithoutFeedback,TouchableOpacity } from 'react-native';
+import { TextInput, Image, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Foundation, MaterialIcons, Ionicons,FontAwesome,AntDesign } from '@expo/vector-icons';
+import { Foundation, MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ReadMore from 'react-native-read-more-text';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -24,6 +24,7 @@ import { AuthContext } from '../../../../context/AuthContext';
 
 import AnimatedLoader from 'react-native-animated-loader';
 
+import axiosClient from '../../../../api/axiosClient';
 
 import * as ImagePicker from 'expo-image-picker';
 export default function NewOrder({ navigation }) {
@@ -51,16 +52,18 @@ export default function NewOrder({ navigation }) {
   const [itemsGoods, setItemsGoods] = useState(goodsTypes);
 
   const [weight, setWeight] = useState('');
- 
+
   const [listImage, setListImage] = useState([]);
 
   const [listImageSend, setListImageSend] = useState([]);
 
   const [distance, setDistance] = useState(0);
   const [time, setTime] = useState(0);
-  const [price, setPrice] = useState(1230100);
+  const [price, setPrice] = useState(0);
 
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [feeOfTruckType, setFeeOfTruckType] = useState(0);
 
   const route = useRoute();
   const mapRef = useRef();
@@ -77,15 +80,35 @@ export default function NewOrder({ navigation }) {
     longitudeDelta: LONGITUDE_DELTA,
   };
 
-  const traceRouteOnReady = (args) => {
+  const traceRouteOnReady = async (args) => {
     if (args) {
       let distanceTemp = args.distance.toFixed(1);
       let timeTemp = args.duration.toFixed(1);
 
       setDistance(distanceTemp);
       setTime(timeTemp);
+      setPriceNew(distanceTemp);
     }
   };
+
+  const setPriceNew = async (distanceTemp) => {
+    const transportPrice = await axiosClient.get('gotruck/transportprice/');
+    for (let i = 0; i < transportPrice.length; i++) {
+      if (valueTruck == transportPrice[i].id_truck_type.name) {
+        if (Number(distanceTemp) <= 2 && transportPrice[i].id_distance.distance == '<=2') {
+          setPrice(transportPrice[i].price * Number(distanceTemp));
+        } else if (Number(distanceTemp) > 2 && transportPrice[i].id_distance.distance == '>2') {
+          setPrice(transportPrice[i].price * Number(distanceTemp));
+        }
+      }
+    }
+  };
+  useEffect(() => {
+    (async function () {
+      await setPriceNew(distance);
+    }.call(this));
+  }, [valueTruck]);
+
   useEffect(() => {
     if (route.params) {
       const { addressRecieve, addressDelivery } = route.params;
@@ -144,7 +167,31 @@ export default function NewOrder({ navigation }) {
       setListImage([...listImage, result.assets[0].uri]);
       setListImageSend([...listImageSend, result.assets[0]]);
     } else {
-      console.log("Không có ảnh được chọn");
+      console.log('Không có ảnh được chọn');
+    }
+  };
+
+  const handleContinue = () => {
+    if (addressTo && addressFrom && listImageSend.length > 1) {
+      navigation.navigate('NewOrderDetail', {
+        item: {
+          addressFrom: addressFrom,
+          addressTo: addressTo,
+          truckType: valueTruck,
+          goodType: valueGoods,
+          // weight,
+          listImageSend,
+          time,
+          distance,
+          price,
+        },
+      });
+    } else if (!addressTo) {
+      Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
+    } else if (!addressFrom) {
+      Alert.alert('Thông báo', 'Vui lòng điền nơi giao hàng!');
+    } else if (listImageSend.length < 2 ) {
+      Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
     }
   };
 
@@ -152,56 +199,56 @@ export default function NewOrder({ navigation }) {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Modal để chọn hoặc chụp ảnh */}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                // console.log(1);
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row' }}
-                    onPress={() => {
-                      showImagePicker();
-                      setModalVisible(!modalVisible);
-                    }}
-                  >
-                    <View styles={{ width: '100%' }}>
-                      <FontAwesome
-                        name="image"
-                        size={25}
-                        color="black"
-                        style={{ margin: 10, marginTop: 12 }}
-                      />
-                    </View>
-                    <View styles={{ width: '100%' }}>
-                      <Text style={styles.chupanh}>Chọn ảnh từ thư viện</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row' }}
-                    onPress={() => {
-                      openCamera();
-                      setModalVisible(!modalVisible);
-                    }}
-                  >
-                    <View styles={{ width: '100%' }}>
-                      <AntDesign
-                        name="camera"
-                        size={25}
-                        color="black"
-                        style={{ margin: 10, marginTop: 12 }}
-                      />
-                    </View>
-                    <View>
-                      <Text style={styles.chupanh}>Chụp ảnh</Text>
-                    </View>
-                  </TouchableOpacity>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            // console.log(1);
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={{ flexDirection: 'row' }}
+                onPress={() => {
+                  showImagePicker();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: '100%' }}>
+                  <FontAwesome
+                    name="image"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </Modal>
+                <View styles={{ width: '100%' }}>
+                  <Text style={styles.chupanh}>Chọn ảnh từ thư viện</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flexDirection: 'row' }}
+                onPress={() => {
+                  openCamera();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: '100%' }}>
+                  <AntDesign
+                    name="camera"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.chupanh}>Chụp ảnh</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       {/* Dùng để tính thời gian và khoảng cách  */}
       <MapView
         ref={mapRef}
@@ -386,18 +433,7 @@ export default function NewOrder({ navigation }) {
           btnColor={stylesGlobal.mainGreen}
           txtColor="white"
           action={() => {
-            navigation.navigate('NewOrderDetail', {
-              item: {
-                addressFrom: addressFrom,
-                addressTo: addressTo,
-                truckType: valueTruck,
-                goodType: valueGoods,
-                weight,
-                listImageSend,
-                time,
-                price,
-              },
-            });
+            handleContinue();
           }}
         />
       </View>

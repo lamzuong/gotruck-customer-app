@@ -3,12 +3,18 @@ import stylesGlobal from '../../../../global/stylesGlobal';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
 
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
 import { Collapse, CollapseHeader, CollapseBody } from 'accordion-collapse-react-native';
 import { Foundation, Entypo, Ionicons } from '@expo/vector-icons';
 import { RadioButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+
+import { AuthContext } from '../../../../context/AuthContext';
+import axiosClient from '../../../../api/axiosClient';
+import firebase from 'firebase/compat';
+import uuid from 'react-native-uuid';
+
 
 export default function NewOrderDetail({ route }) {
   const navigation = useNavigation();
@@ -30,7 +36,83 @@ export default function NewOrderDetail({ route }) {
   const [valueNameT, setValueNameT] = useState('');
   const [valuePhoneT, setValuePhoneT] = useState('');
 
+  const [note,setNote]= useState('');
+
+  const {user} = useContext(AuthContext);
+
   const checkValidT = () => validNameT && validPhoneT;
+
+  const handleFinishOrder = async () => {
+
+    var listURLImage = [];
+    // setCheckUpload(true);
+    for (let i = 0; i < item.listImageSend.length; i++) {
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function (e) {
+          console.log(e);
+          reject(new TypeError('Network request failed'));
+        };
+        xhr.responseType = 'blob';
+        xhr.open('GET', item.listImageSend[i].uri, true);
+        xhr.send(null);
+      });
+
+      const ref = firebase.storage().ref().child(uuid.v4());
+      const snapshot = await ref.put(blob);
+
+      // We're done with the blob, close and release it
+      blob.close();
+      const temp = await snapshot.ref.getDownloadURL();
+      listURLImage.push(temp);
+    }
+
+    const order= {
+      id_customer: user._id,
+      payer: checked,
+      from_address:{
+        address: item.addressFrom.address,
+        latitude: item.addressFrom.latitude,
+        longitude: item.addressFrom.longitude,
+        name: valueNameF,
+        phone: valuePhoneF
+      },
+      to_address:{
+        address: item.addressTo.address,
+        latitude: item.addressTo.latitude,
+        longitude: item.addressTo.longitude,
+        name: valueNameT,
+        phone: valuePhoneT,
+      },
+      note:note,
+      status: "Đã gửi",
+      date_create: new Date(),
+      distance: Number(item.distance),
+      total: Number(item.price),
+      duration: Number(item.time),
+      good_type: item.goodType,
+      truck_type: item.truckType,
+      list_image_from: listURLImage
+    };
+
+    try {
+      const check = await axiosClient.post("gotruck/order",order);
+      if (!check) {
+        Alert.alert("Thông báo","Đặt đơn thất bại. Vui lòng thử lại")
+      }
+      else{
+        navigation.navigate("FinishPage");
+      }
+    } catch (error) {
+    
+      Alert.alert("Thông báo","Lỗi không xác định")
+    }
+  
+
+  };
 
   return (
     <View style={styles.container}>
@@ -161,7 +243,10 @@ export default function NewOrderDetail({ route }) {
               style={styles.txtNote}
               placeholder="VD: Trường học, tòa nhà,..."
               multiline={true}
+             
               numberOfLines={99}
+              value={note}
+              onChangeText={(text) => setNote(text)}
             />
           </View>
         </View>
@@ -204,9 +289,7 @@ export default function NewOrderDetail({ route }) {
               btnColor={stylesGlobal.mainGreen}
               txtColor={'white'}
               text="Đặt giao đơn hàng"
-              action={() => {
-                navigation.navigate('FinishPage');
-              }}
+              action={() => handleFinishOrder()}
             />
           ) : (
             <MyButton

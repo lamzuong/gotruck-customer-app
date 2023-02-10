@@ -12,16 +12,16 @@ const INITIAL_STATE = {
   locationNow: null,
 };
 
-INITIAL_STATE.user = {
-  _id: '63e1d1112b67035bb9634dae',
-  name: 'Ngueen TrungQQQQQQ',
-  phone: '0359434723',
-  avatar:
-    'https://firebasestorage.googleapis.com/v0/b/kltn-5be2b.appspot.com/o/800c0432-2e1a-481f-bd77-8940e99206f6?alt=media&token=a7d7e251-b8df-4395-8deb-00122a381100',
-  createdAt: '2023-02-07T11:18:25.961+07:00',
-  updatedAt: '2023-02-08T15:52:12.570+07:00',
-  __v: 0,
-};
+// INITIAL_STATE.user = {
+//   _id: '63e1d1112b67035bb9634dae',
+//   name: 'Ngueen TrungQQQQQQ',
+//   phone: '0359434723',
+//   avatar:
+//     'https://firebasestorage.googleapis.com/v0/b/kltn-5be2b.appspot.com/o/800c0432-2e1a-481f-bd77-8940e99206f6?alt=media&token=a7d7e251-b8df-4395-8deb-00122a381100',
+//   createdAt: '2023-02-07T11:18:25.961+07:00',
+//   updatedAt: '2023-02-08T15:52:12.570+07:00',
+//   __v: 0,
+// };
 
 export const AuthContext = createContext(INITIAL_STATE);
 
