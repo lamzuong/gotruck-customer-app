@@ -8,9 +8,9 @@ import ButtonAdd from '../../../../components/ButtonAdd/ButtonAdd';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 
 import { View, Text, Pressable, ScrollView, BackHandler, Alert } from 'react-native';
-import { TextInput, Image } from 'react-native';
+import { TextInput, Image,Modal,TouchableWithoutFeedback,TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Foundation, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { Foundation, MaterialIcons, Ionicons,FontAwesome,AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ReadMore from 'react-native-read-more-text';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -21,6 +21,11 @@ import MapViewDirections from 'react-native-maps-directions';
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { AuthContext } from '../../../../context/AuthContext';
+
+import AnimatedLoader from 'react-native-animated-loader';
+
+
+import * as ImagePicker from 'expo-image-picker';
 export default function NewOrder({ navigation }) {
   //----------Back Button----------
   useEffect(() => {
@@ -46,21 +51,16 @@ export default function NewOrder({ navigation }) {
   const [itemsGoods, setItemsGoods] = useState(goodsTypes);
 
   const [weight, setWeight] = useState('');
-  const [images, setImages] = useState([
-    'https://hosonhanvat.net/wp-content/uploads/2020/07/chopper-2.jpg',
-    'https://hosonhanvat.net/wp-content/uploads/2020/07/chopper-2.jpg',
-    'https://ecdn.game4v.com/g4v-content/uploads/2020/05/Khoanh-khac-vi-dai-cua-Luffy-0-game4v.png',
-    'https://hosonhanvat.net/wp-content/uploads/2020/07/chopper-2.jpg',
-    // "https://i.pinimg.com/736x/36/f0/48/36f048323e3f06ddce7eb9ec301aaeb2.jpg",
-    // "https://hosonhanvat.net/wp-content/uploads/2020/07/chopper-2.jpg",
-    'https://genk.mediacdn.vn/2019/4/16/photo-1-1555407801845981270262.jpg',
-    'https://genk.mediacdn.vn/2019/4/16/photo-1-1555407801845981270262.jpg',
-    'https://upload.wikimedia.org/wikipedia/vi/f/f8/Nami_face.jpg',
-  ]);
+ 
+  const [listImage, setListImage] = useState([]);
+
+  const [listImageSend, setListImageSend] = useState([]);
 
   const [distance, setDistance] = useState(0);
   const [time, setTime] = useState(0);
   const [price, setPrice] = useState(1230100);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const route = useRoute();
   const mapRef = useRef();
@@ -104,18 +104,104 @@ export default function NewOrder({ navigation }) {
             </View>
           ))}
           {arr[arr.length - 1] == listImages[listImages.length - 1] && arr.length < column ? (
-            <ButtonAdd action={() => {}} />
+            <ButtonAdd action={() => setModalVisible(true)} />
           ) : null}
         </View>
         {arr[arr.length - 1] == listImages[listImages.length - 1] && arr.length == column ? (
-          <ButtonAdd action={() => {}} />
+          <ButtonAdd action={() => setModalVisible(true)} />
         ) : null}
       </View>
     );
   };
 
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
+    if (!result.canceled) {
+      setListImage([...listImage, result.assets[0].uri]);
+      setListImageSend([...listImageSend, result.assets[0]]);
+    }
+  };
+  const showImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      quality: 1,
+      base64: true,
+    });
+    if (!result.canceled) {
+      setListImage([...listImage, result.assets[0].uri]);
+      setListImageSend([...listImageSend, result.assets[0]]);
+    } else {
+      console.log("Không có ảnh được chọn");
+    }
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Modal để chọn hoặc chụp ảnh */}
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                // console.log(1);
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row' }}
+                    onPress={() => {
+                      showImagePicker();
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <View styles={{ width: '100%' }}>
+                      <FontAwesome
+                        name="image"
+                        size={25}
+                        color="black"
+                        style={{ margin: 10, marginTop: 12 }}
+                      />
+                    </View>
+                    <View styles={{ width: '100%' }}>
+                      <Text style={styles.chupanh}>Chọn ảnh từ thư viện</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row' }}
+                    onPress={() => {
+                      openCamera();
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <View styles={{ width: '100%' }}>
+                      <AntDesign
+                        name="camera"
+                        size={25}
+                        color="black"
+                        style={{ margin: 10, marginTop: 12 }}
+                      />
+                    </View>
+                    <View>
+                      <Text style={styles.chupanh}>Chụp ảnh</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
       {/* Dùng để tính thời gian và khoảng cách  */}
       <MapView
         ref={mapRef}
@@ -129,11 +215,8 @@ export default function NewOrder({ navigation }) {
           apikey={GOOGLE_API_KEY}
           onReady={traceRouteOnReady}
           onError={(e) => {
-            Alert.alert(
-              'Thông báo',
-              "Lỗi không xác định"
-            );
-            console.log("NewOrder: "+e);
+            Alert.alert('Thông báo', 'Lỗi không xác định');
+            console.log('NewOrder: ' + e);
           }}
         />
       </MapView>
@@ -237,7 +320,7 @@ export default function NewOrder({ navigation }) {
         </View>
       </View>
       {/* Kích thước, tải trọng hàng hóa */}
-      <View style={{ marginTop: 20 }}>
+      {/* <View style={{ marginTop: 20 }}>
         <Text style={styles.label}>Cân nặng</Text>
         <View style={[styles.input, styles.input.addition]}>
           <MaterialCommunityIcons
@@ -264,13 +347,19 @@ export default function NewOrder({ navigation }) {
             <Text style={[styles.font18, { marginRight: -70 }]}>KG</Text>
           </Pressable>
         </View>
-      </View>
+      </View> */}
       {/* Hình ảnh */}
       <View style={{ marginTop: 20 }}>
         <Text style={styles.label}>Hình ảnh hàng hóa</Text>
-        {sliceIntoChunks(images, 3).map((e, i) => (
-          <View key={i}>{renderRowImage(e, images, 3)}</View>
-        ))}
+        {listImage.length != 0 ? (
+          <>
+            {sliceIntoChunks(listImage, 3).map((e, i) => (
+              <View key={i}>{renderRowImage(e, listImage, 3)}</View>
+            ))}
+          </>
+        ) : (
+          <ButtonAdd action={() => setModalVisible(true)} />
+        )}
       </View>
       {/* Thời gian, chi phí */}
       <View style={{ marginTop: 30 }}>
@@ -304,7 +393,7 @@ export default function NewOrder({ navigation }) {
                 truckType: valueTruck,
                 goodType: valueGoods,
                 weight,
-                images,
+                listImageSend,
                 time,
                 price,
               },

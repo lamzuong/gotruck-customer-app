@@ -8,6 +8,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import MyButton from '../../../../components/MyButton/MyButton';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function GoogleMap() {
   const [origin, setOrigin] = useState();
@@ -51,6 +52,13 @@ export default function GoogleMap() {
   };
   return (
     <View style={styles.container}>
+       <Ionicons
+          style={styles.iconBack}
+          name="arrow-back"
+          size={35}
+          color={stylesGlobal.mainGreen}
+          onPress={() => navigation.goBack()}
+        />
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -62,7 +70,8 @@ export default function GoogleMap() {
         zoomEnabled={true}
       >
         {origin && (
-          <Marker coordinate={origin} description={origin.address} title="Vị trí nhận hàng" />
+          <Marker coordinate={origin} description={origin.address} title="Vị trí nhận hàng" >
+          </Marker>
         )}
         {destination && (
           <Marker

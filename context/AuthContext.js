@@ -12,31 +12,35 @@ const INITIAL_STATE = {
   locationNow: null,
 };
 
-// INITIAL_STATE.user=
-// {
-//   _id: '63e11cca1518b95f6eb8c077',
-//   name: 'bbbbbbb',
-//   phone: '0359434729',
-//   avatar: 'https://firebasestorage.googleapis.com/v0/b/kltn-5be2b.appspot.com/o/defaultAvatar.png?alt=media&token=8b04dd31-d894-4b58-ab60-1dfc9e850cca',
-//   createdAt: '2023-02-06T15:29:14.988+00:00',
-//   updatedAt: '2023-02-06T16:05:46.490+00:00',
-//   __v: 0,
-// }
+INITIAL_STATE.user = {
+  _id: '63e1d1112b67035bb9634dae',
+  name: 'Ngueen TrungQQQQQQ',
+  phone: '0359434723',
+  avatar:
+    'https://firebasestorage.googleapis.com/v0/b/kltn-5be2b.appspot.com/o/800c0432-2e1a-481f-bd77-8940e99206f6?alt=media&token=a7d7e251-b8df-4395-8deb-00122a381100',
+  createdAt: '2023-02-07T11:18:25.961+07:00',
+  updatedAt: '2023-02-08T15:52:12.570+07:00',
+  __v: 0,
+};
 
 export const AuthContext = createContext(INITIAL_STATE);
 
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState({
+    address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
+    latitude: 10.820685,
+    longitude: 106.687631,
+  });
 
   useEffect(() => {
     const getLocationUserNow = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access location was denied');
+        alert('Quyền truy cập vị trí đã bị từ chối');
         return null;
       }
-      let location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({});
       Geocoder.init(GOOGLE_API_KEY, {
         language: 'vn',
       });
@@ -45,7 +49,7 @@ export const AuthContextProvider = ({ children }) => {
         longitude: location.coords.longitude,
       })
         .then((json) => {
-          let currentLocationTemp = {
+          const currentLocationTemp = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             address: json.results[0].formatted_address,

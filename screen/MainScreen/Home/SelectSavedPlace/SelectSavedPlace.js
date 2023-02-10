@@ -7,10 +7,12 @@ import stylesGlobal from '../../../../global/stylesGlobal';
 import MyButton from '../../../../components/MyButton/MyButton';
 
 import { View, Text, ScrollView, BackHandler, TouchableOpacity, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import axiosClient from '../../../../api/axiosClient';
+import { AuthContext } from '../../../../context/AuthContext';
 
 export default function SavedPlace({ navigation }) {
   const address = [
@@ -40,9 +42,10 @@ export default function SavedPlace({ navigation }) {
     },
   ];
 
-  const [listAddress, setListAddress] = useState(address);
+  const [listAddress, setListAddress] = useState([]);
   const route = useRoute();
   const { noiLayHang, addressTo, addressFrom } = route.params;
+  const { user } = useContext(AuthContext);
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
@@ -50,7 +53,16 @@ export default function SavedPlace({ navigation }) {
       return true;
     };
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
     return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      const listsaved = await axiosClient.get('/gotruck/profile/savedplace/' + user._id);
+      if (listsaved.length > 0) setListAddress(listsaved);
+      else setListAddress([]);
+    }.call(this));
   }, []);
   //------------------------------
   const handleAddress = (addressSelected) => {
@@ -145,27 +157,35 @@ export default function SavedPlace({ navigation }) {
   };
   return (
     <ScrollView style={styles.container}>
-      {listAddress.map((item, i) => (
-        <View style={styles.container} key={i}>
-          <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
-            <Text style={styles.label}>Họ tên</Text>
-            <Text style={styles.content}>{item.name}</Text>
-          </View>
-          <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
-            <Text style={styles.label}>Địa chỉ</Text>
-            <Text style={styles.content}>{item.address}</Text>
-          </View>
-          <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
-            <Text style={styles.label}>Điện thoại</Text>
-            <Text style={styles.content}>{item.phone}</Text>
-          </View>
-          <View style={[stylesGlobal.inlineBetween, styles.centerButton]}>
-            <TouchableOpacity style={styles.btnTiepTuc} onPress={() => handleAddress(item)}>
-              <Text style={styles.txtTiepTuc}>Tiếp tục</Text>
-            </TouchableOpacity>
-          </View>
+      {listAddress.length != 0 ? (
+        <>
+          {listAddress.map((item, i) => (
+            <View style={styles.container} key={i}>
+              <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
+                <Text style={styles.label}>Họ tên</Text>
+                <Text style={styles.content}>{item.name}</Text>
+              </View>
+              <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
+                <Text style={styles.label}>Địa chỉ</Text>
+                <Text style={styles.content}>{item.address}</Text>
+              </View>
+              <View style={[stylesGlobal.inline, { marginBottom: 10 }]}>
+                <Text style={styles.label}>Điện thoại</Text>
+                <Text style={styles.content}>{item.phone}</Text>
+              </View>
+              <View style={[stylesGlobal.inlineBetween, styles.centerButton]}>
+                <TouchableOpacity style={styles.btnTiepTuc} onPress={() => handleAddress(item)}>
+                  <Text style={styles.txtTiepTuc}>Tiếp tục</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </>
+      ) : (
+        <View style={styles.viewNoContent}> 
+            <Text style={styles.noContent}>Không có vị trí đã lưu</Text>
         </View>
-      ))}
+      )}
     </ScrollView>
   );
 }

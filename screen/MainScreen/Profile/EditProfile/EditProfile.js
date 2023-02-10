@@ -170,9 +170,11 @@ export default function EditProfile({ navigation }) {
   };
 
   const openCamera = async () => {
+    
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("You've refused to allow this appp to access your camera!");
+      console.log(3);
       return;
     }
     const result = await ImagePicker.launchCameraAsync({

@@ -31,6 +31,12 @@ const styles = StyleSheet.create({
     bottom: 10,
     alignItems:"center"
   },
+  iconBack:{
+    top:20,
+    left:20,
+    zIndex:1,
+    position:"absolute"
+  }
 });
 
 export default styles;

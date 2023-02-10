@@ -1,7 +1,7 @@
 import styles from './stylesSelectLocationOnMap';
 import stylesGlobal from '../../../../global/stylesGlobal';
 import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, Alert, StatusBar } from 'react-native';
 import { useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -24,7 +24,7 @@ export default function SelectLocationOnMap() {
 
   const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
-  const LATITUDE_DELTA = 0.02;
+  const LATITUDE_DELTA = 0.01;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
   let INITIAL_POSITION = {
@@ -42,7 +42,7 @@ export default function SelectLocationOnMap() {
     Geocoder.from(camera.center)
       .then((json) => {
         let checkLocation = json.results[0].formatted_address.split(' ');
-        if (checkLocation[checkLocation.length - 1] != 'Vietnam') {
+        if (checkLocation[checkLocation.length - 1] != 'Vietnam' && checkLocation[checkLocation.length - 1] != 'Nam') {
           Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
           return;
         }
@@ -143,6 +143,14 @@ export default function SelectLocationOnMap() {
 
   return (
     <View style={styles.container}>
+  
+      <Ionicons
+          style={styles.iconBack}
+          name="arrow-back"
+          size={30}
+          color={stylesGlobal.mainGreen}
+          onPress={() => navigation.goBack()}
+        />
       <MapView
         ref={mapRef}
         style={styles.map}

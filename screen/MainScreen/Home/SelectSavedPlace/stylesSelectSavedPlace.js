@@ -42,9 +42,13 @@ const styles = StyleSheet.create({
   txtTiepTuc: {
     color: 'white',
     fontSize: 16,
-    fontWeight:"bold",
+    fontWeight: 'bold',
     marginHorizontal: 5,
   },
+  viewNoContent:{
+   height:heightScreen
+  },
+  noContent: { fontSize: 16, textAlign: 'center',top:heightScreen/3 },
 });
 
 export default styles;

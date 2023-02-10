@@ -35,7 +35,8 @@ export default function GoogleMapSavedPlace() {
     Geocoder.from(camera.center)
       .then((json) => {
         let checkLocation = json.results[0].formatted_address.split(' ');
-        if (checkLocation[checkLocation.length - 1] != 'Vietnam') {
+        if (checkLocation[checkLocation.length - 1] != 'Vietnam' && checkLocation[checkLocation.length - 1] != 'Nam') {
+          console.log(checkLocation);
           Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
           return;
         }
@@ -61,6 +62,13 @@ export default function GoogleMapSavedPlace() {
 
   return (
     <View style={styles.container}>
+       <Ionicons
+          style={styles.iconBack}
+          name="arrow-back"
+          size={30}
+          color={stylesGlobal.mainGreen}
+          onPress={() => navigation.goBack()}
+        />
       <MapView
         ref={mapRef}
         style={styles.map}

@@ -62,7 +62,10 @@ export default function DiaChiNhanHang() {
           name="arrow-back"
           size={25}
           color={stylesGlobal.mainGreen}
-          onPress={() => navigation.goBack()}
+          onPress={() =>{
+            console.log(1);
+            navigation.goBack()
+          }}
         />
 
         <GooglePlacesAutocomplete

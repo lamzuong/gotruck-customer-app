@@ -27,5 +27,10 @@ const types = [
     value: 10,
     icon: icon,
   },
+  {
+    label: "Xe tải trọng trên 10 tấn",
+    value: 11,
+    icon: icon,
+  },
 ];
 export default types;

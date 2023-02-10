@@ -50,6 +50,31 @@ const styles = StyleSheet.create({
     height: 1,
     width: 1,
   },
+  modalView: {
+    width: '70%',
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 10,
+    position:"absolute",
+    bottom:200
+  },
+  chupanh: {
+    fontSize: 20,
+    paddingVertical: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -180,
+  },
 });
 
 export default styles;

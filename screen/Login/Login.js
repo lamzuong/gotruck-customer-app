@@ -36,6 +36,7 @@ export default function Login({ navigation }) {
       if (!res.phone) {
         customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
       } else {
+   
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         phoneProvider
           .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
@@ -50,6 +51,7 @@ export default function Login({ navigation }) {
           });
       }
     } catch (error) {
+      console.log(error);
       customAlert('Thông báo', 'Lỗi không xác định', null);
     }
   };
@@ -84,7 +86,7 @@ export default function Login({ navigation }) {
     setScreen((prev) => prev - 1);
   };
   const nextScreen = () => {
-     setValidData(false);
+    setValidData(false);
     setScreen((prev) => prev + 1);
   };
   const toMainScreen = () => {
@@ -171,7 +173,11 @@ export default function Login({ navigation }) {
           />
         )}
       </View>
-      <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
+      <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifier}
+        firebaseConfig={firebaseConfig}
+  
+      />
     </View>
   );
 }

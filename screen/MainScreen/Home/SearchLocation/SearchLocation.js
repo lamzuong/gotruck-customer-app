@@ -10,6 +10,7 @@ import {
   ScrollView,
   Pressable,
   Alert,
+  StatusBar,
 } from 'react-native';
 import React, { useState, useLayoutEffect, useContext } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons';

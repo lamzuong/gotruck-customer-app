@@ -50,10 +50,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
   },
-  iconBack: {
-    position: 'absolute',
-    top: 10,
-  },
+  iconBack:{
+    top:20,
+    left:20,
+    zIndex:1,
+    position:"absolute"
+  }
 });
 
 export default styles;
