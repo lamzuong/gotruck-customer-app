@@ -1,11 +1,27 @@
 import styles from "./stylesCancelled";
 import MyOrder from "../../../../components/MyOrder/MyOrder";
-import order from "../dataOrder";
+// import order from "../dataOrder";
 
 import { View, Text, FlatList, ScrollView } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from 'react';
+import axiosClient from '../../../../api/axiosClient';
+import { AuthContext } from '../../../../context/AuthContext';
 
 export default function Cancelled() {
+  const [order, setOrder] = useState([]);
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    (async function () {
+      const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
+      if (orderList) {
+        let orderNotShipper = [];
+        orderList.forEach((e) => {
+          if (e.status == 'Đã hủy') orderNotShipper.push(e);
+        });
+        setOrder(orderNotShipper);
+      }
+    }.call(this));
+  }, []);
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {order.map((item, index) =>

@@ -88,11 +88,11 @@ export default function NewOrderDetail({ route }) {
         phone: valuePhoneT,
       },
       note:note,
-      status: "Đã gửi",
+      status: "Chưa nhận",
       date_create: new Date(),
       distance: Number(item.distance),
       total: Number(item.price),
-      duration: Number(item.time),
+      expectedTime: Number(item.time),
       good_type: item.goodType,
       truck_type: item.truckType,
       list_image_from: listURLImage
@@ -104,6 +104,7 @@ export default function NewOrderDetail({ route }) {
         Alert.alert("Thông báo","Đặt đơn thất bại. Vui lòng thử lại")
       }
       else{
+        console.log(1);
         navigation.navigate("FinishPage");
       }
     } catch (error) {

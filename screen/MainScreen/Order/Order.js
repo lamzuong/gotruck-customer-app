@@ -1,14 +1,18 @@
-import styles from "./stylesOrder";
-import stylesGlobal from "../../../global/stylesGlobal";
-import { publicRoutes } from "./routes/routes";
+import styles from './stylesOrder';
+import stylesGlobal from '../../../global/stylesGlobal';
+import { publicRoutes } from './routes/routes';
 
-import { View, Text } from "react-native";
-import React from "react";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { View, Text } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
+import axiosClient from '../../../api/axiosClient';
+import { AuthContext } from '../../../context/AuthContext';
 
 const TopTab = createMaterialTopTabNavigator();
 
 export default function Order() {
+  const { user } = useContext(AuthContext);
   return (
     <>
       <Text style={styles.title}>Đơn hàng</Text>
@@ -23,14 +27,14 @@ export default function Order() {
             height: 2,
           },
           tabBarStyle: {
-            backgroundColor: "#fff",
+            backgroundColor: '#fff',
           },
           tabBarItemStyle: {
-            width: "auto",
-            alignItems: "center",
+            width: 'auto',
+            alignItems: 'center',
           },
           tabBarLabelStyle: {
-            textTransform: "capitalize",
+            textTransform: 'capitalize',
           },
         }}
       >
@@ -41,9 +45,7 @@ export default function Order() {
               component={route.component}
               options={{
                 tabBarLabel: ({ focused }) => (
-                  <Text style={focused ? styles.textFocus : styles.text}>
-                    {route.title}
-                  </Text>
+                  <Text style={focused ? styles.textFocus : styles.text}>{route.title}</Text>
                 ),
               }}
               key={key}

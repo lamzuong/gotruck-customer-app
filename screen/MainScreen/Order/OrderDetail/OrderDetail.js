@@ -25,27 +25,27 @@ export default function OrderDetail({ route, navigation }) {
         {/* Mã đơn */}
         <View style={styles.inline}>
           <Text style={styles.label}>Mã đơn</Text>
-          <Text style={styles.contentHeader}>{order.id}</Text>
+          <Text style={styles.contentHeader}>{order._id}</Text>
         </View>
         {/* Tài xế */}
         <View style={styles.inline}>
           <Text style={styles.label}>Tài xế nhận đơn</Text>
           <Text style={styles.contentHeader}>
-            {order.shipper.id ? (
+            {/* {order.shipper.id ? (
               order.shipper.name
-            ) : (
+            ) : ( */}
               <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-            )}
+            {/* )} */}
           </Text>
         </View>
         <View style={styles.inline}>
           <Text style={styles.label}>Biển số xe</Text>
           <Text style={styles.contentHeader}>
-            {order.shipper.id ? (
+            {/* {order.shipper.id ? (
               order.shipper.numberTruck
-            ) : (
+            ) : ( */}
               <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-            )}
+            {/* )} */}
           </Text>
         </View>
         {/* Ngưởi gửi */}
@@ -54,7 +54,7 @@ export default function OrderDetail({ route, navigation }) {
           <Text style={styles.label}>Người gửi</Text>
         </View>
         <Text style={styles.content}>
-          {order.peopleSend + '\n' + order.from + '\n' + order.phoneSend}
+          {order.from_address.name + '\n' + order.from_address.address + '\n' + order.from_address.phone}
         </Text>
         {/* Người nhận */}
         <View style={[styles.inline, { marginTop: 20 }]}>
@@ -62,7 +62,7 @@ export default function OrderDetail({ route, navigation }) {
           <Text style={styles.label}>Người nhận</Text>
         </View>
         <Text style={styles.content}>
-          {order.peopleReceive + '\n' + order.to + '\n' + order.phoneReceive}
+          {order.to_address.name + '\n' + order.to_address.address + '\n' + order.to_address.phone}
         </Text>
         {/* Ghi chú */}
         <Text style={[styles.label, { marginTop: 20 }]}>Ghi chú</Text>
@@ -73,16 +73,16 @@ export default function OrderDetail({ route, navigation }) {
         <View style={{ marginVertical: 20 }}>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Khoảng cách</Text>
-            <Text style={styles.content}>{order.distance}</Text>
+            <Text style={styles.content}>{order.distance} km</Text>
           </View>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Thời gian dự kiến</Text>
-            <Text style={styles.content}>{order.expectedTime}</Text>
+            <Text style={styles.content}>{order.expectedTime} phút</Text>
           </View>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Chi phí vận chuyển</Text>
             <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-              {order.price.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' đ'}
+              {order.total.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' đ'}
             </Text>
           </View>
         </View>

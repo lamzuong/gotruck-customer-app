@@ -172,7 +172,10 @@ export default function NewOrder({ navigation }) {
   };
 
   const handleContinue = () => {
-    if (addressTo && addressFrom && listImageSend.length > 1) {
+    if (addressTo && addressFrom 
+      // && listImageSend.length > 1 
+      )
+       {
       navigation.navigate('NewOrderDetail', {
         item: {
           addressFrom: addressFrom,
@@ -186,9 +189,9 @@ export default function NewOrder({ navigation }) {
           price,
         },
       });
-    } else if (!addressTo) {
-      Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
     } else if (!addressFrom) {
+      Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
+    } else if (!addressTo) {
       Alert.alert('Thông báo', 'Vui lòng điền nơi giao hàng!');
     } else if (listImageSend.length < 2 ) {
       Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
