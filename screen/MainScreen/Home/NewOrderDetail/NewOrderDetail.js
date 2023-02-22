@@ -63,7 +63,6 @@ export default function NewOrderDetail({ route }) {
 
       const ref = firebase.storage().ref().child(uuid.v4());
       const snapshot = await ref.put(blob);
-
       // We're done with the blob, close and release it
       blob.close();
       const temp = await snapshot.ref.getDownloadURL();

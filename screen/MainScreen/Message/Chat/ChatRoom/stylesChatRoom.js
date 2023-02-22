@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingBottom:10
   },
   itemChat: {
     flexDirection: "row",

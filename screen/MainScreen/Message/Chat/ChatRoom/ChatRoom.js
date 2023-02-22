@@ -2,7 +2,7 @@ import styles from './stylesChatRoom';
 import stylesGlobal from '../../../../../global/stylesGlobal';
 
 import { View, Text, FlatList, Image, TextInput, BackHandler } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../../../../context/AuthContext';
@@ -26,6 +26,7 @@ export default function ChatRoom({ route }) {
   const [mess, setMess] = useState();
   const [listMessage, setListMessage] = useState([]);
 
+  const flatListRef = useRef();
   const navigation = useNavigation();
 
   const exMess = [
@@ -56,23 +57,12 @@ export default function ChatRoom({ route }) {
   ];
 
   const handleMessage = async () => {
-     let messageSend;
-    if (mess == "q") {
-       messageSend = {
-        id_conversation: item._id,
-        message: mess,
-        id_sender: user._id,
-        userSendModel: 'Customer',
-      };
-    }
-    else{
-      messageSend = {
-        id_conversation: item._id,
-        message: mess,
-        id_sender:"63e7a0c9eee5fd9d8a5266ff",
-        userSendModel: 'Shipper',
-      };
-    }
+    const messageSend = {
+      id_conversation: item._id,
+      message: mess,
+      id_sender: user._id,
+      userSendModel: 'Customer',
+    };
 
     await axiosClient.post('gotruck/conversation/message/', {
       ...messageSend,
@@ -112,6 +102,7 @@ export default function ChatRoom({ route }) {
   }
   const getAllMessage = async () => {
     const listMess = await axiosClient.get('gotruck/conversation/message/' + item._id);
+    listMess.reverse();
     setListMessage(listMess);
   };
 
@@ -128,10 +119,18 @@ export default function ChatRoom({ route }) {
       </View>
       <View style={styles.container}>
         <FlatList
+          showsVerticalScrollIndicator={false}
+          inverted={true}
+          ref={flatListRef}
           data={listMessage}
           renderItem={({ item, index }) => {
             return (
               <>
+                {item.userSendModel == 'Customer' ? (
+                  <Text style={styles.time.owner}>{timeSince(new Date(item.createdAt))}</Text>
+                ) : (
+                  <Text style={styles.time.shipper}>{timeSince(new Date(item.createdAt))}</Text>
+                )}
                 <View
                   style={
                     item.userSendModel == 'Customer'
@@ -154,11 +153,6 @@ export default function ChatRoom({ route }) {
                     </View>
                   )}
                 </View>
-                {item.userSendModel == 'Customer' ? (
-                  <Text style={styles.time.owner}>{timeSince(new Date(item.createdAt))}</Text>
-                ) : (
-                  <Text style={styles.time.shipper}>{timeSince(new Date(item.createdAt))}</Text>
-                )}
               </>
             );
           }}

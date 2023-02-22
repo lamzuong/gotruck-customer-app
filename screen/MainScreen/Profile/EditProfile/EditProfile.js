@@ -98,6 +98,7 @@ export default function EditProfile({ navigation }) {
   };
 
   const updateProfile1 = async () => {
+    
     if (phone != phoneInit) {
       Alert.alert(
         'Xác nhận',
@@ -113,8 +114,10 @@ export default function EditProfile({ navigation }) {
       );
     } else {
       if (imageUserNow.uri != user.avatar) {
+       
         uploadFirebaseAndFinishEditProfile(imageUserNow, false);
       } else {
+       
         user.name = name;
         await axiosClient.put('/gotruck/auth/user', {
           ...user,
@@ -204,6 +207,7 @@ export default function EditProfile({ navigation }) {
   };
 
   const uploadFirebaseAndFinishEditProfile = async (imageUpload, phoneChange) => {
+    // console.log(imageUpload.uri);
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -220,18 +224,19 @@ export default function EditProfile({ navigation }) {
 
     const ref = firebase.storage().ref().child(uuid.v4());
     const snapshot = await ref.put(blob);
-
     // We're done with the blob, close and release it
     blob.close();
     snapshot.ref.getDownloadURL().then(async function (downloadURL) {
-      if (phone) {
+      if (phoneChange) {
         user.avatar = downloadURL;
         user.phone = phone;
         user.name = name;
         await axiosClient.put('/gotruck/auth/user/' + phoneInit, {
           ...user,
         });
+        console.log(2);
       } else {
+        console.log(1);
         user.avatar = downloadURL;
         user.name = name;
         await axiosClient.put('/gotruck/auth/user', {

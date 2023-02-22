@@ -173,7 +173,7 @@ export default function NewOrder({ navigation }) {
 
   const handleContinue = () => {
     if (addressTo && addressFrom 
-      // && listImageSend.length > 1 
+      && listImageSend.length > 1 
       )
        {
       navigation.navigate('NewOrderDetail', {

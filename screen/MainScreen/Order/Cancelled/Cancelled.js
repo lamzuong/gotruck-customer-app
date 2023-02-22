@@ -6,10 +6,12 @@ import { View, Text, FlatList, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from 'react';
 import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
+import { useIsFocused } from "@react-navigation/native";
 
 export default function Cancelled() {
   const [order, setOrder] = useState([]);
   const { user } = useContext(AuthContext);
+  const isFocus = useIsFocused()
   useEffect(() => {
     (async function () {
       const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
@@ -21,7 +23,8 @@ export default function Cancelled() {
         setOrder(orderNotShipper);
       }
     }.call(this));
-  }, []);
+    return;
+  }, [isFocus]);
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {order.map((item, index) =>

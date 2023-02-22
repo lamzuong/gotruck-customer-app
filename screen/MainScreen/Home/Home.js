@@ -16,13 +16,22 @@ import { GOOGLE_API_KEY } from '../../../global/keyGG';
 
 export default function Home({ navigation }) {
   const { user, locationNow } = useContext(AuthContext);
-  console.log(locationNow );
+  console.log(locationNow);
   return (
     <View style={styles.container}>
       <StatusBar />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Pressable style={styles.viewInput}>
+          <Pressable
+            style={styles.viewInput}
+            onPressIn={() => {
+              navigation.navigate('SearchLocation', {
+                noiLayHang: false,
+                addressFrom: locationNow,
+                addressTo: null,
+              });
+            }}
+          >
             <AntDesign name="search1" size={24} color="grey" />
             <Text style={styles.txtPlaceholder}>Bạn muốn giao hàng tới đâu ?</Text>
           </Pressable>

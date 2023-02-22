@@ -6,6 +6,7 @@ import React from "react";
 import Swiper from "react-native-swiper";
 
 export default function Welcome({ navigation }) {
+  
   return (
     <View style={styles.container}>
       <StatusBar />

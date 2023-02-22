@@ -31,29 +31,36 @@ export default function Login({ navigation }) {
 
   const recaptchaVerifier = useRef(null);
   const sendVerification = async () => {
-    try {
-      const res = await axiosClient.get('/gotruck/auth/user/' + phone);
-      if (!res.phone) {
-        customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
-      } else {
+
+    //Đăng nhập k xác minh
+    const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
+    console.log(userLogin);
+    dispatch(LoginSuccess(userLogin));
+    toMainScreen();
+
+    // try {
+    //   const res = await axiosClient.get('/gotruck/auth/user/' + phone);
+    //   if (!res.phone) {
+    //     customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
+    //   } else {
    
-        const phoneProvider = new firebase.auth.PhoneAuthProvider();
-        phoneProvider
-          .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
-          .then((result) => {
-            // customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
-            setVerificationId(result);
-            nextScreen();
-          })
-          .catch((error) => {
-            console.log(error);
-            // customAlert('Thông báo', 'Lỗi không xác định', null);
-          });
-      }
-    } catch (error) {
-      console.log(error);
-      customAlert('Thông báo', 'Lỗi không xác định', null);
-    }
+    //     const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    //     phoneProvider
+    //       .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
+    //       .then((result) => {
+    //         // customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
+    //         setVerificationId(result);
+    //         nextScreen();
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //         // customAlert('Thông báo', 'Lỗi không xác định', null);
+    //       });
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   customAlert('Thông báo', 'Lỗi không xác định', null);
+    // }
   };
 
   const checkOTP = () => {
@@ -176,7 +183,6 @@ export default function Login({ navigation }) {
       <FirebaseRecaptchaVerifierModal
         ref={recaptchaVerifier}
         firebaseConfig={firebaseConfig}
-  
       />
     </View>
   );
