@@ -10,7 +10,7 @@ import ReadMore from 'react-native-read-more-text';
 import { AuthContext } from '../../context/AuthContext';
 import axiosClient from '../../api/axiosClient';
 
-export default function MyOrder({ order,btnHuy }) {
+export default function MyOrder({ order, btnHuy }) {
   const { user } = useContext(AuthContext);
 
   const hanldeCancelOrder = async () => {
@@ -27,7 +27,7 @@ export default function MyOrder({ order,btnHuy }) {
           temp.status = 'Đã hủy';
           await axiosClient.put('gotruck/order', { ...temp });
           //Render lại nhưng chưa làm đc
-          btnHuy()
+          btnHuy();
         },
       },
     ]);
@@ -97,6 +97,15 @@ export default function MyOrder({ order,btnHuy }) {
             btnColor={'red'}
             txtColor={'white'}
             action={() => hanldeCancelOrder()}
+          />
+        ) : order.status == 'Đang giao' ? (
+          <MyButton
+            type={'medium'}
+            text={'Xem vị trí shipper'}
+            btnColor={stylesGlobal.mainGreen}
+            txtColor={'white'}
+            style={styles.customerButton}
+            action={() => navigation.navigate('LocationShipper')}
           />
         ) : order.status == 'Đã giao' ? (
           <MyButton

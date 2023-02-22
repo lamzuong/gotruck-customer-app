@@ -10,6 +10,7 @@ import GoogleMap from '../screen/MainScreen/Home/GoogleMap/GoogleMap';
 import FinishPage from '../screen/MainScreen/Home/FinishPage/FinishPage';
 
 import OrderDetail from '../screen/MainScreen/Order/OrderDetail/OrderDetail';
+import LocationShipper from '../screen/MainScreen/Order/Shipping/LocationShipper/LocationShipper';
 
 import ChatRoom from '../screen/MainScreen/Message/Chat/ChatRoom/ChatRoom';
 import InfoDetail from '../screen/MainScreen/Message/Info/InfoDetail/InfoDetail';
@@ -84,6 +85,7 @@ const publicRoutes = [
     header: true,
     title: 'Chi tiết đơn hàng',
   },
+  { name: 'LocationShipper', component: LocationShipper, header: false },
 
   // Screen options in Message
   { name: 'ChatRoom', component: ChatRoom, header: false },
