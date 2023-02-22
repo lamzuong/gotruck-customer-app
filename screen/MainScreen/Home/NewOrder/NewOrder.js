@@ -1,32 +1,39 @@
-import styles from './stylesNewOrder';
-import stylesGlobal from '../../../../global/stylesGlobal';
-import { sliceIntoChunks } from '../../../../global/functionGlobal';
-import truckTypes from '../data/truckTypes';
-import goodsTypes from '../data/goodsTypes';
-import MyButton from '../../../../components/MyButton/MyButton';
 import ButtonAdd from '../../../../components/ButtonAdd/ButtonAdd';
+import MyButton from '../../../../components/MyButton/MyButton';
+import MyInput from '../../../../components/MyInput/MyInput';
+import { sliceIntoChunks } from '../../../../global/functionGlobal';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import stylesGlobal from '../../../../global/stylesGlobal';
+import goodsTypes from '../data/goodsTypes';
+import truckTypes from '../data/truckTypes';
+import styles from './stylesNewOrder';
 
-import { View, Text, Pressable, ScrollView, BackHandler, Alert } from 'react-native';
-import { TextInput, Image, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Foundation, MaterialIcons, Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import ReadMore from 'react-native-read-more-text';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { AntDesign, FontAwesome, Foundation, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
-import { Dimensions } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  BackHandler,
+  Dimensions,
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import ReadMore from 'react-native-read-more-text';
 
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { AuthContext } from '../../../../context/AuthContext';
-
-import AnimatedLoader from 'react-native-animated-loader';
-
 import axiosClient from '../../../../api/axiosClient';
-
 import * as ImagePicker from 'expo-image-picker';
+
 export default function NewOrder({ navigation }) {
   //----------Back Button----------
   useEffect(() => {
@@ -50,6 +57,7 @@ export default function NewOrder({ navigation }) {
   const [openGoods, setOpenGoods] = useState(false);
   const [valueGoods, setValueGoods] = useState(goodsTypes[0].value);
   const [itemsGoods, setItemsGoods] = useState(goodsTypes);
+  const [otherGoods, setOtherGoods] = useState('');
 
   const [weight, setWeight] = useState('');
 
@@ -172,10 +180,7 @@ export default function NewOrder({ navigation }) {
   };
 
   const handleContinue = () => {
-    if (addressTo && addressFrom 
-      && listImageSend.length > 1 
-      )
-       {
+    if (addressTo && addressFrom && listImageSend.length > 1) {
       navigation.navigate('NewOrderDetail', {
         item: {
           addressFrom: addressFrom,
@@ -193,7 +198,7 @@ export default function NewOrder({ navigation }) {
       Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
     } else if (!addressTo) {
       Alert.alert('Thông báo', 'Vui lòng điền nơi giao hàng!');
-    } else if (listImageSend.length < 2 ) {
+    } else if (listImageSend.length < 2) {
       Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
     }
   };
@@ -369,6 +374,15 @@ export default function NewOrder({ navigation }) {
           />
         </View>
       </View>
+      {valueGoods === 'Khác' && (
+        <MyInput
+          value={setOtherGoods}
+          borderWidth={1}
+          onlyBorderBottom={true}
+          placeholder="Nhập tên loại hàng hóa"
+        />
+      )}
+
       {/* Kích thước, tải trọng hàng hóa */}
       {/* <View style={{ marginTop: 20 }}>
         <Text style={styles.label}>Cân nặng</Text>
