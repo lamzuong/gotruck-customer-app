@@ -15,7 +15,6 @@ import axiosClient from '../../../../api/axiosClient';
 import firebase from 'firebase/compat';
 import uuid from 'react-native-uuid';
 
-
 export default function NewOrderDetail({ route }) {
   const navigation = useNavigation();
 
@@ -36,14 +35,13 @@ export default function NewOrderDetail({ route }) {
   const [valueNameT, setValueNameT] = useState('');
   const [valuePhoneT, setValuePhoneT] = useState('');
 
-  const [note,setNote]= useState('');
+  const [note, setNote] = useState('');
 
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const checkValidT = () => validNameT && validPhoneT;
 
   const handleFinishOrder = async () => {
-
     var listURLImage = [];
     // setCheckUpload(true);
     for (let i = 0; i < item.listImageSend.length; i++) {
@@ -69,49 +67,44 @@ export default function NewOrderDetail({ route }) {
       listURLImage.push(temp);
     }
 
-    const order= {
+    const order = {
       id_customer: user._id,
       payer: checked,
-      from_address:{
+      from_address: {
         address: item.addressFrom.address,
         latitude: item.addressFrom.latitude,
         longitude: item.addressFrom.longitude,
         name: valueNameF,
-        phone: valuePhoneF
+        phone: valuePhoneF,
       },
-      to_address:{
+      to_address: {
         address: item.addressTo.address,
         latitude: item.addressTo.latitude,
         longitude: item.addressTo.longitude,
         name: valueNameT,
         phone: valuePhoneT,
       },
-      note:note,
-      status: "Chưa nhận",
+      note: note,
+      status: 'Chưa nhận',
       date_create: new Date(),
       distance: Number(item.distance),
       total: Number(item.price),
       expectedTime: Number(item.time),
       good_type: item.goodType,
       truck_type: item.truckType,
-      list_image_from: listURLImage
+      list_image_from: listURLImage,
     };
 
     try {
-      const check = await axiosClient.post("gotruck/order",order);
+      const check = await axiosClient.post('gotruck/order', order);
       if (!check) {
-        Alert.alert("Thông báo","Đặt đơn thất bại. Vui lòng thử lại")
-      }
-      else{
-        console.log(1);
-        navigation.navigate("FinishPage");
+        Alert.alert('Thông báo', 'Đặt đơn thất bại. Vui lòng thử lại');
+      } else {
+        // navigation.navigate('FinishPage');
       }
     } catch (error) {
-    
-      Alert.alert("Thông báo","Lỗi không xác định")
+      Alert.alert('Thông báo', 'Lỗi không xác định');
     }
-  
-
   };
 
   return (
@@ -243,7 +236,6 @@ export default function NewOrderDetail({ route }) {
               style={styles.txtNote}
               placeholder="VD: Trường học, tòa nhà,..."
               multiline={true}
-             
               numberOfLines={99}
               value={note}
               onChangeText={(text) => setNote(text)}

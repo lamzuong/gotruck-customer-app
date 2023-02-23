@@ -37,7 +37,7 @@ export default function MyOrder({ order, btnHuy }) {
     <View style={styles.order}>
       <View style={styles.inline}>
         <Text style={[styles.label, styles.label.short]}>Mã đơn</Text>
-        <Text style={styles.content}>{order._id}</Text>
+        <Text style={styles.content}>{order.id_order}</Text>
       </View>
       <View style={styles.inline}>
         <Text style={[styles.label, styles.label.short]}>Từ</Text>

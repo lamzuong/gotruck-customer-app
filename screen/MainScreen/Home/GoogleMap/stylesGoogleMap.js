@@ -50,12 +50,30 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
   },
-  iconBack:{
-    top:20,
-    left:20,
-    zIndex:1,
-    position:"absolute"
-  }
+  iconBack: {
+    top: 20,
+    left: 20,
+    zIndex: 1,
+    position: 'absolute',
+  },
+  marker: {
+    textAlign: 'center',
+  },
+  coordinate: {
+    marginHorizontal: 75,
+    backgroundColor: 'white',
+    paddingHorizontal:5,
+    
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });
 
 export default styles;

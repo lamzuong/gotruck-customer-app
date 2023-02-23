@@ -1,19 +1,19 @@
-import styles from './stylesSelectLocationOnMap';
-import stylesGlobal from '../../../../global/stylesGlobal';
-import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, Alert, StatusBar } from 'react-native';
-import { useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRef } from 'react';
+import {
+  Alert,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Geocoder from 'react-native-geocoding';
-
-import { MapDirectionsResponse } from 'react-native-maps-directions';
-import MapViewDirections from 'react-native-maps-directions';
-import * as Location from 'expo-location';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import stylesGlobal from '../../../../global/stylesGlobal';
+import styles from './stylesSelectLocationOnMap';
 
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
-import MyButton from '../../../../components/MyButton/MyButton';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 export default function SelectLocationOnMap() {
   const mapRef = useRef();
@@ -42,7 +42,10 @@ export default function SelectLocationOnMap() {
     Geocoder.from(camera.center)
       .then((json) => {
         let checkLocation = json.results[0].formatted_address.split(' ');
-        if (checkLocation[checkLocation.length - 1] != 'Vietnam' && checkLocation[checkLocation.length - 1] != 'Nam') {
+        if (
+          checkLocation[checkLocation.length - 1] != 'Vietnam' &&
+          checkLocation[checkLocation.length - 1] != 'Nam'
+        ) {
           Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
           return;
         }
@@ -104,7 +107,7 @@ export default function SelectLocationOnMap() {
             fetch(url)
               .then((response) => response.json())
               .then((responseJson) => {
-                if (responseJson.status == 'OK' )
+                if (responseJson.status == 'OK')
                   navigation.navigate('GoogleMap', {
                     addressRecieve: addressFrom,
                     addressDelivery: addressSelected,
@@ -143,14 +146,13 @@ export default function SelectLocationOnMap() {
 
   return (
     <View style={styles.container}>
-  
       <Ionicons
-          style={styles.iconBack}
-          name="arrow-back"
-          size={30}
-          color={stylesGlobal.mainGreen}
-          onPress={() => navigation.goBack()}
-        />
+        style={styles.iconBack}
+        name="arrow-back"
+        size={30}
+        color={stylesGlobal.mainGreen}
+        onPress={() => navigation.goBack()}
+      />
       <MapView
         ref={mapRef}
         style={styles.map}

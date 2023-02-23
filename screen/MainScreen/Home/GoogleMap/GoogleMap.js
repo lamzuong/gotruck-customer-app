@@ -14,6 +14,8 @@ export default function GoogleMap() {
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
   const [showButtonTiepTuc, setshowButtonTiepTuc] = useState(false);
+  const [showDetailOrigin, setshowDetailOrigin] = useState(true);
+  const [showDetailDestination, setshowDetailDestination] = useState(true);
 
   const mapRef = useRef();
   const navigation = useNavigation();
@@ -52,13 +54,13 @@ export default function GoogleMap() {
   };
   return (
     <View style={styles.container}>
-       <Ionicons
-          style={styles.iconBack}
-          name="arrow-back"
-          size={35}
-          color={stylesGlobal.mainGreen}
-          onPress={() => navigation.goBack()}
-        />
+      <Ionicons
+        style={styles.iconBack}
+        name="arrow-back"
+        size={35}
+        color={stylesGlobal.mainGreen}
+        onPress={() => navigation.goBack()}
+      />
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -70,15 +72,36 @@ export default function GoogleMap() {
         zoomEnabled={true}
       >
         {origin && (
-          <Marker coordinate={origin} description={origin.address} title="Vị trí nhận hàng" >
+          <Marker
+            coordinate={origin}
+            onPress={() => {
+              setshowDetailOrigin(!showDetailOrigin);
+            }}
+          >
+            {showDetailOrigin && (
+              <View style={styles.coordinate}>
+                <Text style={styles.title}>Vị trí nhận hàng</Text>
+                <Text style={styles.description}>{origin.address}</Text>
+              </View>
+            )}
+            <Ionicons name="location" size={30} color="red" style={styles.marker} />
           </Marker>
         )}
         {destination && (
           <Marker
             coordinate={destination}
-            description={destination.address}
-            title="Vị trí giao hàng"
-          />
+            onPress={() => {
+              setshowDetailDestination(!showDetailDestination);
+            }}
+          >
+            {showDetailDestination && (
+              <View style={styles.coordinate}>
+                <Text style={styles.title}>Vị trí giao hàng</Text>
+                <Text style={styles.description}>{destination.address}</Text>
+              </View>
+            )}
+            <Ionicons name="location" size={30} color="red" style={styles.marker} />
+          </Marker>
         )}
 
         {origin && destination && (
@@ -92,7 +115,7 @@ export default function GoogleMap() {
             onReady={() => zoomMap()}
             onError={(e) => {
               console.log(e);
-              Alert.alert("Thông báo",'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+              Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
             }}
           />
         )}
