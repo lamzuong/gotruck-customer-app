@@ -14,7 +14,7 @@ import { AuthContext } from '../../../../context/AuthContext';
 import axiosClient from '../../../../api/axiosClient';
 import firebase from 'firebase/compat';
 import uuid from 'react-native-uuid';
-
+import { socketClient } from '../../../../global/socket';
 export default function NewOrderDetail({ route }) {
   const navigation = useNavigation();
 
@@ -96,11 +96,15 @@ export default function NewOrderDetail({ route }) {
     };
 
     try {
-      const check = await axiosClient.post('gotruck/order', order);
-      if (!check) {
+      const odrNew = await axiosClient.post('gotruck/order', order);
+      if (!odrNew) {
         Alert.alert('Thông báo', 'Đặt đơn thất bại. Vui lòng thử lại');
       } else {
-        // navigation.navigate('FinishPage');
+        socketClient.emit('customer-has-new-order', {
+          type_truck: item.truckType,
+          dataOrder: odrNew,
+        });
+        navigation.navigate('FinishPage');
       }
     } catch (error) {
       Alert.alert('Thông báo', 'Lỗi không xác định');

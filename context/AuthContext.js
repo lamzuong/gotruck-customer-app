@@ -8,7 +8,6 @@ import { GOOGLE_API_KEY } from '../global/keyGG';
 
 const INITIAL_STATE = {
   user: null,
-
   locationNow: null,
 };
 
@@ -35,7 +34,7 @@ export const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     const getLocationUserNow = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         alert('Quyền truy cập vị trí đã bị từ chối');
         return null;
@@ -44,23 +43,16 @@ export const AuthContextProvider = ({ children }) => {
       Geocoder.init(GOOGLE_API_KEY, {
         language: 'vn',
       });
-      Geocoder.from({
+      const dataGeocoder = await Geocoder.from({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-      })
-        .then((json) => {
-          const currentLocationTemp = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            address: json.results[0].formatted_address,
-          };
-          setAddress(currentLocationTemp);
-          return currentLocationTemp;
-        })
-        .catch((error) => {
-          console.log(error);
-          return null;
-        });
+      });
+      const data = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        address: dataGeocoder?.results[0].formatted_address,
+      };
+      setAddress(data);
     };
     getLocationUserNow();
   }, []);

@@ -7,6 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
+import { socketClient } from '../../../../global/socket';
 
 export default function HaveShipper() {
   const [order, setOrder] = useState([]);
@@ -19,9 +20,17 @@ export default function HaveShipper() {
       orderList.forEach((e) => {
         if (e.status == 'Đã nhận') orderNotShipper.push(e);
       });
-      setOrder(orderNotShipper);
+      setOrder((prev) => orderNotShipper);
     }
   };
+
+  useEffect(() => {
+    console.log('Have Shipper socket');
+    socketClient.off(user._id + '');
+    socketClient.on(user._id + '', (data) => {
+      handleCancel();
+    });
+  }, []);
 
   useEffect(() => {
     handleCancel();

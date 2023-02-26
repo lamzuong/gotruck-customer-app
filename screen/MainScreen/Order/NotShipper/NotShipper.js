@@ -7,6 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
+import { socketClient } from '../../../../global/socket';
 
 export default function NotShipper() {
   const [order, setOrder] = useState([]);
@@ -23,6 +24,13 @@ export default function NotShipper() {
       setOrder(orderNotShipper);
     }
   };
+  useEffect(() => {
+    console.log('Not Shipper socket');
+    socketClient.off(user._id + '');
+    socketClient.on(user._id + '', (data) => {
+      handleCancel();
+    });
+  }, []);
   
   useEffect(() => {
     handleCancel();
