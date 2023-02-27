@@ -3,15 +3,20 @@ import stylesGlobal from '../../global/stylesGlobal';
 import MyButton from '../MyButton/MyButton';
 
 import { View, Text, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
 import ReadMore from 'react-native-read-more-text';
 
 import { AuthContext } from '../../context/AuthContext';
 import axiosClient from '../../api/axiosClient';
+import { socketClient } from '../../global/socket';
 
 export default function MyOrder({ order, btnHuy }) {
   const { user } = useContext(AuthContext);
+  const isFocus = useIsFocused();
+  const navigation = useNavigation();
+  const [showModalReason, setShowReason] = useState(false);
+  const [reason, setReason] = useState('');
 
   const hanldeCancelOrder = async () => {
     Alert.alert('Xác nhận', 'Bạn chắc chắn muốn hủy đơn?', [
@@ -25,14 +30,32 @@ export default function MyOrder({ order, btnHuy }) {
         onPress: async () => {
           const temp = order;
           temp.status = 'Đã hủy';
-          await axiosClient.put('gotruck/order', { ...temp });
-          //Render lại nhưng chưa làm đc
+          temp.reason_cancel = {
+            user_cancel: 'Customer',
+            content: 'Đơn hàng không hợp lệ',
+          };
+          await axiosClient.put('gotruck/ordershipper/', temp);
           btnHuy();
         },
       },
     ]);
   };
-  const navigation = useNavigation();
+  const handleCancelOrder = async (item) => {
+    item.status = 'Đã hủy';
+    item.reason_cancel = {
+      user_cancel: 'Shipper',
+      content: 'Đơn hàng không hợp lệ',
+    };
+    const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
+    if (resOrderCancel.status === 'Đã hủy') {
+      socketClient.emit('shipper_cancel', resOrderCancel);
+      setListOrderNotify([]);
+      setHaveOrder(false);
+      setShowMessage(false);
+      onSocketReceiveOrder();
+    }
+  };
+
   return (
     <View style={styles.order}>
       <View style={styles.inline}>

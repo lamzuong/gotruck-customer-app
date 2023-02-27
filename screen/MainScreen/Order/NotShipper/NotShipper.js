@@ -12,28 +12,28 @@ import { socketClient } from '../../../../global/socket';
 export default function NotShipper() {
   const [order, setOrder] = useState([]);
   const { user } = useContext(AuthContext);
-  const isFocus = useIsFocused()
+  const isFocus = useIsFocused();
 
   const handleCancel = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (orderList) {
       let orderNotShipper = [];
       orderList.forEach((e) => {
-        if (e.status == 'Chưa nhận') orderNotShipper.push(e);
+        if (e.status == 'Chưa nhận') {
+          orderNotShipper.push(e);
+        }
       });
       setOrder(orderNotShipper);
     }
   };
+
   useEffect(() => {
+    handleCancel();
     console.log('Not Shipper socket');
     socketClient.off(user._id + '');
     socketClient.on(user._id + '', (data) => {
       handleCancel();
     });
-  }, []);
-  
-  useEffect(() => {
-    handleCancel();
   }, [isFocus]);
 
   return (

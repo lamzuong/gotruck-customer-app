@@ -34,6 +34,31 @@ import { AuthContext } from '../../../../context/AuthContext';
 import axiosClient from '../../../../api/axiosClient';
 import * as ImagePicker from 'expo-image-picker';
 
+const toAdd = {
+  _id: '63ef7acd66fdc4f6bdb50159',
+  address: 'RMCQ+72W, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh, Vietnam',
+  latitude: 10.820685261169594,
+  longitude: 106.68763093650341,
+  name: "aa",
+  phone: '0999999999',
+  id_customer: '63ef7a0866fdc4f6bdb5014c',
+  createdAt: '2023-02-17T20:02:05.706+07:00',
+  updatedAt: '2023-02-17T20:02:05.706+07:00',
+  __v: 0,
+};
+
+const fromAdd = {
+  _id: '63e5d9d4902f9038b6c10f57',
+  address: '58/5K Truông Tre, Linh Xuân, Thủ Đức, Bình Dương, Việt Nam',
+  latitude: 10.890244509604937,
+  longitude: 106.7674527621348,
+  name: 'q',
+  phone: '0999999999',
+  id_customer: '63e1d1112b67035bb9634dae',
+  createdAt: '2023-02-10T12:44:52.746+07:00',
+  updatedAt: '2023-02-10T12:44:52.746+07:00',
+  __v: 0,
+};
 export default function NewOrder({ navigation }) {
   //----------Back Button----------
   useEffect(() => {
@@ -47,11 +72,15 @@ export default function NewOrder({ navigation }) {
   //------------------------------
   const { locationNow } = useContext(AuthContext);
 
-  const [addressFrom, setAddressFrom] = useState(locationNow);
-  const [addressTo, setAddressTo] = useState();
+  // const [addressFrom, setAddressFrom] = useState(locationNow);
+  // const [addressTo, setAddressTo] = useState();
+
+  //Test
+  const [addressFrom, setAddressFrom] = useState(fromAdd);
+  const [addressTo, setAddressTo] = useState(toAdd);
 
   const [openTruck, setOpenTruck] = useState(false);
-  const [valueTruck, setValueTruck] = useState(truckTypes[0].value);
+  const [valueTruck, setValueTruck] = useState(truckTypes[1].value);
   const [itemsTruck, setItemsTruck] = useState(truckTypes);
 
   const [openGoods, setOpenGoods] = useState(false);
@@ -180,9 +209,11 @@ export default function NewOrder({ navigation }) {
   };
 
   const handleContinue = () => {
-    if (addressTo && addressFrom
+    if (
+      addressTo &&
+      addressFrom
       //  && listImageSend.length > 1
-       ) {
+    ) {
       navigation.navigate('NewOrderDetail', {
         item: {
           addressFrom: addressFrom,
