@@ -13,6 +13,7 @@ export default function HaveShipper() {
   const [order, setOrder] = useState([]);
   const { user } = useContext(AuthContext);
   const isFocus = useIsFocused();
+  
   const handleCancel = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (orderList) {
@@ -20,20 +21,17 @@ export default function HaveShipper() {
       orderList.forEach((e) => {
         if (e.status == 'Đã nhận') orderNotShipper.push(e);
       });
-      setOrder((prev) => orderNotShipper);
+      setOrder(orderNotShipper);
     }
   };
 
   useEffect(() => {
+    handleCancel();
     console.log('Have Shipper socket');
     socketClient.off(user._id + '');
     socketClient.on(user._id + '', (data) => {
       handleCancel();
     });
-  }, []);
-
-  useEffect(() => {
-    handleCancel();
   }, [isFocus]);
 
   return (

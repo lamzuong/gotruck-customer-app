@@ -13,28 +13,26 @@ export default function Cancelled() {
   const [order, setOrder] = useState([]);
   const { user } = useContext(AuthContext);
   const isFocus = useIsFocused();
+
+  const renderUI = async () => {
+    const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
+    if (orderList) {
+      let orderNotShipper = [];
+      orderList.forEach((e) => {
+        if (e.status == 'Đã hủy') orderNotShipper.push(e);
+      });
+      setOrder(orderNotShipper);
+    }
+  };
   useEffect(() => {
-    (async function () {
-      const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-      if (orderList) {
-        let orderNotShipper = [];
-        orderList.forEach((e) => {
-          if (e.status == 'Đã hủy') orderNotShipper.push(e);
-        });
-        setOrder(orderNotShipper);
-      }
-    }.call(this));
-    return;
+    renderUI();
+    console.log('Cancel socket');
+    socketClient.off(user._id + '');
+    socketClient.on(user._id + '', async (data) => {
+      renderUI();
+    });
   }, [isFocus]);
 
-  useEffect(() => {
-    console.log('Have Shipper socket');
-    socketClient.off(user._id + '');
-    socketClient.on(user._id + '', (data) => {
-      handleCancel();
-    });
-  }, []);
-  
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {order.map((item, index) =>
