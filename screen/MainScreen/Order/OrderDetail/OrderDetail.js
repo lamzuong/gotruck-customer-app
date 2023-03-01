@@ -34,7 +34,7 @@ export default function OrderDetail({ route, navigation }) {
             {/* {order.shipper.id ? (
               order.shipper.name
             ) : ( */}
-              <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
+            <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
             {/* )} */}
           </Text>
         </View>
@@ -44,7 +44,7 @@ export default function OrderDetail({ route, navigation }) {
             {/* {order.shipper.id ? (
               order.shipper.numberTruck
             ) : ( */}
-              <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
+            <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
             {/* )} */}
           </Text>
         </View>
@@ -54,7 +54,11 @@ export default function OrderDetail({ route, navigation }) {
           <Text style={styles.label}>Người gửi</Text>
         </View>
         <Text style={styles.content}>
-          {order.from_address.name + '\n' + order.from_address.address + '\n' + order.from_address.phone}
+          {order.from_address.name +
+            '\n' +
+            order.from_address.address +
+            '\n' +
+            order.from_address.phone}
         </Text>
         {/* Người nhận */}
         <View style={[styles.inline, { marginTop: 20 }]}>
@@ -90,12 +94,16 @@ export default function OrderDetail({ route, navigation }) {
           <View style={{ paddingBottom: 20 }}>
             <View style={styles.inline}>
               <Text style={[styles.label, { width: 120 }]}>Lý do hủy</Text>
-              <Text style={styles.content}>{order.reason}</Text>
+              <Text style={styles.content}>{order?.reason_cancel?.content}</Text>
             </View>
             <View style={styles.inline}>
               <Text style={[styles.label, { width: 120 }]}>Người hủy</Text>
               <Text style={styles.content}>
-                {order.idCancel == idShipper ? 'Shipper' : 'Khách hàng'}
+                {order?.reason_cancel?.user_cancel === 'AutoDelete'
+                  ? 'Tự động xóa do quá hạn thời gian quy định'
+                  : order?.reason_cancel?.user_cancel === 'Shipper'
+                  ? 'Shipper'
+                  : 'Khách hàng'}
               </Text>
             </View>
           </View>

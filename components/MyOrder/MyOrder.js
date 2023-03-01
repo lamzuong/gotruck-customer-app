@@ -10,32 +10,14 @@ import ReadMore from 'react-native-read-more-text';
 import { AuthContext } from '../../context/AuthContext';
 import axiosClient from '../../api/axiosClient';
 import { socketClient } from '../../global/socket';
+import { Modal } from 'react-native-paper';
 
-export default function MyOrder({ order, btnHuy }) {
+export default function MyOrder({ order, setIsShowModal, isShowModal, setCancelItem }) {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-
   const hanldeCancelOrder = async () => {
-    Alert.alert('Xác nhận', 'Bạn chắc chắn muốn hủy đơn?', [
-      {
-        text: 'Hủy',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: async () => {
-          const temp = order;
-          temp.status = 'Đã hủy';
-          temp.reason_cancel = {
-            user_cancel: 'Customer',
-            content: 'Đơn hàng không hợp lệ',
-          };
-          await axiosClient.put('gotruck/ordershipper/', temp);
-          btnHuy();
-        },
-      },
-    ]);
+    setCancelItem(order);
+    setIsShowModal(!isShowModal);
   };
 
   return (

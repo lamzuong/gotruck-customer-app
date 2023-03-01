@@ -8,7 +8,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import MyButton from '../../../../components/MyButton/MyButton';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,Foundation } from '@expo/vector-icons';
 
 export default function GoogleMap() {
   const [origin, setOrigin] = useState();
@@ -84,7 +84,7 @@ export default function GoogleMap() {
                 <Text style={styles.description}>{origin.address}</Text>
               </View>
             )}
-            <Ionicons name="location" size={30} color="red" style={styles.marker} />
+            <Ionicons name="location" size={30} color="#0DBEBE" style={styles.marker} />
           </Marker>
         )}
         {destination && (
