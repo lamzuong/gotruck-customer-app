@@ -4,7 +4,6 @@ import MyInput from '../../../../components/MyInput/MyInput';
 import { sliceIntoChunks } from '../../../../global/functionGlobal';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import stylesGlobal from '../../../../global/stylesGlobal';
-import goodsTypes from '../data/goodsTypes';
 import truckTypes from '../data/truckTypes';
 import styles from './stylesNewOrder';
 
@@ -39,7 +38,7 @@ const toAdd = {
   address: 'RMCQ+72W, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh, Vietnam',
   latitude: 10.820685261169594,
   longitude: 106.68763093650341,
-  name: "aa",
+  name: 'aa',
   phone: '0999999999',
   id_customer: '63ef7a0866fdc4f6bdb5014c',
   createdAt: '2023-02-17T20:02:05.706+07:00',
@@ -84,8 +83,8 @@ export default function NewOrder({ navigation }) {
   const [itemsTruck, setItemsTruck] = useState(truckTypes);
 
   const [openGoods, setOpenGoods] = useState(false);
-  const [valueGoods, setValueGoods] = useState(goodsTypes[0].value);
-  const [itemsGoods, setItemsGoods] = useState(goodsTypes);
+  const [valueGoods, setValueGoods] = useState(null);
+  const [itemsGoods, setItemsGoods] = useState([]);
   const [otherGoods, setOtherGoods] = useState('');
 
   const [weight, setWeight] = useState('');
@@ -235,6 +234,26 @@ export default function NewOrder({ navigation }) {
       Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
     }
   };
+  // get goods type
+  const icon = () => {
+    return <AntDesign name="dropbox" size={24} color="orange" />;
+  };
+  useEffect(() => {
+    const getGoodsType = async () => {
+      const res = await axiosClient.get('/gotruck/goodsType');
+      let goodsType = [];
+      for (const e of res) {
+        goodsType.push({
+          label: e.label,
+          value: e.value,
+          icon: icon,
+        });
+      }
+      setValueGoods(goodsType[0].value);
+      setItemsGoods(goodsType);
+    };
+    getGoodsType();
+  }, []);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
