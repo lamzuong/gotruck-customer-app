@@ -15,10 +15,8 @@ import axiosClient from '../../../../api/axiosClient';
 import firebase from 'firebase/compat';
 import uuid from 'react-native-uuid';
 import { socketClient } from '../../../../global/socket';
-export default function NewOrderDetail({ route }) {
-  const navigation = useNavigation();
 
-  const { item } = route.params;
+export default function NewOrderDetail({ route }) {
   const [expandFrom, setExpandFrom] = useState(true);
   const [expandTo, setExpandTo] = useState(true);
   const [checked, setChecked] = useState('receive');
@@ -34,15 +32,18 @@ export default function NewOrderDetail({ route }) {
   const [validPhoneT, setValidPhoneT] = useState();
   const [valueNameT, setValueNameT] = useState('');
   const [valuePhoneT, setValuePhoneT] = useState('');
-
   const [note, setNote] = useState('');
-
-  const { user } = useContext(AuthContext);
 
   const checkValidT = () => validNameT && validPhoneT;
 
+  const navigation = useNavigation();
+
+  const { item } = route.params;
+
+  const { user } = useContext(AuthContext);
+
   const handleFinishOrder = async () => {
-    var listURLImage = [];
+    let listURLImage = [];
     // setCheckUpload(true);
     for (let i = 0; i < item.listImageSend.length; i++) {
       const blob = await new Promise((resolve, reject) => {
@@ -66,7 +67,7 @@ export default function NewOrderDetail({ route }) {
       const temp = await snapshot.ref.getDownloadURL();
       listURLImage.push(temp);
     }
-
+    const feeapp = await axiosClient.get('gotruck/order/feeapp');
     const order = {
       id_customer: user._id,
       payer: checked,
@@ -84,6 +85,7 @@ export default function NewOrderDetail({ route }) {
         name: valueNameT,
         phone: valuePhoneT,
       },
+      fee: feeapp.fee || 10,
       note: note,
       status: 'Chưa nhận',
       date_create: new Date(),

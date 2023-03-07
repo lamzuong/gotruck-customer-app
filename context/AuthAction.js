@@ -10,3 +10,8 @@ export const LoginSuccess = (user) => ({
 export const LoginFailure = () => ({
     type: 'LOGIN_FAILURE',
 });
+
+export const GetListOrder = (orderList) => ({
+    type: 'GET_LIST_ORDER',
+    payload: orderList,
+});

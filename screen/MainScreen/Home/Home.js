@@ -15,8 +15,10 @@ import Geocoder from 'react-native-geocoding';
 import { GOOGLE_API_KEY } from '../../../global/keyGG';
 
 export default function Home({ navigation }) {
-  const { user, locationNow } = useContext(AuthContext);
-  console.log(locationNow);
+  const { user, locationNow, listOrder } = useContext(AuthContext);
+  
+  console.log("Home: "+ locationNow);
+
   return (
     <View style={styles.container}>
       <StatusBar />

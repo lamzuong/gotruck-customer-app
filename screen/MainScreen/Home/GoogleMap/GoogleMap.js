@@ -8,7 +8,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import MyButton from '../../../../components/MyButton/MyButton';
-import { Ionicons,Foundation } from '@expo/vector-icons';
+import { Ionicons, Foundation } from '@expo/vector-icons';
 
 export default function GoogleMap() {
   const [origin, setOrigin] = useState();
@@ -18,7 +18,9 @@ export default function GoogleMap() {
   const [showDetailDestination, setshowDetailDestination] = useState(true);
 
   const mapRef = useRef();
+
   const navigation = useNavigation();
+
   const route = useRoute();
   const { addressRecieve, addressDelivery } = route.params;
 
@@ -26,16 +28,13 @@ export default function GoogleMap() {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
   let INITIAL_POSITION = {
     latitude: 10.820685,
     longitude: 106.687631,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   };
-
   const edgePaddingValue = 70;
-
   const edgePadding = {
     top: edgePaddingValue,
     right: edgePaddingValue,
@@ -43,15 +42,16 @@ export default function GoogleMap() {
     left: edgePaddingValue,
   };
 
+  const zoomMap = () => {
+    mapRef.current?.fitToCoordinates([origin, destination], { edgePadding });
+    setshowButtonTiepTuc(true);
+  };
+
   useEffect(() => {
     if (addressRecieve != undefined) setOrigin(addressRecieve);
     if (addressDelivery != undefined) setDestination(addressDelivery);
   }, [route]);
 
-  const zoomMap = () => {
-    mapRef.current?.fitToCoordinates([origin, destination], { edgePadding });
-    setshowButtonTiepTuc(true);
-  };
   return (
     <View style={styles.container}>
       <Ionicons

@@ -26,11 +26,8 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ReadMore from 'react-native-read-more-text';
-
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-
-import { AuthContext } from '../../../../context/AuthContext';
 import axiosClient from '../../../../api/axiosClient';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -39,7 +36,7 @@ const toAdd = {
   address: 'RMCQ+72W, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh, Vietnam',
   latitude: 10.820685261169594,
   longitude: 106.68763093650341,
-  name: "aa",
+  name: 'aa',
   phone: '0999999999',
   id_customer: '63ef7a0866fdc4f6bdb5014c',
   createdAt: '2023-02-17T20:02:05.706+07:00',
@@ -60,18 +57,6 @@ const fromAdd = {
   __v: 0,
 };
 export default function NewOrder({ navigation }) {
-  //----------Back Button----------
-  useEffect(() => {
-    const backAction = () => {
-      navigation.goBack();
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () => backHandler.remove();
-  }, []);
-  //------------------------------
-  const { locationNow } = useContext(AuthContext);
-
   // const [addressFrom, setAddressFrom] = useState(locationNow);
   // const [addressTo, setAddressTo] = useState();
 
@@ -82,25 +67,16 @@ export default function NewOrder({ navigation }) {
   const [openTruck, setOpenTruck] = useState(false);
   const [valueTruck, setValueTruck] = useState(truckTypes[1].value);
   const [itemsTruck, setItemsTruck] = useState(truckTypes);
-
   const [openGoods, setOpenGoods] = useState(false);
   const [valueGoods, setValueGoods] = useState(goodsTypes[0].value);
   const [itemsGoods, setItemsGoods] = useState(goodsTypes);
   const [otherGoods, setOtherGoods] = useState('');
-
-  const [weight, setWeight] = useState('');
-
   const [listImage, setListImage] = useState([]);
-
   const [listImageSend, setListImageSend] = useState([]);
-
   const [distance, setDistance] = useState(0);
   const [time, setTime] = useState(0);
   const [price, setPrice] = useState(0);
-
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [feeOfTruckType, setFeeOfTruckType] = useState(0);
 
   const route = useRoute();
   const mapRef = useRef();
@@ -109,7 +85,6 @@ export default function NewOrder({ navigation }) {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
   let INITIAL_POSITION = {
     latitude: 10.820685,
     longitude: 106.687631,
@@ -131,15 +106,85 @@ export default function NewOrder({ navigation }) {
   const setPriceNew = async (distanceTemp) => {
     const transportPrice = await axiosClient.get('gotruck/transportprice/');
     for (let i = 0; i < transportPrice.length; i++) {
-      if (valueTruck == transportPrice[i].id_truck_type.name) {
-        if (Number(distanceTemp) <= 2 && transportPrice[i].id_distance.distance == '<=2') {
-          setPrice(transportPrice[i].price * Number(distanceTemp));
-        } else if (Number(distanceTemp) > 2 && transportPrice[i].id_distance.distance == '>2') {
-          setPrice(transportPrice[i].price * Number(distanceTemp));
+      if (valueTruck == transportPrice[i]?.id_truck_type?.name) {
+        if (Number(distanceTemp) <= 2 && transportPrice[i]?.id_distance?.distance == '<=2') {
+          setPrice(transportPrice[i]?.price * Number(distanceTemp));
+        } else if (Number(distanceTemp) > 2 && transportPrice[i]?.id_distance?.distance == '>2') {
+          setPrice(transportPrice[i]?.price * Number(distanceTemp));
         }
       }
     }
   };
+
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
+    if (!result.canceled) {
+      setListImage([...listImage, result.assets[0].uri]);
+      setListImageSend([...listImageSend, result.assets[0]]);
+    }
+  };
+
+  const showImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      quality: 1,
+      base64: true,
+    });
+    if (!result.canceled) {
+      setListImage([...listImage, result.assets[0].uri]);
+      setListImageSend([...listImageSend, result.assets[0]]);
+    }
+  };
+
+  const handleContinue = () => {
+    if (
+      addressTo &&
+      addressFrom
+      //  && listImageSend.length > 1
+    ) {
+      navigation.navigate('NewOrderDetail', {
+        item: {
+          addressFrom: addressFrom,
+          addressTo: addressTo,
+          truckType: valueTruck,
+          goodType: otherGoods ? otherGoods : valueGoods,
+          listImageSend,
+          time,
+          distance,
+          price,
+        },
+      });
+    } else if (!addressFrom) {
+      Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
+    } else if (!addressTo) {
+      Alert.alert('Thông báo', 'Vui lòng điền nơi giao hàng!');
+    } else if (listImageSend.length < 2) {
+      Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
+    }
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, []);
+
   useEffect(() => {
     (async function () {
       await setPriceNew(distance);
@@ -172,68 +217,6 @@ export default function NewOrder({ navigation }) {
         ) : null}
       </View>
     );
-  };
-
-  const openCamera = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      base64: true,
-    });
-    if (!result.canceled) {
-      setListImage([...listImage, result.assets[0].uri]);
-      setListImageSend([...listImageSend, result.assets[0]]);
-    }
-  };
-  const showImagePicker = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your photos!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false,
-      quality: 1,
-      base64: true,
-    });
-    if (!result.canceled) {
-      setListImage([...listImage, result.assets[0].uri]);
-      setListImageSend([...listImageSend, result.assets[0]]);
-    } else {
-      console.log('Không có ảnh được chọn');
-    }
-  };
-
-  const handleContinue = () => {
-    if (
-      addressTo &&
-      addressFrom
-      //  && listImageSend.length > 1
-    ) {
-      navigation.navigate('NewOrderDetail', {
-        item: {
-          addressFrom: addressFrom,
-          addressTo: addressTo,
-          truckType: valueTruck,
-          goodType: valueGoods,
-          // weight,
-          listImageSend,
-          time,
-          distance,
-          price,
-        },
-      });
-    } else if (!addressFrom) {
-      Alert.alert('Thông báo', 'Vui lòng điền nơi lấy hàng!');
-    } else if (!addressTo) {
-      Alert.alert('Thông báo', 'Vui lòng điền nơi giao hàng!');
-    } else if (listImageSend.length < 2) {
-      Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
-    }
   };
 
   return (

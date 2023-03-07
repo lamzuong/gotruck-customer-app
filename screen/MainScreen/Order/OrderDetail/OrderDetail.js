@@ -3,13 +3,47 @@ import stylesGlobal from '../../../../global/stylesGlobal';
 import MyButton from '../../../../components/MyButton/MyButton';
 
 import { View, Text, ScrollView, BackHandler } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons, Foundation } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import MyInput from '../../../../components/MyInput/MyInput';
+import axiosClient from '../../../../api/axiosClient';
+import { socketClient } from '../../../../global/socket';
 
 export default function OrderDetail({ route, navigation }) {
+  const { order } = route.params;
+
+  const [showModal, setShowModal] = useState(false);
+  const [valid, setValid] = useState(false);
+  const [reason, setReason] = useState('');
+
+  const handleCancelOrder = async () => {
+    let item = order;
+    item.status = 'Đã hủy';
+    item.reason_cancel = {
+      user_cancel: 'Customer',
+      content: reason,
+    };
+    const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
+    if (resOrderCancel.status === 'Đã hủy') {
+      if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
+        Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
+      } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
+        Alert.alert('Thông báo', 'Đơn hàng đã xóa do quá thời hạn');
+      } else if (resOrderCancel.reason_cancel.user_cancel === 'Customer') {
+        socketClient.emit('customer_cancel', resOrderCancel);
+      }
+      setReason('');
+      setValid(false);
+      setShowModal(false);
+      navigation.goBack();
+    }
+  };
+
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
+      setShowModal(false);
       navigation.goBack();
       return true;
     };
@@ -17,8 +51,7 @@ export default function OrderDetail({ route, navigation }) {
     return () => backHandler.remove();
   }, []);
   //------------------------------
-  const { order } = route.params;
-  const idShipper = 'SHP2310001';
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
@@ -100,9 +133,9 @@ export default function OrderDetail({ route, navigation }) {
               <Text style={[styles.label, { width: 120 }]}>Người hủy</Text>
               <Text style={styles.content}>
                 {order?.reason_cancel?.user_cancel === 'AutoDelete'
-                  ? 'Tự động xóa do quá hạn thời gian quy định'
+                  ? 'Tự động xóa'
                   : order?.reason_cancel?.user_cancel === 'Shipper'
-                  ? 'Shipper'
+                  ? 'Tài xế'
                   : 'Khách hàng'}
               </Text>
             </View>
@@ -111,7 +144,13 @@ export default function OrderDetail({ route, navigation }) {
       </ScrollView>
       {order.status == 'Chưa nhận' || order.status == 'Đã nhận' ? (
         <View style={styles.viewButton}>
-          <MyButton type={'large'} text={'Hủy đơn'} btnColor={'red'} txtColor={'white'} />
+          <MyButton
+            type={'large'}
+            text={'Hủy đơn'}
+            btnColor={'red'}
+            txtColor={'white'}
+            action={() => setShowModal(true)}
+          />
         </View>
       ) : order.status == 'Đã giao' ? (
         <View style={styles.viewButton}>
@@ -123,6 +162,53 @@ export default function OrderDetail({ route, navigation }) {
           />
         </View>
       ) : null}
+      {showModal && (
+        <View style={styles.centeredView}>
+          <View style={styles.close}>
+            <AntDesign
+              onPress={() => setShowModal(!showModal)}
+              name="close"
+              size={30}
+              color="black"
+            />
+          </View>
+          <View style={styles.contentCancel}>
+            <View style={styles.viewInput}>
+              <Text style={styles.label}>Lý do hủy</Text>
+              <MyInput
+                borderWidth={1}
+                value={setReason}
+                valid={setValid}
+                regex={/^.+/}
+                multiline={true}
+                inputName={true}
+                error={'Không được để trống'}
+              />
+            </View>
+          </View>
+          {valid ? (
+            <View style={styles.btnCancel}>
+              <MyButton
+                type={'medium'}
+                btnColor={'red'}
+                txtColor={'white'}
+                text="Hủy"
+                action={() => handleCancelOrder()}
+              />
+            </View>
+          ) : (
+            <View style={styles.btnCancel}>
+              <MyButton
+                type={'medium'}
+                btnColor={'rgb(240,128,128)'}
+                txtColor={'white'}
+                text="Hủy"
+                disable={true}
+              />
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }

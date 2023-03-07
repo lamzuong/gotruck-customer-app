@@ -5,14 +5,29 @@ import { publicRoutes } from './routes/routes';
 import { View, Text } from 'react-native';
 import React, { useContext, useEffect } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axiosClient from '../../../api/axiosClient';
 import { AuthContext } from '../../../context/AuthContext';
+import { GetListOrder } from '../../../context/AuthAction';
+import { socketClient } from '../../../global/socket';
 
 const TopTab = createMaterialTopTabNavigator();
 
 export default function Order() {
-  const { user } = useContext(AuthContext);
+  const { user, listOrder, dispatch } = useContext(AuthContext);
+  
+  const renderUI = async () => {
+    const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
+    dispatch(GetListOrder(orderList));
+  };
+
+  useEffect(() => {
+    socketClient.off(user._id + '');
+    socketClient.on(user._id + '', (data) => {
+      renderUI();
+    });
+  }, []);
+
   return (
     <>
       <Text style={styles.title}>Đơn hàng</Text>

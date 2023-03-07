@@ -8,34 +8,26 @@ import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 import { socketClient } from '../../../../global/socket';
 import { useIsFocused } from '@react-navigation/native';
+import { GetListOrder } from '../../../../context/AuthAction';
 
 export default function Finished() {
-  const [order, setOrder] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, dispatch, listOrder } = useContext(AuthContext);
   const isFocus = useIsFocused();
+
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (orderList) {
-      let orderNotShipper = [];
-      orderList.forEach((e) => {
-        if (e.status == 'Đã giao') orderNotShipper.push(e);
-      });
-      setOrder(orderNotShipper);
+    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+      dispatch(GetListOrder(orderList));
     }
   };
 
   useEffect(() => {
     renderUI();
-    console.log('Finish socket');
-    socketClient.off(user._id + '');
-    socketClient.on(user._id + '', async (data) => {
-      renderUI();
-    });
   }, [isFocus]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {order.map((item, index) =>
+      {listOrder?.map((item, index) =>
         item.status == 'Đã giao' ? <MyOrder order={item} key={index} /> : null,
       )}
       <View style={{ height: 30 }}></View>

@@ -1,11 +1,6 @@
 import styles from './stylesSelectSavedPlace';
 import stylesGlobal from '../../../../global/stylesGlobal';
 
-// import MyAddress from '../../../../components/MyAddress/MyAddress';
-// import ButtonAdd from '../../../../components/ButtonAdd/ButtonAdd';
-
-import MyButton from '../../../../components/MyButton/MyButton';
-
 import { View, Text, ScrollView, BackHandler, TouchableOpacity, Alert } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
@@ -15,56 +10,13 @@ import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 
 export default function SavedPlace({ navigation }) {
-  const address = [
-    {
-      id: 0,
-      name: 'Nguyễn Văn A',
-      phone: '0791948511',
-      address: '12 Nguyễn Văn Bảo, P.4, Q.Gò Vấp, TP.HCM',
-      latitude: 10.820685,
-      longitude: 106.687631,
-    },
-    {
-      id: 1,
-      name: 'Lê Văn B',
-      phone: '0912112111',
-      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
-      latitude: 10.751087765680198,
-      longitude: 106.64291057824333,
-    },
-    {
-      id: 2,
-      name: 'Trần Văn C',
-      phone: '0359434733',
-      address: '44/51 Lê Quang Sung, P.11, Q.6, TP.HCM',
-      latitude: 10.751087765680198,
-      longitude: 106.64291057824333,
-    },
-  ];
-
   const [listAddress, setListAddress] = useState([]);
+
+  const { user } = useContext(AuthContext);
+
   const route = useRoute();
   const { noiLayHang, addressTo, addressFrom } = route.params;
-  const { user } = useContext(AuthContext);
-  //----------Back Button----------
-  useEffect(() => {
-    const backAction = () => {
-      navigation.goBack();
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    return () => backHandler.remove();
-  }, []);
-
-  useEffect(() => {
-    (async function () {
-      const listsaved = await axiosClient.get('/gotruck/profile/savedplace/' + user._id);
-      if (listsaved.length > 0) setListAddress(listsaved);
-      else setListAddress([]);
-    }.call(this));
-  }, []);
-  //------------------------------
   const handleAddress = (addressSelected) => {
     if (noiLayHang) {
       if (addressTo) {
@@ -155,6 +107,27 @@ export default function SavedPlace({ navigation }) {
       }
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      const listsaved = await axiosClient.get('/gotruck/profile/savedplace/' + user._id);
+      if (listsaved.length > 0) setListAddress(listsaved);
+      else setListAddress([]);
+    }.call(this));
+  }, []);
+ 
+ 
+
   return (
     <ScrollView style={styles.container}>
       {listAddress.length != 0 ? (

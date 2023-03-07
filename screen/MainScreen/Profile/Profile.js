@@ -27,6 +27,7 @@ export default function Profile({ navigation }) {
       { text: "OK", onPress: () => navigation.navigate(screen) },
     ]);
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.viewAccount}>

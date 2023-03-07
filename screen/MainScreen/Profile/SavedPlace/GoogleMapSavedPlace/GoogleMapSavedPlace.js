@@ -30,7 +30,7 @@ export default function GoogleMapSavedPlace() {
   const handleAddress = async () => {
     const camera = await mapRef.current?.getCamera();
     Geocoder.init(GOOGLE_API_KEY, {
-      language: 'vn',
+      language: 'vi',
     });
     Geocoder.from(camera.center)
       .then((json) => {

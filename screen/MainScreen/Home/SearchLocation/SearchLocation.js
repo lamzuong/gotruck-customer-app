@@ -1,32 +1,22 @@
 import styles from './stylesSearchLocation';
 import stylesGlobal from '../../../../global/stylesGlobal';
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  Pressable,
-  Alert,
-  StatusBar,
-} from 'react-native';
-import React, { useState, useLayoutEffect, useContext } from 'react';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
-import Geocoder from 'react-native-geocoding';
+import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import React, { useContext } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import * as Location from 'expo-location';
 
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AuthContext } from '../../../../context/AuthContext';
 
 export default function DiaChiNhanHang() {
+  const navigation = useNavigation();
+
+  const { locationNow } = useContext(AuthContext);
+
   const route = useRoute();
   const { noiLayHang, addressFrom, addressTo } = route.params;
-  const navigation = useNavigation();
-  const { locationNow } = useContext(AuthContext);
 
   const locationNowUser = {
     description: 'Vị trí hiện tại',
@@ -120,7 +110,6 @@ export default function DiaChiNhanHang() {
                   '"',
               );
               return;
-
             } else {
               // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
               Alert.alert(
@@ -164,7 +153,7 @@ export default function DiaChiNhanHang() {
           onFail={(error) => console.error(error)}
           query={{
             key: GOOGLE_API_KEY,
-            language: 'vn',
+            language: 'vi',
             components: 'country:vn',
           }}
           textInputProps={{

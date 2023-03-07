@@ -12,7 +12,7 @@ import firebase from 'firebase/compat';
 
 import axiosClient from '../../api/axiosClient';
 import { AuthContext } from '../../context/AuthContext';
-import { LoginSuccess, LoginStart, LoginFailure } from '../../context/AuthAction';
+import { LoginSuccess, LoginStart, LoginFailure, GetListOrder } from '../../context/AuthAction';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
@@ -31,10 +31,11 @@ export default function Login({ navigation }) {
 
   const recaptchaVerifier = useRef(null);
   const sendVerification = async () => {
-
     //Đăng nhập k xác minh
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
+    const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
     dispatch(LoginSuccess(userLogin));
+    dispatch(GetListOrder(orderList));
     toMainScreen();
 
     // try {
@@ -42,7 +43,7 @@ export default function Login({ navigation }) {
     //   if (!res.phone) {
     //     customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
     //   } else {
-   
+
     //     const phoneProvider = new firebase.auth.PhoneAuthProvider();
     //     phoneProvider
     //       .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
@@ -179,10 +180,7 @@ export default function Login({ navigation }) {
           />
         )}
       </View>
-      <FirebaseRecaptchaVerifierModal
-        ref={recaptchaVerifier}
-        firebaseConfig={firebaseConfig}
-      />
+      <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
     </View>
   );
 }

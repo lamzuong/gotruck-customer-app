@@ -1,3 +1,6 @@
+import styles from './stylesSelectLocationOnMap';
+import stylesGlobal from '../../../../global/stylesGlobal';
+
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRef } from 'react';
@@ -8,16 +11,15 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+
 import Geocoder from 'react-native-geocoding';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import stylesGlobal from '../../../../global/stylesGlobal';
-import styles from './stylesSelectLocationOnMap';
-
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 
 export default function SelectLocationOnMap() {
-  const mapRef = useRef();
   const navigation = useNavigation();
+
+  const mapRef = useRef();
 
   const route = useRoute();
   const { noiLayHang, addressTo, addressFrom } = route.params;
@@ -26,7 +28,6 @@ export default function SelectLocationOnMap() {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.01;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
   let INITIAL_POSITION = {
     latitude: 10.820685,
     longitude: 106.687631,
@@ -37,7 +38,7 @@ export default function SelectLocationOnMap() {
   const handleAddress = async () => {
     const camera = await mapRef.current?.getCamera();
     Geocoder.init(GOOGLE_API_KEY, {
-      language: 'vn',
+      language: 'vi',
     });
     Geocoder.from(camera.center)
       .then((json) => {
@@ -159,7 +160,7 @@ export default function SelectLocationOnMap() {
         provider={PROVIDER_GOOGLE}
         initialRegion={INITIAL_POSITION}
         showsUserLocation={true}
-        // showsMyLocationButton={true}
+        showsMyLocationButton={true}
         zoomEnabled={true}
         addressForCoordinate={(e) => {
           console.log(e);

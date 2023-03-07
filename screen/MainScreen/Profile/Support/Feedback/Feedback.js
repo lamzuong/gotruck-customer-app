@@ -81,7 +81,7 @@ export default function Feedback({ navigation }) {
 
   const handleFeedback = async () => {
     if (subject.trim().length != 0 && description.trim().length != 0 && validEmail && validPhone) {
-      var listURLImage = [];
+      let listURLImage = [];
       setCheckUpload(true);
       for (let i = 0; i < listImageSend.length; i++) {
         const blob = await new Promise((resolve, reject) => {

@@ -11,50 +11,21 @@ import axiosClient from '../../../../../api/axiosClient';
 import { Keyboard } from 'react-native';
 
 export default function ChatRoom({ route }) {
-  //----------Back Button----------
-  useEffect(() => {
-    const backAction = () => {
-      navigation.goBack();
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () => backHandler.remove();
-  }, []);
-  //------------------------------
-  const { item } = route.params;
-  const { user } = useContext(AuthContext);
   const [mess, setMess] = useState();
   const [listMessage, setListMessage] = useState([]);
-
-  const flatListRef = useRef();
+  
   const navigation = useNavigation();
 
-  const exMess = [
-    {
-      id: 1,
-      avatar:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIao-KaLLXnLaeTnqXgGBFSAzBgeQgr0g1uA&usqp=CAU',
-      content: 'Chào anh, có phải anh đặt GoTruck giao hàng tới đường Nguyễn Văn Bảo không ạ?',
-      idSender: 2,
-      time: '10 phút trước',
-    },
-    {
-      id: 2,
-      avatar:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIao-KaLLXnLaeTnqXgGBFSAzBgeQgr0g1uA&usqp=CAU',
-      content: 'Đúng rồi',
-      idSender: 1,
-      time: '10 phút trước',
-    },
-    {
-      id: 3,
-      avatar:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIao-KaLLXnLaeTnqXgGBFSAzBgeQgr0g1uA&usqp=CAU',
-      content: 'Ok anh',
-      idSender: 2,
-      time: '3 phút trước',
-    },
-  ];
+  const { item } = route.params;
+  const { user } = useContext(AuthContext);
+
+  const flatListRef = useRef();
+
+  const getAllMessage = async () => {
+    const listMess = await axiosClient.get('gotruck/conversation/message/' + item._id);
+    listMess.reverse();
+    setListMessage(listMess);
+  };
 
   const handleMessage = async () => {
     const messageSend = {
@@ -63,21 +34,17 @@ export default function ChatRoom({ route }) {
       id_sender: user._id,
       userSendModel: 'Customer',
     };
-
     await axiosClient.post('gotruck/conversation/message/', {
       ...messageSend,
     });
-
     setMess('');
     getAllMessage();
     Keyboard.dismiss();
   };
 
   function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
-
-    var interval = seconds / 31536000;
-
+    let seconds = Math.floor((new Date() - date) / 1000);
+    let interval = seconds / 31536000;
     if (interval > 1) {
       return Math.floor(interval) + ' năm trước';
     }
@@ -97,14 +64,19 @@ export default function ChatRoom({ route }) {
     if (interval > 1) {
       return Math.floor(interval) + ' phút trước';
     }
-    // return Math.floor(seconds) + " giây";
     return 'Vừa gửi';
   }
-  const getAllMessage = async () => {
-    const listMess = await axiosClient.get('gotruck/conversation/message/' + item._id);
-    listMess.reverse();
-    setListMessage(listMess);
-  };
+
+  //----------Back Button----------
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, []);
+  //------------------------------
 
   useEffect(() => {
     getAllMessage();

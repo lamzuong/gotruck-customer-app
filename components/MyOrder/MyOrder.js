@@ -92,7 +92,7 @@ export default function MyOrder({ order, setIsShowModal, isShowModal, setCancelI
             btnColor={stylesGlobal.mainGreen}
             txtColor={'white'}
             style={styles.customerButton}
-            action={() => navigation.navigate('LocationShipper')}
+            action={() => navigation.navigate('LocationShipper', { order: order })}
           />
         ) : order.status == 'Đã giao' ? (
           <MyButton

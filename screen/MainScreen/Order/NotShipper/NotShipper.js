@@ -3,7 +3,7 @@ import stylesGlobal from '../../../../global/stylesGlobal';
 import MyOrder from '../../../../components/MyOrder/MyOrder';
 // import order from '../dataOrder';
 
-import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
@@ -13,10 +13,11 @@ import { Modal } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
+import { GetListOrder } from '../../../../context/AuthAction';
 
 export default function NotShipper() {
-  const [order, setOrder] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, listOrder, dispatch } = useContext(AuthContext);
+  // const [order, setOrder] = useState(listOrder || []);
   const isFocus = useIsFocused();
   const [showModal, setShowModal] = useState(false);
   const [valid, setValid] = useState(false);
@@ -25,14 +26,8 @@ export default function NotShipper() {
 
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (orderList) {
-      let orderNotShipper = [];
-      orderList.forEach((e) => {
-        if (e.status == 'Chưa nhận') {
-          orderNotShipper.push(e);
-        }
-      });
-      setOrder(orderNotShipper);
+    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+      dispatch(GetListOrder(orderList));
     }
   };
 
@@ -42,22 +37,27 @@ export default function NotShipper() {
       user_cancel: 'Customer',
       content: reason,
     };
-    await axiosClient.put('gotruck/ordershipper/', item);
-    setItemCancel('');
-    setReason('');
-    setValid(false);
-    setShowModal(!showModal);
-    renderUI();
+    const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
+    if (resOrderCancel.status === 'Đã hủy') {
+      if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
+        Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
+      } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
+        Alert.alert('Thông báo', 'Đơn hàng đã xóa do quá thời hạn');
+      } else if (resOrderCancel.reason_cancel.user_cancel === 'Customer') {
+        socketClient.emit('customer_cancel', resOrderCancel);
+      }
+      setItemCancel('');
+      setReason('');
+      setValid(false);
+      setShowModal(!showModal);
+      renderUI();
+    }
   };
 
   useEffect(() => {
     renderUI();
-    console.log('Not Shipper socket');
-    socketClient.off(user._id + '');
-    socketClient.on(user._id + '', (data) => {
-      renderUI();
-    });
   }, [isFocus]);
+
   return (
     <>
       <View style={styles.container2}>
@@ -110,22 +110,16 @@ export default function NotShipper() {
         )}
       </View>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {order.length != 0 ? (
-          <>
-            {order.map((item, index) =>
-              item.status == 'Chưa nhận' ? (
-                <MyOrder
-                  setCancelItem={setItemCancel}
-                  isShowModal={showModal}
-                  setIsShowModal={setShowModal}
-                  order={item}
-                  key={index}
-                />
-              ) : null,
-            )}
-          </>
-        ) : (
-          <></>
+        {listOrder?.map((item, index) =>
+          item.status == 'Chưa nhận' ? (
+            <MyOrder
+              setCancelItem={setItemCancel}
+              isShowModal={showModal}
+              setIsShowModal={setShowModal}
+              order={item}
+              key={index}
+            />
+          ) : null,
         )}
 
         <View style={{ height: 30 }}></View>

@@ -12,10 +12,11 @@ import { socketClient } from '../../../../global/socket';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
 import { AntDesign } from '@expo/vector-icons';
+import { GetListOrder } from '../../../../context/AuthAction';
 
 export default function HaveShipper() {
-  const [order, setOrder] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, listOrder, dispatch } = useContext(AuthContext);
+  // const [order, setOrder] = useState(listOrder || []);
   const isFocus = useIsFocused();
   const [showModal, setShowModal] = useState(false);
   const [valid, setValid] = useState(false);
@@ -24,21 +25,25 @@ export default function HaveShipper() {
 
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (orderList) {
-      let orderNotShipper = [];
-      orderList.forEach((e) => {
-        if (e.status == 'Đã nhận') orderNotShipper.push(e);
-      });
-      setOrder(orderNotShipper);
+    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+      dispatch(GetListOrder(orderList));
     }
   };
+
   const handleCancelOrder = async (item) => {
     item.status = 'Đã hủy';
     item.reason_cancel = {
       user_cancel: 'Customer',
       content: reason,
     };
-    await axiosClient.put('gotruck/ordershipper/', item);
+    const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
+    if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
+      Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
+      Alert.alert('Thông báo', 'Đơn hàng đã xóa do quá thời hạn');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'Customer') {
+      socketClient.emit('customer_cancel_received', resOrderCancel);
+    }
     setShowModal(!showModal);
     setItemCancel('');
     setReason('');
@@ -48,11 +53,6 @@ export default function HaveShipper() {
 
   useEffect(() => {
     renderUI();
-    console.log('Have Shipper socket');
-    socketClient.off(user._id + '');
-    socketClient.on(user._id + '', (data) => {
-      renderUI();
-    });
   }, [isFocus]);
 
   return (
@@ -107,7 +107,7 @@ export default function HaveShipper() {
         )}
       </View>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {order.map((item, index) =>
+        {listOrder?.map((item, index) =>
           item.status == 'Đã nhận' ? (
             <MyOrder
               setCancelItem={setItemCancel}

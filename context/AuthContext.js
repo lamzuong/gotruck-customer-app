@@ -5,11 +5,7 @@ import React, { createContext, useEffect, useReducer, useState } from 'react';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_API_KEY } from '../global/keyGG';
-
-const INITIAL_STATE = {
-  user: null,
-  locationNow: null,
-};
+import { INITIAL_STATE } from './AuthReducer';
 
 // INITIAL_STATE.user = {
 //   _id: '63e1d1112b67035bb9634dae',
@@ -31,7 +27,6 @@ export const AuthContextProvider = ({ children }) => {
     latitude: 10.820685,
     longitude: 106.687631,
   });
-
   useEffect(() => {
     const getLocationUserNow = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
       }
       const location = await Location.getCurrentPositionAsync({});
       Geocoder.init(GOOGLE_API_KEY, {
-        language: 'vn',
+        language: 'vi',
       });
       const dataGeocoder = await Geocoder.from({
         latitude: location.coords.latitude,
@@ -61,6 +56,7 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         user: state.user,
         locationNow: address,
+        listOrder: state.listOrder,
         dispatch,
       }}
     >
