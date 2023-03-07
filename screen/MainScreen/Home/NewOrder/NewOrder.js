@@ -4,7 +4,6 @@ import MyInput from '../../../../components/MyInput/MyInput';
 import { sliceIntoChunks } from '../../../../global/functionGlobal';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import stylesGlobal from '../../../../global/stylesGlobal';
-import goodsTypes from '../data/goodsTypes';
 import truckTypes from '../data/truckTypes';
 import styles from './stylesNewOrder';
 
@@ -68,8 +67,8 @@ export default function NewOrder({ navigation }) {
   const [valueTruck, setValueTruck] = useState(truckTypes[1].value);
   const [itemsTruck, setItemsTruck] = useState(truckTypes);
   const [openGoods, setOpenGoods] = useState(false);
-  const [valueGoods, setValueGoods] = useState(goodsTypes[0].value);
-  const [itemsGoods, setItemsGoods] = useState(goodsTypes);
+  const [valueGoods, setValueGoods] = useState(null);
+  const [itemsGoods, setItemsGoods] = useState([]);
   const [otherGoods, setOtherGoods] = useState('');
   const [listImage, setListImage] = useState([]);
   const [listImageSend, setListImageSend] = useState([]);
@@ -175,6 +174,26 @@ export default function NewOrder({ navigation }) {
       Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
     }
   };
+  // get goods type
+  const icon = () => {
+    return <AntDesign name="dropbox" size={24} color="orange" />;
+  };
+  useEffect(() => {
+    const getGoodsType = async () => {
+      const res = await axiosClient.get('/gotruck/goodsType');
+      let goodsType = [];
+      for (const e of res) {
+        goodsType.push({
+          label: e.label,
+          value: e.value,
+          icon: icon,
+        });
+      }
+      setValueGoods(goodsType[0].value);
+      setItemsGoods(goodsType);
+    };
+    getGoodsType();
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
