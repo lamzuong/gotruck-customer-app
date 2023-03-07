@@ -34,8 +34,10 @@ export default function Login({ navigation }) {
     //Đăng nhập k xác minh
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
+    console.log(userLogin);
     dispatch(LoginSuccess(userLogin));
     dispatch(GetListOrder(orderList));
+  
     toMainScreen();
 
     // try {

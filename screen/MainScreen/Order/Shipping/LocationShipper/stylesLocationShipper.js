@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 75,
     backgroundColor: 'white',
     paddingHorizontal:5,
+    opacity:0.7,
     
   },
   title: {
