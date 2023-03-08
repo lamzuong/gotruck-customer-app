@@ -8,7 +8,7 @@ import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
 import { socketClient } from '../../../../global/socket';
-import { GetListOrder } from '../../../../context/AuthAction';
+import { SetListOrder } from '../../../../context/AuthAction';
 
 export default function Cancelled() {
   const [order, setOrder] = useState([]);
@@ -18,7 +18,7 @@ export default function Cancelled() {
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
-      dispatch(GetListOrder(orderList));
+      dispatch(SetListOrder(orderList));
     }
   };
 

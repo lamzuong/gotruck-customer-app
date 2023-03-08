@@ -8,7 +8,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axiosClient from '../../../api/axiosClient';
 import { AuthContext } from '../../../context/AuthContext';
-import { GetListOrder } from '../../../context/AuthAction';
+import { SetListOrder } from '../../../context/AuthAction';
 import { socketClient } from '../../../global/socket';
 
 const TopTab = createMaterialTopTabNavigator();
@@ -18,7 +18,7 @@ export default function Order() {
   
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    dispatch(GetListOrder(orderList));
+    dispatch(SetListOrder(orderList));
   };
 
   useEffect(() => {

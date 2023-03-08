@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   inline: {
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     marginVertical: 5,
   },
   // Label

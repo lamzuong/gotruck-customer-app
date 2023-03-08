@@ -1,41 +1,42 @@
-import styles from './stylesSignUp';
-import stylesGlobal from '../../global/stylesGlobal';
 import MyButton from '../../components/MyButton/MyButton';
 import MyInput from '../../components/MyInput/MyInput';
+import stylesGlobal from '../../global/stylesGlobal';
+import styles from './stylesSignUp';
 
-import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert } from 'react-native';
-import React, { useContext, useEffect, useRef, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Alert, BackHandler, Dimensions, Image, ScrollView, Text, View } from 'react-native';
 
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
-import { firebaseConfig } from '../../config';
 import firebase from 'firebase/compat';
+import { firebaseConfig } from '../../config';
 
 import axiosClient from '../../api/axiosClient';
+import { LoginSuccess, SetLocation } from '../../context/AuthAction';
 import { AuthContext } from '../../context/AuthContext';
-import { LoginSuccess, LoginStart, LoginFailure } from '../../context/AuthAction';
-
+import { getLocationCurrentOfUser } from '../../global/utilLocation';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
+const label = [
+  'Vui lòng nhập số điện thoại để tiếp tục',
+  'Nhập mã OTP để tiếp tục',
+  'Nhập họ tên để hoàn tất đăng ký !!',
+];
+
 export default function SignUp({ navigation }) {
   const [screen, setScreen] = useState(1);
-
   const [validData, setValidData] = useState(false);
   const [codeOTP, setCodeOTP] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [nameUser, setNameUser] = useState('');
-
   const [verificationId, setVerificationId] = useState();
-  const { dispatch, user } = useContext(AuthContext);
-  const label = [
-    'Vui lòng nhập số điện thoại để tiếp tục',
-    'Nhập mã OTP để tiếp tục',
-    'Nhập họ tên để hoàn tất đăng ký !!',
-  ];
-  const scrollViewRef = useRef();
 
+  const { dispatch, user } = useContext(AuthContext);
+
+  const scrollViewRef = useRef();
   const recaptchaVerifier = useRef(null);
+
   const sendVerification = async () => {
     try {
       const res = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
@@ -97,8 +98,12 @@ export default function SignUp({ navigation }) {
   };
   const finishSignUp = async () => {
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
-    dispatch(LoginSuccess(userLogin));
-    navigation.navigate('MainScreen');
+    const currentLocation = await getLocationCurrentOfUser();
+    if (currentLocation) {
+      dispatch(SetLocation(currentLocation));
+      dispatch(LoginSuccess(userLogin));
+      navigation.navigate('MainScreen');
+    }
   };
 
   const customAlert = (type, message, option) => {

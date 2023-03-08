@@ -15,6 +15,7 @@ import {
   BackHandler,
   Dimensions,
   Image,
+  Linking,
   Modal,
   Pressable,
   ScrollView,
@@ -118,7 +119,14 @@ export default function NewOrder({ navigation }) {
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+      Alert.alert('Thông báo', 'Bạn đã từ chối cấp quyền truy cập máy ảnh', [
+        {
+          text: 'Hủy',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Mở cài đặt', onPress: () => Linking.openSettings() },
+      ]);
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
@@ -133,7 +141,14 @@ export default function NewOrder({ navigation }) {
   const showImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your photos!");
+      Alert.alert('Thông báo', 'Bạn đã từ chối cấp quyền truy cập kho ảnh', [
+        {
+          text: 'Hủy',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Mở cài đặt', onPress: () => Linking.openSettings() },
+      ]);
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -305,8 +320,7 @@ export default function NewOrder({ navigation }) {
           apikey={GOOGLE_API_KEY}
           onReady={traceRouteOnReady}
           onError={(e) => {
-            Alert.alert('Thông báo', 'Lỗi không xác định');
-            console.log('NewOrder: ' + e);
+            console.log('NewOrder: Key api hết hạn');
           }}
         />
       </MapView>

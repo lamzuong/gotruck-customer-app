@@ -12,7 +12,7 @@ import { socketClient } from '../../../../global/socket';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
 import { AntDesign } from '@expo/vector-icons';
-import { GetListOrder } from '../../../../context/AuthAction';
+import { SetListOrder } from '../../../../context/AuthAction';
 
 export default function HaveShipper() {
   const { user, listOrder, dispatch } = useContext(AuthContext);
@@ -26,7 +26,7 @@ export default function HaveShipper() {
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
-      dispatch(GetListOrder(orderList));
+      dispatch(SetListOrder(orderList));
     }
   };
 

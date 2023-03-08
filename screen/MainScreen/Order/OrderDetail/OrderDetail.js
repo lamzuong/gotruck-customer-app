@@ -57,34 +57,34 @@ export default function OrderDetail({ route, navigation }) {
       <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
         {/* Mã đơn */}
         <View style={styles.inline}>
-          <Text style={styles.label}>Mã đơn</Text>
+          <Text style={styles.label}>Mã đơn:</Text>
           <Text style={styles.contentHeader}>{order.id_order}</Text>
         </View>
         {/* Tài xế */}
         <View style={styles.inline}>
-          <Text style={styles.label}>Tài xế nhận đơn</Text>
+          <Text style={styles.label}>Tài xế nhận đơn:</Text>
           <Text style={styles.contentHeader}>
-            {/* {order.shipper.id ? (
-              order.shipper.name
-            ) : ( */}
+            {order?.shipper?.id_shipper ? (
+              order.shipper.id_shipper.name
+            ) : (
             <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-            {/* )} */}
+             )} 
           </Text>
         </View>
         <View style={styles.inline}>
-          <Text style={styles.label}>Biển số xe</Text>
+          <Text style={styles.label}>Biển số xe:</Text>
           <Text style={styles.contentHeader}>
-            {/* {order.shipper.id ? (
-              order.shipper.numberTruck
-            ) : ( */}
+            {order?.shipper?.truck ? (
+              order.shipper.truck.license_plate
+            ) : (
             <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-            {/* )} */}
+             )} 
           </Text>
         </View>
         {/* Ngưởi gửi */}
         <View style={[styles.inline, { marginTop: 20 }]}>
           <Foundation name="record" size={24} color="#0DBEBE" style={{ width: 30 }} />
-          <Text style={styles.label}>Người gửi</Text>
+          <Text style={styles.label}>Người gửi:</Text>
         </View>
         <Text style={styles.content}>
           {order.from_address.name +
@@ -96,28 +96,28 @@ export default function OrderDetail({ route, navigation }) {
         {/* Người nhận */}
         <View style={[styles.inline, { marginTop: 20 }]}>
           <Ionicons name="md-location-sharp" size={24} color="red" style={{ width: 30 }} />
-          <Text style={styles.label}>Người nhận</Text>
+          <Text style={styles.label}>Người nhận:</Text>
         </View>
         <Text style={styles.content}>
           {order.to_address.name + '\n' + order.to_address.address + '\n' + order.to_address.phone}
         </Text>
         {/* Ghi chú */}
-        <Text style={[styles.label, { marginTop: 20 }]}>Ghi chú</Text>
+        <Text style={[styles.label, { marginTop: 20 }]}>Ghi chú:</Text>
         <ScrollView style={styles.viewNote} showsVerticalScrollIndicator={false}>
           <Text style={styles.viewNote.txtNote}>{order.note}</Text>
         </ScrollView>
         {/* Thông tin còn lại */}
-        <View style={{ marginVertical: 20 }}>
+        <View style={{ marginTop: 20 }}>
           <View style={styles.inline}>
-            <Text style={styles.labelFooter}>Khoảng cách</Text>
+            <Text style={styles.labelFooter}>Khoảng cách:</Text>
             <Text style={styles.content}>{order.distance} km</Text>
           </View>
           <View style={styles.inline}>
-            <Text style={styles.labelFooter}>Thời gian dự kiến</Text>
+            <Text style={styles.labelFooter}>Thời gian dự kiến:</Text>
             <Text style={styles.content}>{order.expectedTime} phút</Text>
           </View>
           <View style={styles.inline}>
-            <Text style={styles.labelFooter}>Chi phí vận chuyển</Text>
+            <Text style={styles.labelFooter}>Chi phí vận chuyển:</Text>
             <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
               {order.total.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' đ'}
             </Text>
@@ -126,11 +126,11 @@ export default function OrderDetail({ route, navigation }) {
         {order.status == 'Đã hủy' ? (
           <View style={{ paddingBottom: 20 }}>
             <View style={styles.inline}>
-              <Text style={[styles.label, { width: 120 }]}>Lý do hủy</Text>
+              <Text style={[styles.labelFooter]}>Lý do hủy:</Text>
               <Text style={styles.content}>{order?.reason_cancel?.content}</Text>
             </View>
             <View style={styles.inline}>
-              <Text style={[styles.label, { width: 120 }]}>Người hủy</Text>
+              <Text style={[styles.labelFooter]}>Người hủy:</Text>
               <Text style={styles.content}>
                 {order?.reason_cancel?.user_cancel === 'AutoDelete'
                   ? 'Tự động xóa'

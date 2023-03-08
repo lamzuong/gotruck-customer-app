@@ -2,7 +2,7 @@ import styles from './stylesLogin';
 import stylesGlobal from '../../global/stylesGlobal';
 import MyButton from '../../components/MyButton/MyButton';
 
-import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert, Linking } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import MyInput from '../../components/MyInput/MyInput';
 
@@ -12,52 +12,64 @@ import firebase from 'firebase/compat';
 
 import axiosClient from '../../api/axiosClient';
 import { AuthContext } from '../../context/AuthContext';
-import { LoginSuccess, LoginStart, LoginFailure, GetListOrder } from '../../context/AuthAction';
+import {
+  LoginSuccess,
+  LoginStart,
+  LoginFailure,
+  SetListOrder,
+  SetLocation,
+} from '../../context/AuthAction';
+import { getLocationCurrentOfUser } from '../../global/utilLocation';
+import AnimatedLoader from 'react-native-animated-loader';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
+const label = ['Vui lòng nhập số điện thoại để tiếp tục', 'Nhập mã OTP để đăng nhập nào ^^ !!!'];
+
 export default function Login({ navigation }) {
   const [screen, setScreen] = useState(1);
-  const label = ['Vui lòng nhập số điện thoại để tiếp tục', 'Nhập mã OTP để đăng nhập nào ^^ !!!'];
-  const scrollViewRef = useRef();
-
-  const { dispatch, user } = useContext(AuthContext);
-
+  const [verificationId, setVerificationId] = useState();
+  const [checkLogin, setCheckLogin] = useState(false);
   const [validData, setValidData] = useState(false);
   const [phone, setPhone] = useState('');
   const [codeOTP, setcodeOTP] = useState('');
 
-  const [verificationId, setVerificationId] = useState();
+  const { dispatch, user } = useContext(AuthContext);
 
+  const scrollViewRef = useRef();
   const recaptchaVerifier = useRef(null);
+
   const sendVerification = async () => {
-    //Đăng nhập k xác minh
+    //Đăng nhập k xác minh => xóa sau khi test xong
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
-    console.log(userLogin);
-    dispatch(LoginSuccess(userLogin));
-    dispatch(GetListOrder(orderList));
-  
-    toMainScreen();
+    const currentLocation = await getLocationCurrentOfUser();
+    if (currentLocation) {
+      dispatch(SetLocation(currentLocation));
+      dispatch(LoginSuccess(userLogin));
+      dispatch(SetListOrder(orderList));
+      toMainScreen();
+    }
 
     // try {
-    //   const res = await axiosClient.get('/gotruck/auth/user/' + phone);
-    //   if (!res.phone) {
-    //     customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
-    //   } else {
-
-    //     const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    //     phoneProvider
-    //       .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
-    //       .then((result) => {
-    //         // customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
-    //         setVerificationId(result);
-    //         nextScreen();
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //         // customAlert('Thông báo', 'Lỗi không xác định', null);
-    //       });
+    //   const currentLocation = await getLocationCurrentOfUser();
+    //   if (currentLocation) {
+    //     dispatch(SetLocation(currentLocation));
+    //     const res = await axiosClient.get('/gotruck/auth/user/' + phone);
+    //     if (!res.phone) {
+    //       customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
+    //     } else {
+    //       const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    //       phoneProvider
+    //         .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
+    //         .then((result) => {
+    //           setVerificationId(result);
+    //           nextScreen();
+    //         })
+    //         .catch((error) => {
+    //           console.log(error);
+    //         });
+    //     }
     //   }
     // } catch (error) {
     //   console.log(error);
@@ -73,7 +85,9 @@ export default function Login({ navigation }) {
         .signInWithCredential(credential)
         .then(async () => {
           const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
+          const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
           dispatch(LoginSuccess(userLogin));
+          dispatch(SetListOrder(orderList));
           toMainScreen();
         })
         .catch((err) => {
@@ -113,76 +127,87 @@ export default function Login({ navigation }) {
   //------------------------------
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-        onLayout={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-      >
-        <Image
-          source={require('../../assets/images/logo-name-white.png')}
-          style={styles.logoName}
-        />
-        <Text style={styles.txtHeader}>Chào mừng bạn đã đến{'\n'}với GOTRUCK !!</Text>
+      {checkLogin ? (
+        <AnimatedLoader
+          visible={true}
+          overlayColor="rgba(255,255,255,0.75)"
+          speed={1}
+          loop={true}
+        ></AnimatedLoader>
+      ) : (
+        <>
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+            onLayout={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+          >
+            <Image
+              source={require('../../assets/images/logo-name-white.png')}
+              style={styles.logoName}
+            />
+            <Text style={styles.txtHeader}>Chào mừng bạn đã đến{'\n'}với GOTRUCK !!</Text>
 
-        <Text style={styles.txtLabel}>{label[screen - 1]}</Text>
-        {screen == 1 ? (
-          <View style={styles.phone}>
-            <View style={styles.phone.viewFlagVn}>
-              <Image
-                source={require('../../assets/images/flag-vn.jpg')}
-                style={styles.phone.flagVn}
+            <Text style={styles.txtLabel}>{label[screen - 1]}</Text>
+            {screen == 1 ? (
+              <View style={styles.phone}>
+                <View style={styles.phone.viewFlagVn}>
+                  <Image
+                    source={require('../../assets/images/flag-vn.jpg')}
+                    style={styles.phone.flagVn}
+                  />
+                  <Text style={styles.phone.phoneVn}>+84</Text>
+                </View>
+                <MyInput
+                  placeholder={'Số điện thoại'}
+                  error={'Số điện thoại không hợp lệ'}
+                  regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
+                  width={230}
+                  value={setPhone}
+                  valid={setValidData}
+                  initialValue={'0359434723'}
+                  screen={screen}
+                />
+              </View>
+            ) : (
+              <View style={styles.viewNormal}>
+                <MyInput
+                  placeholder={'Nhập mã OTP'}
+                  error={'Mã OTP không hợp lệ'}
+                  regex={/^[0-9]{6}$/g}
+                  width={widthScreen - 60}
+                  value={setcodeOTP}
+                  valid={setValidData}
+                  initialValue={'123789'}
+                  screen={screen}
+                />
+              </View>
+            )}
+          </ScrollView>
+          <View style={styles.buttonFooter}>
+            {validData ? (
+              <MyButton
+                type="large"
+                text={screen == 2 ? 'Xác nhận' : 'Tiếp tục'}
+                btnColor="black"
+                txtColor="white"
+                action={() => {
+                  screen == 1 ? sendVerification() : screen == 2 ? checkOTP() : toMainScreen();
+                  // alert error if invalid OTP
+                }}
               />
-              <Text style={styles.phone.phoneVn}>+84</Text>
-            </View>
-            <MyInput
-              placeholder={'Số điện thoại'}
-              error={'Số điện thoại không hợp lệ'}
-              regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
-              width={230}
-              value={setPhone}
-              valid={setValidData}
-              initialValue={'0359434723'}
-              screen={screen}
-            />
+            ) : (
+              <MyButton
+                type="large"
+                text={screen == 2 ? 'Xác nhận' : 'Tiếp tục'}
+                btnColor="grey"
+                txtColor={stylesGlobal.darkGrey}
+                disable={true}
+              />
+            )}
           </View>
-        ) : (
-          <View style={styles.viewNormal}>
-            <MyInput
-              placeholder={'Nhập mã OTP'}
-              error={'Mã OTP không hợp lệ'}
-              regex={/^[0-9]{6}$/g}
-              width={widthScreen - 60}
-              value={setcodeOTP}
-              valid={setValidData}
-              initialValue={'123789'}
-              screen={screen}
-            />
-          </View>
-        )}
-      </ScrollView>
-      <View style={styles.buttonFooter}>
-        {validData ? (
-          <MyButton
-            type="large"
-            text={screen == 2 ? 'Xác nhận' : 'Tiếp tục'}
-            btnColor="black"
-            txtColor="white"
-            action={() => {
-              screen == 1 ? sendVerification() : screen == 2 ? checkOTP() : toMainScreen();
-              // alert error if invalid OTP
-            }}
-          />
-        ) : (
-          <MyButton
-            type="large"
-            text={screen == 2 ? 'Xác nhận' : 'Tiếp tục'}
-            btnColor="grey"
-            txtColor={stylesGlobal.darkGrey}
-            disable={true}
-          />
-        )}
-      </View>
-      <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
+          <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
+        </>
+      )}
     </View>
   );
 }

@@ -57,10 +57,8 @@ export default function LocationShipper({ navigation }) {
   };
 
   useEffect(() => {
-    console.log(111);
     socketClient.off(order.id_order + '');
     socketClient.on(order.id_order + '', (data) => {
-      console.log(data);
       setLocationShipper(data)
     });
 

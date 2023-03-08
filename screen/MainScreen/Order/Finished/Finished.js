@@ -8,7 +8,7 @@ import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
 import { socketClient } from '../../../../global/socket';
 import { useIsFocused } from '@react-navigation/native';
-import { GetListOrder } from '../../../../context/AuthAction';
+import { SetListOrder } from '../../../../context/AuthAction';
 
 export default function Finished() {
   const { user, dispatch, listOrder } = useContext(AuthContext);
@@ -17,7 +17,7 @@ export default function Finished() {
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
-      dispatch(GetListOrder(orderList));
+      dispatch(SetListOrder(orderList));
     }
   };
 

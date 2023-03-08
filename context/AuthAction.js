@@ -1,17 +1,14 @@
-export const LoginStart = (userCredentials) => ({
-    type: 'LOGIN_START',
-});
-
 export const LoginSuccess = (user) => ({
     type: 'LOGIN_SUCCESS',
     payload: user,
 });
 
-export const LoginFailure = () => ({
-    type: 'LOGIN_FAILURE',
+export const SetListOrder = (orderList) => ({
+    type: 'SET_LIST_ORDER',
+    payload: orderList,
 });
 
-export const GetListOrder = (orderList) => ({
-    type: 'GET_LIST_ORDER',
-    payload: orderList,
+export const SetLocation = (address) => ({
+    type: 'SET_LOCATION',
+    payload: address,
 });

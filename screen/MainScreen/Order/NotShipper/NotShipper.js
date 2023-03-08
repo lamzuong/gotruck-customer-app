@@ -13,7 +13,7 @@ import { Modal } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
-import { GetListOrder } from '../../../../context/AuthAction';
+import { SetListOrder } from '../../../../context/AuthAction';
 
 export default function NotShipper() {
   const { user, listOrder, dispatch } = useContext(AuthContext);
@@ -27,7 +27,7 @@ export default function NotShipper() {
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
-      dispatch(GetListOrder(orderList));
+      dispatch(SetListOrder(orderList));
     }
   };
 
