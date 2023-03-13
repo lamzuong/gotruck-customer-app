@@ -170,7 +170,6 @@ export default function Feedback({ navigation }) {
           <Modal animationType="slide" transparent={true} visible={modalVisible}>
             <TouchableWithoutFeedback
               onPress={() => {
-                // console.log(1);
                 setModalVisible(!modalVisible);
               }}
             >

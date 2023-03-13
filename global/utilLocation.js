@@ -4,7 +4,10 @@ import { GOOGLE_API_KEY } from './keyGG';
 import MapViewDirections from 'react-native-maps-directions';
 import { Alert, Linking } from 'react-native';
 import { Link } from '@react-navigation/native';
-
+import axiosClient from '../api/axiosClient';
+import { MAP_4D_KEY } from './map4dKey';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import decodePathPoLyline from 'decode-google-map-polyline';
 export const getLocationCurrentOfUser = async () => {
   const { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
@@ -19,85 +22,74 @@ export const getLocationCurrentOfUser = async () => {
     return null;
   }
   const location = await Location.getCurrentPositionAsync({});
-  Geocoder.init(GOOGLE_API_KEY, {
-    language: 'vi',
-  });
-  const dataGeocoder = await Geocoder.from({
-    latitude: location.coords.latitude,
-    longitude: location.coords.longitude,
-  });
+  const latLng = location.coords.latitude + ',' + location.coords.longitude;
+  const url = `https://api.map4d.vn/sdk/v2/geocode?key=${MAP_4D_KEY}&location=${latLng}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    let address = result.result[0].address;
 
-  let addressCurrent = dataGeocoder?.results[0]?.formatted_address;
-  const temp = addressCurrent.split(',', 1);
-  addressCurrent.replace(temp + ', ', '');
-
-  for (let i = 0; i < 2; i++) {
-    if (!isPlusCode(dataGeocoder?.results[i].formatted_address)) {
-      addressCurrent = dataGeocoder?.results[i].formatted_address;
-      break;
+    if (!address.includes('Việt Nam')) {
+      address += ', Việt Nam';
     }
+    return address;
+  } else {
+    return {
+      address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
+      latitude: 10.820685,
+      longitude: 106.687631,
+    };
   }
-  const data = {
-    address: addressCurrent,
-    latitude: location.coords.latitude,
-    longitude: location.coords.longitude,
-  };
-  return data;
+
+  // return {
+  //   address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
+  //   latitude: 10.820685,
+  //   longitude: 106.687631,
+  // };
 };
 
-export const getDistanceTwoLocation = async (addressFrom, addressTo) => {
-  if (addressFrom.address === addressTo.address) return 1;
-  else {
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressFrom.address}&destination=${addressTo.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-    const data = await fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson.status == 'OK') {
-          return responseJson.routes[0].legs[0].distance.value;
-        } else {
-          return -1;
-        }
-      })
-      .catch((e) => {
-        console.log('getLocationCurrentOfUser() Error: ' + e);
-        return -1;
-      });
-    return data;
+export const getRouteTwoLocation = async (origin, destination) => {
+  const originStr = origin.latitude + ',' + origin.longitude;
+  const destinationStr = destination.latitude + ',' + destination.longitude;
+  const mode = 'Car';
+  const url = `http://api.map4d.vn/sdk/route?key=${MAP_4D_KEY}&origin=${originStr}&destination=${destinationStr}&mode=${mode}&weighting=${0}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    return result;
+  } else {
+    return null;
   }
+  // return '123';
 };
 
-export const getAddressFromCoordinate = async (location) => {
-  Geocoder.init(GOOGLE_API_KEY, {
-    language: 'vi',
-  });
-  const dataGeocoder = await Geocoder.from({
-    latitude: location.latitude,
-    longitude: location.longitude,
-  });
-
-  let addressCurrent = dataGeocoder?.results[0]?.formatted_address;
-  const temp = addressCurrent.split(',', 1);
-  addressCurrent.replace(temp + ', ', '');
-
-  for (let i = 0; i < 2; i++) {
-    if (!isPlusCode(dataGeocoder?.results[i].formatted_address)) {
-      addressCurrent = dataGeocoder?.results[i].formatted_address;
-      break;
+export const getAddressFromLocation = async (location) => {
+  const locationStr = location.latitude + ',' + location.longitude;
+  const url = `https://api.map4d.vn/sdk/v2/geocode?key=${MAP_4D_KEY}&location=${locationStr}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    let address = result.result[0].address;
+    if (!address.includes('Việt Nam')) {
+      address += ', Việt Nam';
     }
+    return address;
+  } else {
+    return null;
   }
-  const data = {
-    address: addressCurrent,
-    latitude: location.latitude,
-    longitude: location.longitude,
-  };
-  return data;
+  // return '12 Việt Nam';
 };
 
-// ex: H6QC+MW, Linh Xuân, Thủ Đức, Hồ Chí Minh, Việt Nam
-//     VHCW+2H Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam
-// H6QC+MW, VHCW+2H sẽ bị xóa
-const isPlusCode = (address) => {
-  const temp = address.split(',', 1);
-  const plusCodeRegex = /^[0-9A-Z]*\+[0-9A-Z]*$/;
-  return plusCodeRegex.test(temp);
+
+
+export const getAddressFromText = async (text) => {
+  const url = `http://api.map4d.vn/sdk/autosuggest?key=${MAP_4D_KEY}&text=${text}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    let listAdress = result.result.slice(0, 5); //only show 5 address
+    return listAdress;
+  } else {
+    return null;
+  }
+};
+
+export const getPoLylineFromEncode = (path) => {
+  return decodePathPoLyline(path);
 };

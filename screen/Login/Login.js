@@ -40,7 +40,7 @@ export default function Login({ navigation }) {
   const recaptchaVerifier = useRef(null);
 
   const sendVerification = async () => {
-    //Đăng nhập k xác minh => xóa sau khi test xong
+    // Đăng nhập k xác minh => xóa sau khi test xong
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
     const currentLocation = await getLocationCurrentOfUser();

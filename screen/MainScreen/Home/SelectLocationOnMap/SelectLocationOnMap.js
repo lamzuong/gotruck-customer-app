@@ -1,20 +1,27 @@
-import styles from './stylesSelectLocationOnMap';
 import stylesGlobal from '../../../../global/stylesGlobal';
+import styles from './stylesSelectLocationOnMap';
 
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRef } from 'react';
-import {
-  Alert,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { Alert, Dimensions, Text, TouchableOpacity, View } from 'react-native';
 
-import Geocoder from 'react-native-geocoding';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { GOOGLE_API_KEY } from '../../../../global/keyGG';
+import { getAddressFromLocation, getRouteTwoLocation } from '../../../../global/utilLocation';
+// import { MFMapView } from 'react-native-map4d-map/lib/commonjs/components/MFMapView';
+// import { MFMapView } from 'react-native-map4d-map/lib/commonjs/components/MFMapView';
+// import { MFMapView } from 'react-native-map4d-map/lib/commonjs';
+// import {
+//   MFMapView,
+//   MFMarker,
+//   MFCircle,
+//   MFPolyline,
+//   MFPolygon,
+//   MFPOI,
+//   MFDirectionsRenderer
+// } from 'react-native-map4d-map'
+
+// import {MFMapView} from 'react-native-map4d-map'
 
 export default function SelectLocationOnMap() {
   const navigation = useNavigation();
@@ -37,112 +44,78 @@ export default function SelectLocationOnMap() {
 
   const handleAddress = async () => {
     const camera = await mapRef.current?.getCamera();
-    Geocoder.init(GOOGLE_API_KEY, {
-      language: 'vi',
-    });
-    Geocoder.from(camera.center)
-      .then((json) => {
-        let checkLocation = json.results[0].formatted_address.split(' ');
-        if (
-          checkLocation[checkLocation.length - 1] != 'Vietnam' &&
-          checkLocation[checkLocation.length - 1] != 'Nam'
-        ) {
-          Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
-          return;
-        }
-        let addressSelected = {
-          latitude: camera.center.latitude || 0,
-          longitude: camera.center.longitude || 0,
-          address: json.results[0].formatted_address,
-        };
+    const resultAddress = await getAddressFromLocation(camera.center);
+    if (!resultAddress) {
+      Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+      return;
+    } else {
+      let checkLocation = resultAddress.includes('Việt Nam');
+      if (!checkLocation) {
+        Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+        return;
+      }
+      let addressSelected = {
+        latitude: camera.center.latitude || 0,
+        longitude: camera.center.longitude || 0,
+        address: resultAddress,
+      };
 
-        if (noiLayHang) {
-          if (addressTo) {
-            if (addressTo.address == addressSelected.address) {
-              Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
-              return;
-            }
-            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressSelected.address}&destination=${addressTo.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-            fetch(url)
-              .then((response) => response.json())
-              .then((responseJson) => {
-                if (responseJson.status == 'OK')
-                  navigation.navigate('GoogleMap', {
-                    addressRecieve: addressSelected,
-                    addressDelivery: addressTo,
-                  });
-                else if (responseJson.status == 'ZERO_RESULTS') {
-                  Alert.alert(
-                    'Thông báo',
-                    'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                      addressSelected.address +
-                      '" đến "' +
-                      addressTo.address +
-                      '"',
-                  );
-                  return;
-                } else {
-                  // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-                  Alert.alert(
-                    'Thông báo',
-                    'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-                  );
-                  return;
-                }
-              })
-              .catch((e) => {
-                console.warn(e);
-                return;
-              });
-          } else
-            navigation.navigate('NewOrder', {
+      if (noiLayHang) {
+        if (addressTo) {
+          if (addressTo.address === addressSelected.address) {
+            Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
+            return;
+          }
+          const resultRoute = await getRouteTwoLocation(addressSelected, addressTo);
+          if (resultRoute) {
+            navigation.navigate('GoogleMap', {
               addressRecieve: addressSelected,
+              addressDelivery: addressTo,
             });
-        } else {
-          if (addressFrom) {
-            if (addressFrom.address == addressSelected.address) {
-              Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
-              return;
-            }
-            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressFrom.address}&destination=${addressSelected.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-            fetch(url)
-              .then((response) => response.json())
-              .then((responseJson) => {
-                if (responseJson.status == 'OK')
-                  navigation.navigate('GoogleMap', {
-                    addressRecieve: addressFrom,
-                    addressDelivery: addressSelected,
-                  });
-                else if (responseJson.status == 'ZERO_RESULTS') {
-                  Alert.alert(
-                    'Thông báo',
-                    'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                      addressFrom.address +
-                      '" đến "' +
-                      addressSelected.address +
-                      '"',
-                  );
-                  return;
-                } else {
-                  // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-                  Alert.alert(
-                    'Thông báo',
-                    'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-                  );
-                  return;
-                }
-              })
-              .catch((e) => {
-                console.warn(e);
-                return;
-              });
-          } else
-            navigation.navigate('NewOrder', {
+          } else {
+            Alert.alert(
+              'Thông báo',
+              'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+                addressSelected.address +
+                '" đến "' +
+                addressTo.address +
+                '"',
+            );
+            return;
+          }
+        } else
+          navigation.navigate('NewOrder', {
+            addressRecieve: addressSelected,
+          });
+      } else {
+        if (addressFrom) {
+          if (addressFrom.address == addressSelected.address) {
+            Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
+            return;
+          }
+          const resultRoute = await getRouteTwoLocation(addressFrom, addressSelected);
+          if (resultRoute) {
+            navigation.navigate('GoogleMap', {
+              addressRecieve: addressFrom,
               addressDelivery: addressSelected,
             });
-        }
-      })
-      .catch((error) => console.log(error));
+          } else {
+            Alert.alert(
+              'Thông báo',
+              'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+                addressFrom.address +
+                '" đến "' +
+                addressSelected.address +
+                '"',
+            );
+            return;
+          }
+        } else
+          navigation.navigate('NewOrder', {
+            addressDelivery: addressSelected,
+          });
+      }
+    }
   };
 
   return (
@@ -162,13 +135,8 @@ export default function SelectLocationOnMap() {
         showsUserLocation={true}
         showsMyLocationButton={true}
         zoomEnabled={true}
-        addressForCoordinate={(e) => {
-          console.log(e);
-        }}
       />
-
       <Ionicons name="location" size={30} color="red" style={styles.marker} />
-
       <TouchableOpacity style={styles.chonTrenBanDo} onPress={() => handleAddress()}>
         <Text style={{ fontSize: 17, color: 'white', padding: 5 }}>OK</Text>
       </TouchableOpacity>

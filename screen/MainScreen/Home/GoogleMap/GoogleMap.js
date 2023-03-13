@@ -1,7 +1,7 @@
 import styles from './stylesGoogleMap';
 import stylesGlobal from '../../../../global/stylesGlobal';
 
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { View, Dimensions, Text, Alert } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
@@ -9,6 +9,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import MyButton from '../../../../components/MyButton/MyButton';
 import { Ionicons, Foundation } from '@expo/vector-icons';
+import { getPoLylineFromEncode, getRouteTwoLocation } from '../../../../global/utilLocation';
 
 export default function GoogleMap() {
   const [origin, setOrigin] = useState();
@@ -16,6 +17,7 @@ export default function GoogleMap() {
   const [showButtonTiepTuc, setshowButtonTiepTuc] = useState(false);
   const [showDetailOrigin, setshowDetailOrigin] = useState(true);
   const [showDetailDestination, setshowDetailDestination] = useState(true);
+  const [routePolyline, setRoutePolyline] = useState([]);
 
   const mapRef = useRef();
 
@@ -46,11 +48,34 @@ export default function GoogleMap() {
     mapRef.current?.fitToCoordinates([origin, destination], { edgePadding });
     setshowButtonTiepTuc(true);
   };
+  setTimeout(() => {
+    zoomMap();
+  }, 1000);
 
   useEffect(() => {
-    if (addressRecieve != undefined) setOrigin(addressRecieve);
-    if (addressDelivery != undefined) setDestination(addressDelivery);
+    if (addressRecieve != undefined) {
+      setOrigin(addressRecieve);
+    }
+    if (addressDelivery != undefined) {
+      setDestination(addressDelivery);
+    }
   }, [route]);
+
+  useEffect(() => {
+    (async function () {
+      if (origin && destination) {
+        const resultRoute = await getRouteTwoLocation(origin, destination);
+        let routePolyTemp = [];
+        if (resultRoute) {
+          const listPoly = getPoLylineFromEncode(resultRoute?.result.routes[0].overviewPolyline);
+          listPoly?.forEach((el) => {
+            routePolyTemp.push({ latitude: el.lat, longitude: el.lng });
+          });
+          setRoutePolyline(routePolyTemp);
+        }
+      }
+    }.call(this));
+  }, [origin, destination]);
 
   return (
     <View style={styles.container}>
@@ -105,19 +130,7 @@ export default function GoogleMap() {
         )}
 
         {origin && destination && (
-          <MapViewDirections
-            origin={origin}
-            destination={destination}
-            apikey={GOOGLE_API_KEY}
-            strokeColor="rgb(0,176,255)"
-            strokeWidth={4}
-            mode="DRIVING"
-            onReady={() => zoomMap()}
-            onError={(e) => {
-              console.log(e);
-              Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
-            }}
-          />
+          <Polyline coordinates={routePolyline} strokeColor="rgb(0,176,255)" strokeWidth={8} />
         )}
       </MapView>
       {showButtonTiepTuc && (

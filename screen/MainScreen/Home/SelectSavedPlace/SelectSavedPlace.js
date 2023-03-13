@@ -8,6 +8,7 @@ import { useRoute } from '@react-navigation/native';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import axiosClient from '../../../../api/axiosClient';
 import { AuthContext } from '../../../../context/AuthContext';
+import { getRouteTwoLocation } from '../../../../global/utilLocation';
 
 export default function SavedPlace({ navigation }) {
   const [listAddress, setListAddress] = useState([]);
@@ -17,94 +18,61 @@ export default function SavedPlace({ navigation }) {
   const route = useRoute();
   const { noiLayHang, addressTo, addressFrom } = route.params;
 
-  const handleAddress = (addressSelected) => {
+  const handleAddress = async (addressSelected) => {
     if (noiLayHang) {
       if (addressTo) {
-        if (addressTo.address == addressSelected.address) {
+        if (addressTo.address === addressSelected.address) {
           Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
           return;
         }
-        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressSelected.address}&destination=${addressTo.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            console.log(responseJson.status);
-            if (responseJson.status == 'OK')
-              navigation.navigate('GoogleMap', {
-                addressRecieve: addressSelected,
-                addressDelivery: addressTo,
-              });
-            else if (responseJson.status == 'ZERO_RESULTS') {
-              Alert.alert(
-                'Thông báo',
-                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                  addressSelected.address +
-                  '" đến "' +
-                  addressTo.address +
-                  '"',
-              );
-              return;
-            } else {
-              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-              Alert.alert(
-                'Thông báo',
-                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-              );
-              return;
-            }
-          })
-          .catch((e) => {
-            console.warn(e);
-            return;
+        const resultRoute = await getRouteTwoLocation(addressSelected, addressTo);
+        if (resultRoute) {
+          navigation.navigate('GoogleMap', {
+            addressRecieve: addressSelected,
+            addressDelivery: addressTo,
           });
-      } else {
+        } else {
+          Alert.alert(
+            'Thông báo',
+            'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+              addressSelected.address +
+              '" đến "' +
+              addressTo.address +
+              '"',
+          );
+          return;
+        }
+      } else
         navigation.navigate('NewOrder', {
           addressRecieve: addressSelected,
         });
-      }
     } else {
       if (addressFrom) {
         if (addressFrom.address == addressSelected.address) {
           Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
           return;
         }
-        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressFrom.address}&destination=${addressSelected.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (responseJson.status == 'OK')
-              navigation.navigate('GoogleMap', {
-                addressRecieve: addressFrom,
-                addressDelivery: addressSelected,
-              });
-            else if (responseJson.status == 'ZERO_RESULTS') {
-              Alert.alert(
-                'Thông báo',
-                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                  addressFrom.address +
-                  '" đến "' +
-                  addressSelected.address +
-                  '"',
-              );
-              return;
-            } else {
-              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-              Alert.alert(
-                'Thông báo',
-                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-              );
-              return;
-            }
-          })
-          .catch((e) => {
-            console.warn(e);
-            return;
+        const resultRoute = await getRouteTwoLocation(addressFrom, addressSelected);
+        if (resultRoute) {
+          navigation.navigate('GoogleMap', {
+            addressRecieve: addressFrom,
+            addressDelivery: addressSelected,
           });
-      } else {
+        } else {
+          Alert.alert(
+            'Thông báo',
+            'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+              addressFrom.address +
+              '" đến "' +
+              addressSelected.address +
+              '"',
+          );
+          return;
+        }
+      } else
         navigation.navigate('NewOrder', {
           addressDelivery: addressSelected,
         });
-      }
     }
   };
 
@@ -125,8 +93,6 @@ export default function SavedPlace({ navigation }) {
       else setListAddress([]);
     }.call(this));
   }, []);
- 
- 
 
   return (
     <ScrollView style={styles.container}>
@@ -155,8 +121,8 @@ export default function SavedPlace({ navigation }) {
           ))}
         </>
       ) : (
-        <View style={styles.viewNoContent}> 
-            <Text style={styles.noContent}>Không có vị trí đã lưu</Text>
+        <View style={styles.viewNoContent}>
+          <Text style={styles.noContent}>Không có vị trí đã lưu</Text>
         </View>
       )}
     </ScrollView>

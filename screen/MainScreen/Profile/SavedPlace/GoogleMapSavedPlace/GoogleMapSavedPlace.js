@@ -9,6 +9,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Geocoder from 'react-native-geocoding';
 
 import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
+import { getAddressFromLocation } from '../../../../../global/utilLocation';
 
 export default function GoogleMapSavedPlace() {
   const mapRef = useRef();
@@ -29,46 +30,42 @@ export default function GoogleMapSavedPlace() {
 
   const handleAddress = async () => {
     const camera = await mapRef.current?.getCamera();
-    Geocoder.init(GOOGLE_API_KEY, {
-      language: 'vi',
-    });
-    Geocoder.from(camera.center)
-      .then((json) => {
-        let checkLocation = json.results[0].formatted_address.split(' ');
-        if (checkLocation[checkLocation.length - 1] != 'Vietnam' && checkLocation[checkLocation.length - 1] != 'Nam') {
-          console.log(checkLocation);
-          Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
-          return;
-        }
-
-        let addressSelected = {
-          latitude: camera.center.latitude || 0,
-          longitude: camera.center.longitude || 0,
-          address: json.results[0].formatted_address,
-        };
-
-        if (route.params != undefined) {
-          navigation.navigate('FormSavedPlace', {
-            addressSelected: addressSelected,
-            item: route.params.item,
-          });
-        } else
-          navigation.navigate('FormSavedPlace', {
-            addressSelected: addressSelected,
-          });
-      })
-      .catch((error) => console.log(error));
+    const resultAddress = await getAddressFromLocation(camera.center);
+    if (!resultAddress) {
+      Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+      return;
+    } else {
+      let checkLocation = resultAddress.includes('Việt Nam');
+      if (!checkLocation) {
+        Alert.alert('Thông báo', 'Vị trí bạn chọn không được hỗ trợ vận chuyển');
+        return;
+      }
+      let addressSelected = {
+        latitude: camera.center.latitude || 0,
+        longitude: camera.center.longitude || 0,
+        address: resultAddress,
+      };
+      if (route.params != undefined) {
+        navigation.navigate('FormSavedPlace', {
+          addressSelected: addressSelected,
+          item: route.params.item,
+        });
+      } else
+        navigation.navigate('FormSavedPlace', {
+          addressSelected: addressSelected,
+        });
+    }
   };
 
   return (
     <View style={styles.container}>
-       <Ionicons
-          style={styles.iconBack}
-          name="arrow-back"
-          size={30}
-          color={stylesGlobal.mainGreen}
-          onPress={() => navigation.goBack()}
-        />
+      <Ionicons
+        style={styles.iconBack}
+        name="arrow-back"
+        size={30}
+        color={stylesGlobal.mainGreen}
+        onPress={() => navigation.goBack()}
+      />
       <MapView
         ref={mapRef}
         style={styles.map}

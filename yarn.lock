@@ -2166,10 +2166,15 @@
   "resolved" "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"
   "version" "1.0.0"
 
-"@react-native/normalize-color@*", "@react-native/normalize-color@^2.0.0", "@react-native/normalize-color@2.0.0":
+"@react-native/normalize-color@^2.0.0", "@react-native/normalize-color@2.0.0":
   "integrity" "sha512-Wip/xsc5lw8vsBlmY2MO/gFLp3MvuZ2baBZjDeTjjndMgM0h5sxz7AZR62RDPGgstp8Np7JzjvVqVT7tpFZqsw=="
   "resolved" "https://registry.npmjs.org/@react-native/normalize-color/-/normalize-color-2.0.0.tgz"
   "version" "2.0.0"
+
+"@react-native/normalize-colors@*":
+  "integrity" "sha512-285lfdqSXaqKuBbbtP9qL2tDrfxdOFtIMvkKadtleRQkdOxx+uzGvFr82KHmc/sSiMtfXGp7JnFYWVh4sFl7Yw=="
+  "resolved" "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.72.0.tgz"
+  "version" "0.72.0"
 
 "@react-native/polyfills@2.0.0":
   "integrity" "sha512-K0aGNn1TjalKj+65D7ycc1//H9roAQ51GJVk5ZJQFb2teECGmzd86bYDC0aYdbRf7gtovescq4Zt6FR0tgXiHQ=="
@@ -3356,6 +3361,11 @@
   "resolved" "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz"
   "version" "1.2.0"
 
+"decode-google-map-polyline@^1.0.1":
+  "integrity" "sha512-Iuq11wszBjiOdsywiEGjC8g2bb49KTOsTb+JKpxNbdeuGOvqQ4KL8LVUCnsPt6cv6cAmjY3FVb1sM2xGIzUkRA=="
+  "resolved" "https://registry.npmjs.org/decode-google-map-polyline/-/decode-google-map-polyline-1.0.1.tgz"
+  "version" "1.0.1"
+
 "decode-uri-component@^0.2.0", "decode-uri-component@^0.2.2":
   "integrity" "sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ=="
   "resolved" "https://registry.npmjs.org/decode-uri-component/-/decode-uri-component-0.2.2.tgz"
@@ -3457,12 +3467,12 @@
   "resolved" "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz"
   "version" "2.0.0"
 
-"deprecated-react-native-prop-types@^2.3.0":
-  "integrity" "sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA=="
-  "resolved" "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz"
-  "version" "2.3.0"
+"deprecated-react-native-prop-types@^2.3.0", "deprecated-react-native-prop-types@^4.0.0":
+  "integrity" "sha512-q0kk77qFPC4adlnZH7cv9lfbHALeaTkl7wT1uNERc+e0Os3KcBKKy1rVliTE8sfey6TP6OPzoIXpr9OPidvvHw=="
+  "resolved" "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-4.0.0.tgz"
+  "version" "4.0.0"
   dependencies:
-    "@react-native/normalize-color" "*"
+    "@react-native/normalize-colors" "*"
     "invariant" "*"
     "prop-types" "*"
 
@@ -6281,6 +6291,11 @@
   "integrity" "sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A=="
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   "version" "0.70.3"
+
+"react-native-map4d-map@^2.6.2":
+  "integrity" "sha512-XOS3NX2Rz4Tz36BioKjVKmrfSAAaoZc9ImjTnrTbyJYjrnY177/1ebyIxs/n7HvqdBD7XDCScsfDIqY6rDRnow=="
+  "resolved" "https://registry.npmjs.org/react-native-map4d-map/-/react-native-map4d-map-2.6.2.tgz"
+  "version" "2.6.2"
 
 "react-native-maps-directions@^1.9.0":
   "integrity" "sha512-68SrMOUg4WQ5PmpS9sNOTZaYtdyVYJnnjQOOhABrgiKnb5BXCZRU2gDoS11gYf23hjUBjq8JXzgfn37WcINLwA=="

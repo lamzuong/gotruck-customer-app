@@ -1,86 +1,64 @@
 import styles from './stylesSearchLocation';
 import stylesGlobal from '../../../../global/stylesGlobal';
 
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
-import React, { useContext } from 'react';
+import { View, Text, ScrollView, Pressable, Alert, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AuthContext } from '../../../../context/AuthContext';
+import { getRouteTwoLocation, getAddressFromText } from '../../../../global/utilLocation';
+import MyInput from '../../../../components/MyInput/MyInput';
 
 export default function DiaChiNhanHang() {
+  const [keyword, setKeyword] = useState('');
+  const [listResultAddress, setListResultAddress] = useState([]);
+  const [loader, setLoader] = useState(false);
   const navigation = useNavigation();
-
   const { locationNow } = useContext(AuthContext);
-
   const route = useRoute();
   const { noiLayHang, addressFrom, addressTo } = route.params;
 
   const locationNowUser = {
-    description: 'Vị trí hiện tại',
-    geometry: {
-      location: {
-        lat: locationNow?.latitude,
-        lng: locationNow?.longitude,
-      },
+    address: 'Vị trí hiện tại',
+    location: {
+      lat: locationNow?.latitude,
+      lng: locationNow?.longitude,
     },
   };
 
-  const handleAddress = (data, details) => {
-    //convert "Vi tri hien tai" to address
-    if (data.description == locationNowUser.description) {
-      data.description = locationNow.address;
-    }
+  const handleAddress = async (address) => {
     let addressSelected = {
-      latitude: details?.geometry.location.lat || 0,
-      longitude: details?.geometry.location.lng || 0,
-      address: data.description,
+      latitude: address.location.lat || 0,
+      longitude: address.location.lng || 0,
+      address: address.address === 'Vị trí hiện tại' ? locationNow.address : address.address,
     };
-    //Neu la vi tri da luu thi them name, phone
-    if (data.phone) {
-      addressSelected.name = data.name;
-      addressSelected.phone = data.phone;
-    }
+   
     if (noiLayHang) {
       if (addressTo) {
-        if (addressTo.address == addressSelected.address) {
+        if (addressTo.address === addressSelected.address) {
           Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
           return;
         }
-        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressSelected.address}&destination=${addressTo.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (responseJson.status == 'OK')
-              navigation.navigate('GoogleMap', {
-                addressRecieve: addressSelected,
-                addressDelivery: addressTo,
-              });
-            else if (responseJson.status == 'ZERO_RESULTS') {
-              Alert.alert(
-                'Thông báo',
-                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                  addressSelected.address +
-                  '" đến "' +
-                  addressTo.address +
-                  '"',
-              );
-              return;
-            } else {
-              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-              Alert.alert(
-                'Thông báo',
-                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-              );
-              return;
-            }
-          })
-          .catch((e) => {
-            console.warn(e);
-            return;
+        const resultRoute = await getRouteTwoLocation(addressSelected, addressTo);
+        if (resultRoute) {
+          navigation.navigate('GoogleMap', {
+            addressRecieve: addressSelected,
+            addressDelivery: addressTo,
           });
+        } else {
+          Alert.alert(
+            'Thông báo',
+            'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+              addressSelected.address +
+              '" đến "' +
+              addressTo.address +
+              '"',
+          );
+          return;
+        }
       } else
         navigation.navigate('NewOrder', {
           addressRecieve: addressSelected,
@@ -91,38 +69,23 @@ export default function DiaChiNhanHang() {
           Alert.alert('Thông báo', 'Vị trí nhận hàng trùng với vị trí giao hàng');
           return;
         }
-        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${addressFrom.address}&destination=${addressSelected.address}&key=${GOOGLE_API_KEY}&mode=driving`;
-        fetch(url)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (responseJson.status == 'OK')
-              navigation.navigate('GoogleMap', {
-                addressRecieve: addressFrom,
-                addressDelivery: addressSelected,
-              });
-            else if (responseJson.status == 'ZERO_RESULTS') {
-              Alert.alert(
-                'Thông báo',
-                'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
-                  addressFrom.address +
-                  '" đến "' +
-                  addressSelected.address +
-                  '"',
-              );
-              return;
-            } else {
-              // status == 'NOT_FOUND' or  status == 'REQUEST_DENIED'
-              Alert.alert(
-                'Thông báo',
-                'Vui lòng kiểm tra lại vị trí nhận hàng và vị trí giao hàng',
-              );
-              return;
-            }
-          })
-          .catch((e) => {
-            console.warn(e);
-            return;
+        const resultRoute = await getRouteTwoLocation(addressFrom, addressSelected);
+        if (resultRoute) {
+          navigation.navigate('GoogleMap', {
+            addressRecieve: addressFrom,
+            addressDelivery: addressSelected,
           });
+        } else {
+          Alert.alert(
+            'Thông báo',
+            'Rất tiếc, Chúng tôi không thể vận chuyển từ "' +
+              addressFrom.address +
+              '" đến "' +
+              addressSelected.address +
+              '"',
+          );
+          return;
+        }
       } else
         navigation.navigate('NewOrder', {
           addressDelivery: addressSelected,
@@ -130,18 +93,43 @@ export default function DiaChiNhanHang() {
     }
   };
 
+  useEffect(() => {
+    setLoader(true);
+    const delayFC = setTimeout(async () => {
+      if (keyword) {
+        const resultAddress = await getAddressFromText(keyword);
+        if (resultAddress) {
+          setListResultAddress(resultAddress);
+        } else {
+          setListResultAddress([]);
+        }
+      } else {
+        setListResultAddress([]);
+      }
+      setLoader(false);
+    }, 1000);
+    return () => clearTimeout(delayFC);
+  }, [keyword]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons
-          style={styles.iconBack}
           name="arrow-back"
           size={25}
           color={stylesGlobal.mainGreen}
           onPress={() => navigation.goBack()}
+          style={{ left: -10 }}
         />
 
-        <GooglePlacesAutocomplete
+        <MyInput
+          placeholder={'Nhập địa chỉ '}
+          value={setKeyword}
+          borderWidth={1}
+          borderColor={stylesGlobal.darkGrey}
+        />
+
+        {/* <GooglePlacesAutocomplete
           styles={{ textInput: styles.txtSearch, description: styles.txtResult }}
           placeholder={'Nhập địa chỉ nhận hàng'}
           enablePoweredByContainer={false}
@@ -160,7 +148,38 @@ export default function DiaChiNhanHang() {
             autoFocus: true,
           }}
           predefinedPlaces={[locationNowUser]}
-        />
+        /> */}
+      </View>
+      <View style={styles.listAddress}>
+        {keyword && listResultAddress?.length > 0 ? (
+          <>
+            {listResultAddress?.map((e, i) => (
+              <View key={i} style={styles.itemAddress}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleAddress(e);
+                  }}
+                >
+                  <Text style={styles.address}>{e.address}</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </>
+        ) : keyword && listResultAddress?.length === 0 && !loader ? (
+          <View style={styles.itemAddress}>
+            <Text style={styles.address}>Không tìm thấy</Text>
+          </View>
+        ) : (
+          <View style={styles.itemAddress}>
+            <TouchableOpacity
+              onPress={() => {
+                handleAddress(locationNowUser);
+              }}
+            >
+              <Text style={styles.address}>{locationNowUser.address}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <ScrollView></ScrollView>
       <Pressable

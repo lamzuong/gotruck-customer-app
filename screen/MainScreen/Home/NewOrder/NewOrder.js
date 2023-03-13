@@ -30,6 +30,8 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axiosClient from '../../../../api/axiosClient';
 import * as ImagePicker from 'expo-image-picker';
+import { getRouteTwoLocation } from '../../../../global/utilLocation';
+import { AuthContext } from '../../../../context/AuthContext';
 
 const toAdd = {
   _id: '63ef7acd66fdc4f6bdb50159',
@@ -57,6 +59,8 @@ const fromAdd = {
   __v: 0,
 };
 export default function NewOrder({ navigation }) {
+  const { user, locationNow, listOrder } = useContext(AuthContext);
+
   // const [addressFrom, setAddressFrom] = useState(locationNow);
   // const [addressTo, setAddressTo] = useState();
 
@@ -85,6 +89,7 @@ export default function NewOrder({ navigation }) {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.02;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
   let INITIAL_POSITION = {
     latitude: 10.820685,
     longitude: 106.687631,
@@ -92,15 +97,18 @@ export default function NewOrder({ navigation }) {
     longitudeDelta: LONGITUDE_DELTA,
   };
 
-  const traceRouteOnReady = async (args) => {
-    if (args) {
-      let distanceTemp = args.distance.toFixed(1);
-      let timeTemp = args.duration.toFixed(1);
+  const traceRouteOnReady = async () => {
+    const result = await getRouteTwoLocation(addressFrom, addressTo);
 
-      setDistance(distanceTemp);
-      setTime(timeTemp);
-      setPriceNew(distanceTemp);
-    }
+    let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
+    let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
+
+    // let distanceTemp ="13.4"
+    // let timeTemp ="18.0"
+
+    setDistance(distanceTemp);
+    setTime(timeTemp);
+    setPriceNew(distanceTemp);
   };
 
   const setPriceNew = async (distanceTemp) => {
@@ -233,6 +241,12 @@ export default function NewOrder({ navigation }) {
     }
   }, [route]);
 
+  useEffect(() => {
+    if (addressFrom && addressTo) {
+      traceRouteOnReady();
+    }
+  }, [addressFrom, addressTo]);
+
   const renderRowImage = (arr, listImages = [], column = 3) => {
     return (
       <View>
@@ -259,7 +273,6 @@ export default function NewOrder({ navigation }) {
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableWithoutFeedback
           onPress={() => {
-            // console.log(1);
             setModalVisible(!modalVisible);
           }}
         >
@@ -307,24 +320,6 @@ export default function NewOrder({ navigation }) {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      {/* Dùng để tính thời gian và khoảng cách  */}
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={INITIAL_POSITION}
-      >
-        <MapViewDirections
-          origin={addressFrom}
-          destination={addressTo}
-          apikey={GOOGLE_API_KEY}
-          onReady={traceRouteOnReady}
-          onError={(e) => {
-            console.log('NewOrder: Key api hết hạn');
-          }}
-        />
-      </MapView>
-
       {/* Nơi lấy hàng */}
       <View>
         <Text style={styles.label}>Nơi lấy hàng</Text>

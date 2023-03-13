@@ -114,6 +114,7 @@ export default function MyInput({
                   color="grey"
                   onPress={() => {
                     setValueInput('');
+                    value('');
                     if (regex) callError();
                   }}
                 />

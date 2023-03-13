@@ -219,7 +219,6 @@ export default function EditProfile({ navigation }) {
   };
 
   const uploadFirebaseAndFinishEditProfile = async (imageUpload, phoneChange) => {
-    // console.log(imageUpload.uri);
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -246,9 +245,7 @@ export default function EditProfile({ navigation }) {
         await axiosClient.put('/gotruck/auth/user/' + phoneInit, {
           ...user,
         });
-        console.log(2);
       } else {
-        console.log(1);
         user.avatar = downloadURL;
         user.name = name;
         await axiosClient.put('/gotruck/auth/user', {
@@ -265,7 +262,6 @@ export default function EditProfile({ navigation }) {
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableWithoutFeedback
           onPress={() => {
-            // console.log(1);
             setModalVisible(!modalVisible);
           }}
         >

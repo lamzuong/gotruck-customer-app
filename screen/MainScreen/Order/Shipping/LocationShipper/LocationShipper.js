@@ -1,7 +1,7 @@
 import styles from './stylesLocationShipper';
 import stylesGlobal from '../../../../../global/stylesGlobal';
 
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { View, Dimensions, Text, Alert, BackHandler } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
@@ -11,12 +11,14 @@ import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
 import MyButton from '../../../../../components/MyButton/MyButton';
 import { Ionicons, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { socketClient } from '../../../../../global/socket';
+import { getPoLylineFromEncode, getRouteTwoLocation } from '../../../../../global/utilLocation';
 
 export default function LocationShipper({ navigation }) {
   const route = useRoute();
   const { order } = route.params;
   const [origin, setOrigin] = useState(order.from_address);
   const [destination, setDestination] = useState(order.to_address);
+  const [routePolyline, setRoutePolyline] = useState([]);
 
   const [locationShipper, setLocationShipper] = useState('');
 
@@ -59,7 +61,7 @@ export default function LocationShipper({ navigation }) {
   useEffect(() => {
     socketClient.off(order.id_order + '');
     socketClient.on(order.id_order + '', (data) => {
-      setLocationShipper(data)
+      setLocationShipper(data);
     });
 
     return () => socketClient.off(order.id_order + '');
@@ -68,6 +70,23 @@ export default function LocationShipper({ navigation }) {
   const zoomMap = () => {
     mapRef.current?.fitToCoordinates([origin, destination], { edgePadding });
   };
+
+  useEffect(() => {
+    (async function () {
+      if (origin && destination) {
+        const resultRoute = await getRouteTwoLocation(origin, destination);
+        let routePolyTemp = [];
+        if (resultRoute) {
+          const listPoly = getPoLylineFromEncode(resultRoute?.result.routes[0].overviewPolyline);
+          listPoly?.forEach((el) => {
+            routePolyTemp.push({ latitude: el.lat, longitude: el.lng });
+          });
+          setRoutePolyline(routePolyTemp);
+          zoomMap();
+        }
+      }
+    }.call(this));
+  }, [origin, destination]);
 
   return (
     <View style={styles.container}>
@@ -136,7 +155,7 @@ export default function LocationShipper({ navigation }) {
           </Marker>
         )}
 
-        {origin && destination && (
+        {/* {origin && destination && (
           <MapViewDirections
             origin={origin}
             destination={destination}
@@ -155,6 +174,9 @@ export default function LocationShipper({ navigation }) {
               Alert.alert('Thông báo', 'Lỗi không xác định');
             }}
           />
+        )} */}
+        {origin && destination && (
+          <Polyline coordinates={routePolyline} strokeColor="rgb(0,176,255)" strokeWidth={8} />
         )}
       </MapView>
     </View>

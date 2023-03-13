@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 15,
@@ -15,12 +14,10 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   //--------------------------------
-  iconBack: {
-    position: 'absolute',
-    top: 10,
-  },
+
   txtSearch: {
     borderColor: '#888',
     borderWidth: 1,
@@ -44,6 +41,18 @@ const styles = StyleSheet.create({
   txtFooter: {
     marginLeft: 10,
     fontSize: 16,
+  },
+  listAddress: {
+    marginTop: 10,
+    paddingLeft: 10,
+  },
+  itemAddress: {
+    paddingVertical: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+  },
+  address: {
+    fontSize: 15,
   },
 });
 
