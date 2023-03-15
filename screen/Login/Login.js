@@ -44,6 +44,7 @@ export default function Login({ navigation }) {
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
     const currentLocation = await getLocationCurrentOfUser();
+   
     if (currentLocation) {
       dispatch(SetLocation(currentLocation));
       dispatch(LoginSuccess(userLogin));

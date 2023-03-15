@@ -2,15 +2,17 @@ import styles from './stylesOrderDetail';
 import stylesGlobal from '../../../../global/stylesGlobal';
 import MyButton from '../../../../components/MyButton/MyButton';
 
-import { View, Text, ScrollView, BackHandler } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Ionicons, Foundation } from '@expo/vector-icons';
+import { View, Text, ScrollView, BackHandler, Linking } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Ionicons, Foundation, Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import MyInput from '../../../../components/MyInput/MyInput';
 import axiosClient from '../../../../api/axiosClient';
 import { socketClient } from '../../../../global/socket';
+import { AuthContext } from '../../../../context/AuthContext';
 
 export default function OrderDetail({ route, navigation }) {
+  const { user } = useContext(AuthContext);
   const { order } = route.params;
 
   const [showModal, setShowModal] = useState(false);
@@ -40,6 +42,23 @@ export default function OrderDetail({ route, navigation }) {
     }
   };
 
+  const handleCallPhone = () => {
+    if (order?.shipper?.id_shipper?.phone) {
+      Linking.openURL(`tel:${order.shipper.id_shipper.phone}`);
+    } else {
+      alert('Không thể gọi cho số điện thoại này');
+    }
+  };
+
+  const handleMessage = async () => {
+    const resConversation = await axiosClient.post('gotruck/conversation/', {
+      id_customer: user._id,
+      id_shipper: order?.shipper?.id_shipper?._id,
+    });
+    socketClient.emit('send_message', { id_receive: order?.shipper?.id_shipper?._id });
+    navigation.navigate('ChatRoom', { item: resConversation });
+  };
+
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
@@ -67,8 +86,8 @@ export default function OrderDetail({ route, navigation }) {
             {order?.shipper?.id_shipper ? (
               order.shipper.id_shipper.name
             ) : (
-            <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-             )} 
+              <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
+            )}
           </Text>
         </View>
         <View style={styles.inline}>
@@ -77,9 +96,37 @@ export default function OrderDetail({ route, navigation }) {
             {order?.shipper?.truck ? (
               order.shipper.truck.license_plate
             ) : (
-            <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
-             )} 
+              <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
+            )}
           </Text>
+        </View>
+        <View style={styles.inline}>
+          <Text style={styles.label}>Số điện thoại:</Text>
+          <Text style={styles.contentHeader}>
+            {order?.shipper?.id_shipper.phone ? (
+              order.shipper.id_shipper.phone
+            ) : (
+              <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
+            )}
+          </Text>
+          {order?.shipper?.id_shipper.phone && order.status !== 'Chưa nhận' && (
+          <>
+            <Feather
+              style={{ marginLeft: 15 }}
+              name="message-square"
+              size={26}
+              color="black"
+              onPress={() => handleMessage()}
+            />
+            <Feather
+              style={{ marginLeft: 15, transform: [{ rotateY: '180deg' }] }}
+              name="phone"
+              size={26}
+              color="black"
+              onPress={() => handleCallPhone()}
+            />
+          </>
+           )} 
         </View>
         {/* Ngưởi gửi */}
         <View style={[styles.inline, { marginTop: 20 }]}>

@@ -10,6 +10,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 const TopTab = createMaterialTopTabNavigator();
 
 export default function Message() {
+  
   return (
     <>
       <Text style={styles.title}>Tin nhắn</Text>

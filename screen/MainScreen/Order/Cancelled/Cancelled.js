@@ -25,6 +25,7 @@ export default function Cancelled() {
   useEffect(() => {
     renderUI();
   }, [isFocus]);
+  
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {listOrder?.map((item, index) =>

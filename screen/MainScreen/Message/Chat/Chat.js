@@ -6,21 +6,28 @@ import { Octicons } from '@expo/vector-icons';
 import ReadMore from 'react-native-read-more-text';
 import { AuthContext } from '../../../../context/AuthContext';
 import axiosClient from '../../../../api/axiosClient';
-import { useRoute } from '@react-navigation/native';
+import { useIsFocused, useRoute } from '@react-navigation/native';
+import { socketClient } from '../../../../global/socket';
 
 export default function Chat({ navigation }) {
   const [listConversation, setListConversation] = useState([]);
   const { user } = useContext(AuthContext);
-  const route = useRoute()
+  const route = useRoute();
+  const isFocus = useIsFocused();
+
+  const renderUI = async () => {
+    const listConversation = await axiosClient.get('gotruck/conversation/' + user._id);
+    setListConversation(listConversation);
+  };
+
   useEffect(() => {
-    
-    (async function () {
-      const listConversation = await axiosClient.get('gotruck/conversation/' + user._id);
-      setListConversation(listConversation);
-    }.call(this));
-  }, []);
-
-
+    renderUI();
+    socketClient.off(user._id + 'message');
+    socketClient.on(user._id + 'message', (data) => {
+      (data);
+      renderUI();
+    });
+  }, [isFocus]);
 
   return (
     <View style={styles.container}>
@@ -60,13 +67,13 @@ export default function Chat({ navigation }) {
                     <Text
                       style={[
                         // item.message.read
-                          // ? 
-                          styles.itemChat.viewMessage.read
-                          // : styles.itemChat.viewMessage.unread,
-                        ,styles.itemChat.viewMessage.message,
+                        // ?
+                        styles.itemChat.viewMessage.read,
+                        // : styles.itemChat.viewMessage.unread,
+                        styles.itemChat.viewMessage.message,
                       ]}
                     >
-                      {item.lastMess}{" "}
+                      {item.lastMess}{' '}
                     </Text>
                   </ReadMore>
 
@@ -74,14 +81,13 @@ export default function Chat({ navigation }) {
                     <Text
                       style={[
                         // item.message.read
-                          // ?
-                           styles.itemChat.viewMessage.read
-                          // : styles.itemChat.viewMessage.unread
-                          ,
+                        // ?
+                        styles.itemChat.viewMessage.read,
+                        // : styles.itemChat.viewMessage.unread
                         styles.itemChat.viewMessage.time,
                       ]}
                     >
-                      {item.time}{" "}
+                      {item.time}{' '}
                     </Text>
                     {/* {item.message.read ? null : (
                       <Octicons name="dot-fill" size={24} color="blue" />

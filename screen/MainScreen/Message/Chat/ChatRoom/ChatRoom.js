@@ -3,17 +3,18 @@ import stylesGlobal from '../../../../../global/stylesGlobal';
 
 import { View, Text, FlatList, Image, TextInput, BackHandler } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import { Link, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../../../../context/AuthContext';
 import axiosClient from '../../../../../api/axiosClient';
-
+import { Linking } from 'react-native';
 import { Keyboard } from 'react-native';
+import { socketClient } from '../../../../../global/socket';
 
 export default function ChatRoom({ route }) {
   const [mess, setMess] = useState();
   const [listMessage, setListMessage] = useState([]);
-  
+
   const navigation = useNavigation();
 
   const { item } = route.params;
@@ -30,15 +31,18 @@ export default function ChatRoom({ route }) {
   const handleMessage = async () => {
     const messageSend = {
       id_conversation: item._id,
-      message: mess,
+      message: mess.trim(),
       id_sender: user._id,
       userSendModel: 'Customer',
     };
-    await axiosClient.post('gotruck/conversation/message/', {
-      ...messageSend,
-    });
+    if (mess.trim()) {
+      await axiosClient.post('gotruck/conversation/message/', {
+        ...messageSend,
+      });
+      socketClient.emit('send_message', { id_receive: item.id_shipper._id });
+      getAllMessage();
+    }
     setMess('');
-    getAllMessage();
     Keyboard.dismiss();
   };
 
@@ -67,6 +71,11 @@ export default function ChatRoom({ route }) {
     return 'Vừa gửi';
   }
 
+  const handleCallPhone = () => {
+    if (item?.id_shipper?.phone) Linking.openURL(`tel:${item.id_shipper.phone}`);
+    else alert('Không thể gọi cho số điện thoại này');
+  };
+
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
@@ -80,6 +89,10 @@ export default function ChatRoom({ route }) {
 
   useEffect(() => {
     getAllMessage();
+    socketClient.off(user._id + 'message');
+    socketClient.on(user._id + 'message', (data) => {
+      getAllMessage();
+    });
   }, []);
 
   return (
@@ -87,7 +100,7 @@ export default function ChatRoom({ route }) {
       <View style={styles.header}>
         <Ionicons name="arrow-back" size={24} color="white" onPress={() => navigation.goBack()} />
         <Text style={styles.header.txtHeader}>{item.id_shipper.name}</Text>
-        <View style={{ width: 24 }}></View>
+        <Feather name="phone" size={24} color="white" onPress={() => handleCallPhone()} />
       </View>
       <View style={styles.container}>
         <FlatList

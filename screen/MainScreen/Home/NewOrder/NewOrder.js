@@ -98,13 +98,13 @@ export default function NewOrder({ navigation }) {
   };
 
   const traceRouteOnReady = async () => {
-    const result = await getRouteTwoLocation(addressFrom, addressTo);
+    // const result = await getRouteTwoLocation(addressFrom, addressTo);
 
-    let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
-    let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
+    // let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
+    // let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
 
-    // let distanceTemp ="13.4"
-    // let timeTemp ="18.0"
+    let distanceTemp ="13.4"
+    let timeTemp ="18.0"
 
     setDistance(distanceTemp);
     setTime(timeTemp);
