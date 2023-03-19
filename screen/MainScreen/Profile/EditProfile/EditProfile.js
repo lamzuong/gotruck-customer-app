@@ -14,6 +14,7 @@ import {
   Alert,
   Modal,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';

@@ -2,7 +2,16 @@ import styles from './stylesLogin';
 import stylesGlobal from '../../global/stylesGlobal';
 import MyButton from '../../components/MyButton/MyButton';
 
-import { View, Text, Image, ScrollView, Dimensions, BackHandler, Alert, Linking } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Dimensions,
+  BackHandler,
+  Alert,
+  Linking,
+} from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import MyInput from '../../components/MyInput/MyInput';
 
@@ -41,10 +50,13 @@ export default function Login({ navigation }) {
 
   const sendVerification = async () => {
     // Đăng nhập k xác minh => xóa sau khi test xong
-    const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
+    const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
+    if (!userLogin.phone) {
+      alert('khogno ton tai');
+      return;
+    }
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
     const currentLocation = await getLocationCurrentOfUser();
-   
     if (currentLocation) {
       dispatch(SetLocation(currentLocation));
       dispatch(LoginSuccess(userLogin));
@@ -106,16 +118,22 @@ export default function Login({ navigation }) {
       },
     ]);
   };
+
   const backScreen = () => {
     setScreen((prev) => prev - 1);
   };
+
   const nextScreen = () => {
     setValidData(false);
     setScreen((prev) => prev + 1);
   };
+
   const toMainScreen = () => {
     navigation.navigate('MainScreen');
   };
+
+
+
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {

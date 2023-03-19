@@ -94,12 +94,14 @@ export default function MyOrder({ order, setIsShowModal, isShowModal, setCancelI
             style={styles.customerButton}
             action={() => navigation.navigate('LocationShipper', { order: order })}
           />
-        ) : order.status == 'Đã giao' ? (
+        ) : order.status == 'Đã giao' && !order.rate_shipper ? (
           <MyButton
             type={'small'}
             text={'Đánh giá'}
             btnColor={stylesGlobal.mainGreen}
             txtColor={'white'}
+            onPress={() => navigation.navigate('ReivewShipper', { item: order })}
+
           />
         ) : (
           <View></View>

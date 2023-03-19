@@ -28,7 +28,7 @@ import FormSupportDetail from '../screen/MainScreen/Profile/Support/FormSupportS
 import SelectLocationOnMap from '../screen/MainScreen/Home/SelectLocationOnMap/SelectLocationOnMap';
 import GoogleMapSavedPlace from '../screen/MainScreen/Profile/SavedPlace/GoogleMapSavedPlace/GoogleMapSavedPlace';
 import SelectSavedPlace from '../screen/MainScreen/Home/SelectSavedPlace/SelectSavedPlace';
-
+import ReviewShipper from '../screen/MainScreen/Order/OrderDetail/ReviewShipper/ReviewShipper';
 // Không cần đăng nhập
 const publicRoutes = [
   {
@@ -152,6 +152,13 @@ const publicRoutes = [
     component: FormSupportDetail,
     header: true,
     title: 'Chi tiết đơn hỗ trợ',
+    animation: 'slide_from_right',
+  },
+  {
+    name: 'ReivewShipper',
+    component: ReviewShipper,
+    header: true,
+    title: ' Đánh giá tài xế',
     animation: 'slide_from_right',
   },
 ];

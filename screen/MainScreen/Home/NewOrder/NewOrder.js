@@ -4,10 +4,16 @@ import MyInput from '../../../../components/MyInput/MyInput';
 import { sliceIntoChunks } from '../../../../global/functionGlobal';
 import { GOOGLE_API_KEY } from '../../../../global/keyGG';
 import stylesGlobal from '../../../../global/stylesGlobal';
-import truckTypes from '../data/truckTypes';
 import styles from './stylesNewOrder';
 
-import { AntDesign, FontAwesome, Foundation, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import {
+  AntDesign,
+  FontAwesome,
+  Foundation,
+  Ionicons,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
@@ -69,8 +75,8 @@ export default function NewOrder({ navigation }) {
   const [addressTo, setAddressTo] = useState(toAdd);
 
   const [openTruck, setOpenTruck] = useState(false);
-  const [valueTruck, setValueTruck] = useState(truckTypes[1].value);
-  const [itemsTruck, setItemsTruck] = useState(truckTypes);
+  const [valueTruck, setValueTruck] = useState('');
+  const [itemsTruck, setItemsTruck] = useState([]);
   const [openGoods, setOpenGoods] = useState(false);
   const [valueGoods, setValueGoods] = useState(null);
   const [itemsGoods, setItemsGoods] = useState([]);
@@ -81,6 +87,7 @@ export default function NewOrder({ navigation }) {
   const [time, setTime] = useState(0);
   const [price, setPrice] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [truckstype, setTrucksType] = useState();
 
   const route = useRoute();
   const mapRef = useRef();
@@ -103,8 +110,8 @@ export default function NewOrder({ navigation }) {
     // let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
     // let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
 
-    let distanceTemp ="13.4"
-    let timeTemp ="18.0"
+    let distanceTemp = '13.4';
+    let timeTemp = '18.0';
 
     setDistance(distanceTemp);
     setTime(timeTemp);
@@ -197,10 +204,35 @@ export default function NewOrder({ navigation }) {
       Alert.alert('Thông báo', 'Hình ảnh hàng hóa phải có tối thiểu 2 hình!');
     }
   };
+
   // get goods type
   const icon = () => {
     return <AntDesign name="dropbox" size={24} color="orange" />;
   };
+
+  // get truck type
+  const iconTruck = () => {
+    return <MaterialCommunityIcons name="truck" size={24} color={stylesGlobal.mainGreen} />;
+  };
+
+  useEffect(() => {
+    const getTrucksType = async () => {
+      const res = await axiosClient.get('/gotruck/transportprice/trucktype');
+      let trucksType = [];
+      for (const e of res) {
+        trucksType.push({
+          label: 'Xe ' + e.name + ' tấn',
+          value: e.name,
+          icon: iconTruck,
+        });
+      }
+      setTrucksType([...res]);
+      setValueTruck(trucksType[0].value);
+      setItemsTruck(trucksType);
+    };
+    getTrucksType();
+  }, []);
+
   useEffect(() => {
     const getGoodsType = async () => {
       const res = await axiosClient.get('/gotruck/goodsType');
@@ -394,6 +426,7 @@ export default function NewOrder({ navigation }) {
             scrollViewProps={{
               nestedScrollEnabled: true,
             }}
+            placeholder="Chọn loại xe "
           />
         </View>
       </View>

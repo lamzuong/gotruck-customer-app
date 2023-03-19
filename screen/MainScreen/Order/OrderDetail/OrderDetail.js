@@ -10,6 +10,7 @@ import MyInput from '../../../../components/MyInput/MyInput';
 import axiosClient from '../../../../api/axiosClient';
 import { socketClient } from '../../../../global/socket';
 import { AuthContext } from '../../../../context/AuthContext';
+import { Rating } from 'react-native-ratings';
 
 export default function OrderDetail({ route, navigation }) {
   const { user } = useContext(AuthContext);
@@ -110,24 +111,39 @@ export default function OrderDetail({ route, navigation }) {
             )}
           </Text>
           {order?.shipper?.id_shipper.phone && order.status !== 'Chưa nhận' && (
-          <>
-            <Feather
-              style={{ marginLeft: 15 }}
-              name="message-square"
-              size={26}
-              color="black"
-              onPress={() => handleMessage()}
-            />
-            <Feather
-              style={{ marginLeft: 15, transform: [{ rotateY: '180deg' }] }}
-              name="phone"
-              size={26}
-              color="black"
-              onPress={() => handleCallPhone()}
-            />
-          </>
-           )} 
+            <>
+              <Feather
+                style={{ marginLeft: 15 }}
+                name="message-square"
+                size={26}
+                color="black"
+                onPress={() => handleMessage()}
+              />
+              <Feather
+                style={{ marginLeft: 15, transform: [{ rotateY: '180deg' }] }}
+                name="phone"
+                size={26}
+                color="black"
+                onPress={() => handleCallPhone()}
+              />
+            </>
+          )}
         </View>
+        {order.rate_shipper && (
+          <View style={[styles.inline]}>
+            <Text style={styles.label}>Đánh giá:</Text>
+            <Rating
+              type="custom"
+              imageSize={25}
+              ratingCount={5}
+              startingValue={order.rate_shipper.star}
+              tintColor="white"
+              ratingBackgroundColor={stylesGlobal.lightDarkGrey}
+              readonly
+              style={{ paddingLeft: 10 }}
+            />
+          </View>
+        )}
         {/* Ngưởi gửi */}
         <View style={[styles.inline, { marginTop: 20 }]}>
           <Foundation name="record" size={24} color="#0DBEBE" style={{ width: 30 }} />
@@ -154,7 +170,7 @@ export default function OrderDetail({ route, navigation }) {
           <Text style={styles.viewNote.txtNote}>{order.note}</Text>
         </ScrollView>
         {/* Thông tin còn lại */}
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 20, paddingBottom: 20 }}>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Khoảng cách:</Text>
             <Text style={styles.content}>{order.distance} km</Text>
@@ -199,13 +215,14 @@ export default function OrderDetail({ route, navigation }) {
             action={() => setShowModal(true)}
           />
         </View>
-      ) : order.status == 'Đã giao' ? (
+      ) : order.status == 'Đã giao' && !order.rate_shipper ? (
         <View style={styles.viewButton}>
           <MyButton
             type={'large'}
             text={'Đánh giá'}
             btnColor={stylesGlobal.mainGreen}
             txtColor={'white'}
+            onPress={() => navigation.navigate('ReivewShipper', { item: order })}
           />
         </View>
       ) : null}
