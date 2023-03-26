@@ -154,27 +154,6 @@ export default function LocationShipper({ navigation }) {
             />
           </Marker>
         )}
-
-        {/* {origin && destination && (
-          <MapViewDirections
-            origin={origin}
-            destination={destination}
-            apikey={GOOGLE_API_KEY}
-            strokeColor="rgb(0,176,255)"
-            strokeWidth={4}
-            mode="DRIVING"
-            onReady={() => {
-              if (zoomRef.current === false) {
-                zoomMap();
-                zoomRef.current = true;
-              }
-            }}
-            onError={(e) => {
-              console.log(e);
-              Alert.alert('Thông báo', 'Lỗi không xác định');
-            }}
-          />
-        )} */}
         {origin && destination && (
           <Polyline coordinates={routePolyline} strokeColor="rgb(0,176,255)" strokeWidth={8} />
         )}

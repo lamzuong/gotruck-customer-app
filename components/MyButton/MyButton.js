@@ -32,7 +32,7 @@ export default function MyButton({
   }
   return disable ? (
     <View
-      style={style || [typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
+      style={[typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
       onPress={action}
       {...props}
     >
@@ -40,7 +40,7 @@ export default function MyButton({
     </View>
   ) : (
     <TouchableOpacity
-      style={style || [typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
+      style={[typeButton, { backgroundColor: btnColor, borderColor, borderWidth }, style]}
       onPress={action}
       {...props}
     >

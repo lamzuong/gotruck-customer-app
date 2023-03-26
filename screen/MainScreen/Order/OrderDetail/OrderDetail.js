@@ -2,7 +2,7 @@ import styles from './stylesOrderDetail';
 import stylesGlobal from '../../../../global/stylesGlobal';
 import MyButton from '../../../../components/MyButton/MyButton';
 
-import { View, Text, ScrollView, BackHandler, Linking } from 'react-native';
+import { View, Text, ScrollView, BackHandler, Linking, Alert } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { Ionicons, Foundation, Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -130,19 +130,25 @@ export default function OrderDetail({ route, navigation }) {
           )}
         </View>
         {order.rate_shipper && (
-          <View style={[styles.inline]}>
-            <Text style={styles.label}>Đánh giá:</Text>
-            <Rating
-              type="custom"
-              imageSize={25}
-              ratingCount={5}
-              startingValue={order.rate_shipper.star}
-              tintColor="white"
-              ratingBackgroundColor={stylesGlobal.lightDarkGrey}
-              readonly
-              style={{ paddingLeft: 10 }}
-            />
-          </View>
+          <>
+            <View style={[styles.inline]}>
+              <Text style={styles.label}>Đánh giá:</Text>
+              <Rating
+                type="custom"
+                imageSize={25}
+                ratingCount={5}
+                startingValue={order.rate_shipper.star}
+                tintColor="white"
+                ratingBackgroundColor={stylesGlobal.lightDarkGrey}
+                readonly
+                style={{ paddingLeft: 10 }}
+              />
+            </View>
+            <View style={[styles.inline]}>
+              <Text style={styles.label}>Nội dung đánh giá:</Text>
+              <Text style={styles.contentHeader}>{order.rate_shipper.content}</Text>
+            </View>
+          </>
         )}
         {/* Ngưởi gửi */}
         <View style={[styles.inline, { marginTop: 20 }]}>

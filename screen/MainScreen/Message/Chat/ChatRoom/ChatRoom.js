@@ -1,7 +1,7 @@
 import styles from './stylesChatRoom';
 import stylesGlobal from '../../../../../global/stylesGlobal';
 
-import { View, Text, FlatList, Image, TextInput, BackHandler } from 'react-native';
+import { View, Text, FlatList, Image, TextInput, BackHandler, Alert } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { Link, useNavigation } from '@react-navigation/native';
@@ -73,7 +73,7 @@ export default function ChatRoom({ route }) {
 
   const handleCallPhone = () => {
     if (item?.id_shipper?.phone) Linking.openURL(`tel:${item.id_shipper.phone}`);
-    else alert('Không thể gọi cho số điện thoại này');
+    else Alert.alert('Thông báo','Không thể gọi cho số điện thoại này');
   };
 
   //----------Back Button----------

@@ -1,5 +1,5 @@
 import { useRoute } from '@react-navigation/native';
-import React, { View, Text, Dimensions } from 'react-native';
+import React, { View, Text, Dimensions, Alert } from 'react-native';
 import styles from './styleReviewShipper';
 import styleReviewShipper from './styleReviewShipper';
 import MyButton from '../../../../../components/MyButton/MyButton';
@@ -26,7 +26,7 @@ export default function ReviewShipper({ navigation }) {
     if (resReivew) {
       navigation.goBack();
     } else {
-      alert('Đánh giá không thàng công.\nVui lòng thử lại sau');
+      Alert.alert('Thông báo','Đánh giá không thàng công.\nVui lòng thử lại sau');
     }
   };
 
@@ -47,13 +47,15 @@ export default function ReviewShipper({ navigation }) {
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.txtcontent}>Nội dung (nếu có)</Text>
-        <MyInput
-          placeholder={'Nội dung đánh giá'}
-          width={Dimensions.get('window').width - 40}
-          value={setContent}
-          borderWidth={1}
-        />
+        <View>
+          <Text style={styles.txtcontent}>Nội dung (nếu có)</Text>
+          <MyInput
+            placeholder={'Nội dung đánh giá'}
+            width={Dimensions.get('window').width - 40}
+            value={setContent}
+            borderWidth={1}
+          />
+        </View>
       </View>
       <View style={styles.button}>
         <MyButton

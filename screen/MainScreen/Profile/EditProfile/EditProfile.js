@@ -99,7 +99,6 @@ export default function EditProfile({ navigation }) {
   };
 
   const updateProfile1 = async () => {
-    
     if (phone != phoneInit) {
       Alert.alert(
         'Xác nhận',
@@ -115,10 +114,8 @@ export default function EditProfile({ navigation }) {
       );
     } else {
       if (imageUserNow.uri != user.avatar) {
-       
         uploadFirebaseAndFinishEditProfile(imageUserNow, false);
       } else {
-       
         user.name = name;
         await axiosClient.put('/gotruck/auth/user', {
           ...user,
@@ -141,8 +138,9 @@ export default function EditProfile({ navigation }) {
           } else {
             user.phone = phone;
             user.name = name;
-            await axiosClient.put('/gotruck/auth/user/' + phoneInit, {
-              ...user,
+            await axiosClient.put('/gotruck/auth/user/edituser', {
+              user: { ...user },
+              phoneInit: phoneInit,
             });
 
             dispatch(LoginSuccess(user));
@@ -243,8 +241,9 @@ export default function EditProfile({ navigation }) {
         user.avatar = downloadURL;
         user.phone = phone;
         user.name = name;
-        await axiosClient.put('/gotruck/auth/user/' + phoneInit, {
-          ...user,
+        await axiosClient.put('/gotruck/auth/user/edituser', {
+          user: { ...user },
+          phoneInit: phoneInit,
         });
       } else {
         user.avatar = downloadURL;
