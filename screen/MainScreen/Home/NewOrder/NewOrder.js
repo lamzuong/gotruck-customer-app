@@ -105,13 +105,13 @@ export default function NewOrder({ navigation }) {
   };
 
   const traceRouteOnReady = async () => {
-    // const result = await getRouteTwoLocation(addressFrom, addressTo);
+    const result = await getRouteTwoLocation(addressFrom, addressTo);
 
-    // let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
-    // let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
+    let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
+    let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
 
-    let distanceTemp = '13.4';
-    let timeTemp = '18.0';
+    // let distanceTemp = '13.4';
+    // let timeTemp = '18.0';
 
     setDistance(distanceTemp);
     setTime(timeTemp);
@@ -244,6 +244,11 @@ export default function NewOrder({ navigation }) {
           icon: icon,
         });
       }
+      goodsType.push({
+        label: 'Khác',
+        value: 'Khác',
+        icon: icon,
+      });
       setValueGoods(goodsType[0].value);
       setItemsGoods(goodsType);
     };
@@ -279,6 +284,19 @@ export default function NewOrder({ navigation }) {
     }
   }, [addressFrom, addressTo]);
 
+  const removeImage = (uri) => {
+    const newListImage = listImage;
+    const newListImageSend = listImageSend;
+
+    const index = listImage.indexOf(uri);
+    if (index > -1) {
+      newListImage.splice(index, 1);
+      newListImageSend.splice(index, 1);
+    }
+    setListImage([...newListImage]);
+    setListImageSend([...newListImageSend]);
+  };
+
   const renderRowImage = (arr, listImages = [], column = 3) => {
     return (
       <View>
@@ -286,6 +304,17 @@ export default function NewOrder({ navigation }) {
           {arr.map((e, i) => (
             <View style={{ width: '36%' }} key={i}>
               <Image source={{ uri: e }} style={styles.itemImage} />
+              <TouchableOpacity
+                style={styles.removeImage}
+                onPress={() => {
+                  removeImage(e);
+                }}
+              >
+                <Image
+                  source={require('../.././../../assets/images/close.png')}
+                  style={{ width: 20, height: 20 }}
+                />
+              </TouchableOpacity>
             </View>
           ))}
           {arr[arr.length - 1] == listImages[listImages.length - 1] && arr.length < column ? (

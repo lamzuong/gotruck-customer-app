@@ -23,6 +23,13 @@ const styles = StyleSheet.create({
     height: 100,
     borderWidth: 1,
   },
+  removeImage: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    left: 88,
+    top: -8,
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -41,8 +48,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     borderRadius: 10,
-    position:"absolute",
-    bottom:120
+    position: 'absolute',
+    bottom: 120,
   },
   chupanh: {
     fontSize: 20,

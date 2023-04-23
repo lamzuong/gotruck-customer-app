@@ -32,14 +32,13 @@ import * as ImagePicker from 'expo-image-picker';
 export default function Feedback({ navigation }) {
   const [subject, setSubject] = useState('a');
   const [description, setDescription] = useState('a');
-  const [email, setEmail] = useState('a@gmail.com');
-  const [phone, setPhone] = useState('0355555555');
+ 
   const [listImage, setListImage] = useState([]);
 
   const [listImageSend, setListImageSend] = useState([]);
 
-  const [validEmail, setValidEmail] = useState(false);
-  const [validPhone, setValidPhone] = useState(false);
+  // const [validEmail, setValidEmail] = useState(false);
+  // const [validPhone, setValidPhone] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [checkUpload, setCheckUpload] = useState(false);
 
@@ -94,7 +93,7 @@ export default function Feedback({ navigation }) {
   };
 
   const handleFeedback = async () => {
-    if (subject.trim().length != 0 && description.trim().length != 0 && validEmail && validPhone) {
+    if (subject.trim().length != 0 && description.trim().length != 0 ) {
       let listURLImage = [];
       setCheckUpload(true);
       for (let i = 0; i < listImageSend.length; i++) {
@@ -123,19 +122,30 @@ export default function Feedback({ navigation }) {
       await axiosClient.post('gotruck/profile/feedback', {
         subject,
         description,
-        email,
-        phone,
         list_image: listURLImage,
-        id_feedback: user._id,
+        id_sender: user._id,
         status: 'Đã gửi',
       });
       setCheckUpload(false);
       navigation.goBack();
+    } else {
+      Alert.alert('Thông báo', 'Chủ đề và mô tả không được để trống');
     }
-    else{
-      Alert.alert("Thông báo","Chủ đề và mô tả không được để trống")
+  };
+
+  const removeImage = (uri) => {
+    const newListImage = listImage;
+    const newListImageSend = listImageSend;
+
+    const index = listImage.indexOf(uri);
+    if (index > -1) {
+      newListImage.splice(index, 1);
+      newListImageSend.splice(index, 1);
     }
-  }
+    setListImage([...newListImage]);
+    setListImageSend([...newListImageSend]);
+  };
+
   const renderRowImage = (arr, listImages = [], column = 3) => {
     return (
       <View>
@@ -143,6 +153,17 @@ export default function Feedback({ navigation }) {
           {arr.map((e, i) => (
             <View style={{ width: '36%' }} key={i}>
               <Image source={{ uri: e }} style={styles.itemImage} />
+              <TouchableOpacity
+                style={styles.removeImage}
+                onPress={() => {
+                  removeImage(e);
+                }}
+              >
+                <Image
+                  source={require('../../../../../assets/images/close.png')}
+                  style={{ width: 20, height: 20 }}
+                />
+              </TouchableOpacity>
             </View>
           ))}
           {arr[arr.length - 1] == listImages[listImages.length - 1] && arr.length < column ? (
@@ -241,7 +262,7 @@ export default function Feedback({ navigation }) {
                 initialValue="a"
               />
             </View>
-            <View style={styles.viewInput}>
+            {/* <View style={styles.viewInput}>
               <Text style={styles.label}>Email liên lạc</Text>
               <MyInput
                 borderWidth={1}
@@ -264,7 +285,7 @@ export default function Feedback({ navigation }) {
                 valid={setValidPhone}
                 initialValue="0359434722"
               />
-            </View>
+            </View> */}
             <View style={styles.viewInput}>
               <Text style={styles.label}>Hình ảnh minh chứng đính kèm (nếu có)</Text>
               {listImage.length != 0 ? (

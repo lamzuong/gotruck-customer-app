@@ -43,7 +43,7 @@ export default function Chat({ navigation }) {
             >
               <Image
                 source={{
-                  uri: item.id_shipper.avatar,
+                  uri: item?.id_shipper?.avatar,
                 }}
                 style={styles.itemChat.avatar}
               />
@@ -56,7 +56,7 @@ export default function Chat({ navigation }) {
                     // : styles.itemChat.name.unread
                   }
                 >
-                  {item.id_shipper.name}
+                  {item?.id_shipper?.name}
                 </Text>
                 <View style={styles.itemChat.viewMessage}>
                   <ReadMore

@@ -17,6 +17,7 @@ export default function FormSupportDetail({ route }) {
     )}/${padL(dt.getDate())}/${dt.getFullYear()}`;
   };
 
+  
   const renderRowImage = (arr) => {
     return (
       <View style={{ flexDirection: 'row', marginVertical: 10 }}>
