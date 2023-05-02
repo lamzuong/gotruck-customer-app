@@ -30,8 +30,8 @@ import AnimatedLoader from 'react-native-animated-loader';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function Feedback({ navigation }) {
-  const [subject, setSubject] = useState('a');
-  const [description, setDescription] = useState('a');
+  const [subject, setSubject] = useState('');
+  const [description, setDescription] = useState('');
  
   const [listImage, setListImage] = useState([]);
 
@@ -244,7 +244,7 @@ export default function Feedback({ navigation }) {
               <Text style={styles.label}>Chủ đề</Text>
               <MyInput
                 borderWidth={1}
-                initialValue="a"
+                initialValue=""
                 placeholder={'VD: Đơn hàng, tài xế, ...'}
                 value={setSubject}
               />
@@ -259,7 +259,7 @@ export default function Feedback({ navigation }) {
                 value={setDescription}
                 multiline={true}
                 numberOfLines={99}
-                initialValue="a"
+                initialValue=""
               />
             </View>
             {/* <View style={styles.viewInput}>

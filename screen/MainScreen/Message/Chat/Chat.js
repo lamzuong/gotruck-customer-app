@@ -24,7 +24,7 @@ export default function Chat({ navigation }) {
     renderUI();
     socketClient.off(user._id + 'message');
     socketClient.on(user._id + 'message', (data) => {
-      (data);
+      data;
       renderUI();
     });
   }, [isFocus]);

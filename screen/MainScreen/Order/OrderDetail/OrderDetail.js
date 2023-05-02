@@ -55,6 +55,8 @@ export default function OrderDetail({ route, navigation }) {
     const resConversation = await axiosClient.post('gotruck/conversation/', {
       id_customer: user._id,
       id_shipper: order?.shipper?.id_shipper?._id,
+      id_form: order?._id,
+      form_model: 'Order',
     });
     socketClient.emit('send_message', { id_receive: order?.shipper?.id_shipper?._id });
     navigation.navigate('ChatRoom', { item: resConversation });

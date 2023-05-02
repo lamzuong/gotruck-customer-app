@@ -29,6 +29,7 @@ import SelectLocationOnMap from '../screen/MainScreen/Home/SelectLocationOnMap/S
 import GoogleMapSavedPlace from '../screen/MainScreen/Profile/SavedPlace/GoogleMapSavedPlace/GoogleMapSavedPlace';
 import SelectSavedPlace from '../screen/MainScreen/Home/SelectSavedPlace/SelectSavedPlace';
 import ReviewShipper from '../screen/MainScreen/Order/OrderDetail/ReviewShipper/ReviewShipper';
+import ChatAdmin from '../screen/MainScreen/Profile/Support/FormSupportSent/ChatAdmin/ChatAdmin';
 // Không cần đăng nhập
 const publicRoutes = [
   {
@@ -90,6 +91,7 @@ const publicRoutes = [
   // Screen options in Message
   { name: 'ChatRoom', component: ChatRoom, header: false },
   { name: 'InfoDetail', component: InfoDetail, header: false },
+  { name: 'ChatAdmin', component: ChatAdmin, header: false },
 
   // Screen options in Profile
   { name: 'EditProfile', component: EditProfile, header: false },
