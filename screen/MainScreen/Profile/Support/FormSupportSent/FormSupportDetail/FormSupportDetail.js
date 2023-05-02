@@ -25,12 +25,13 @@ export default function FormSupportDetail({ route }) {
     };
     getConversation();
   }, []);
+  
   const formatTime = (time) => {
     const dt = new Date(time);
     const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
 
-    return `${padL(dt.getHours())}:${padL(dt.getMinutes())} ${padL(dt.getMonth() + 1)}/${padL(
-      dt.getDate(),
+    return `${padL(dt.getHours())}:${padL(dt.getMinutes())} ${padL(dt.getDate())}/${padL(
+      dt.getMonth() + 1,
     )}/${dt.getFullYear()}`;
   };
 

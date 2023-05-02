@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   txtBody: {
     padding: 5,
     fontSize: 17,
+    textAlign:"justify"
   },
 });
 

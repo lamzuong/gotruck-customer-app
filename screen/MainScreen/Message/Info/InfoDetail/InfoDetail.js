@@ -23,14 +23,19 @@ export default function InfoDetail({ route }) {
       <View style={styles.header}>
         <Ionicons name="arrow-back" size={24} color="white" onPress={() => navigation.goBack()} />
         <Text style={styles.header.txtHeader}>
-          {item.type == 'Order' ? 'Đơn hàng' : 'Khuyến mãi'}
+          {item.type_notify == 'Order' || item.type_notify == 'Normal'
+            ? 'Đơn hàng'
+            : item.type_notify == 'Warning'
+            ? 'Cảnh báo'
+            : 'Khuyến mãi'}
         </Text>
         <View style={{ width: 24 }}></View>
       </View>
       <ScrollView style={styles.container}>
-        <Text style={styles.content}>{item.message.content}</Text>
-        {item.message.image.length > 0
-          ? item.message.image.map((item, index) => (
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.content}>{item.content}</Text>
+        {item.image.length > 0
+          ? item.image.map((item, index) => (
               <Image source={{ uri: item }} key={index} style={styles.image} />
             ))
           : null}
