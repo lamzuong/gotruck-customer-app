@@ -86,13 +86,12 @@ export default function ChatRoom({ route }) {
     return () => backHandler.remove();
   }, []);
   //------------------------------
-
   useEffect(() => {
     getAllMessage();
-    socketClient.off(user._id + 'message');
     socketClient.on(user._id + 'message', (data) => {
       getAllMessage();
     });
+    return () => socketClient.off(user._id + 'message');
   }, []);
 
   return (

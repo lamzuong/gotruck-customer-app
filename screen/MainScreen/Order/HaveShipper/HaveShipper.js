@@ -37,7 +37,9 @@ export default function HaveShipper() {
       content: reason,
     };
     const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
-    if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
+    if (resOrderCancel.status === 'Đang giao' || resOrderCancel.status === 'Đã giao') {
+      Alert.alert('Thông báo', 'Đơn hàng đang được giao');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
       Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
     } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
       Alert.alert('Thông báo', 'Đơn hàng đã xóa do quá thời hạn');

@@ -5,7 +5,7 @@ import advertise from './data/advertiseNews';
 import { AuthContext } from '../../../context/AuthContext';
 import { getLocationUserNow } from '../../../global/functionGlobal';
 
-import { View, Text, StatusBar, ImageBackground, Image, ScrollView } from 'react-native';
+import { View, Text, StatusBar, ImageBackground, Image, ScrollView, Alert } from 'react-native';
 import { TouchableOpacity, Pressable } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -13,12 +13,21 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_API_KEY } from '../../../global/keyGG';
+import axiosClient from '../../../api/axiosClient';
 
 export default function Home({ navigation }) {
   const { user, locationNow, listOrder } = useContext(AuthContext);
-  
+
   console.log(locationNow);
 
+  const handleNewOrder = async () => {
+    const resBlock = await axiosClient.get('gotruck/auth/block/' + user._id);
+    if (resBlock.block) {
+      Alert.alert('Thông báo', 'Tài bạn của bạn đã bị khóa nên không thể tạo đơn hàng');
+    } else {
+      navigation.navigate('NewOrder');
+    }
+  };
   return (
     <View style={styles.container}>
       <StatusBar />
@@ -49,11 +58,11 @@ export default function Home({ navigation }) {
       <View style={{ marginVertical: 10, alignItems: 'center' }}>
         <MyButton
           type={'large'}
-          text="Lên đơn"
+          text="Tạo đơn"
           btnColor={stylesGlobal.mainGreen}
           txtColor={'white'}
           iconRight={<MaterialCommunityIcons name="truck-fast" size={24} color="white" />}
-          action={() => navigation.navigate('NewOrder')}
+          action={() => handleNewOrder()}
         />
       </View>
     </View>

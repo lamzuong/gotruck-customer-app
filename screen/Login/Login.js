@@ -52,7 +52,7 @@ export default function Login({ navigation }) {
     // Đăng nhập k xác minh => xóa sau khi test xong
     const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
     if (!userLogin.phone) {
-      alert('khogno ton tai');
+      Alert.alert('Thông báo', 'Số điện thoại không chính xác');
       return;
     }
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
@@ -131,8 +131,6 @@ export default function Login({ navigation }) {
   const toMainScreen = () => {
     navigation.navigate('MainScreen');
   };
-
-
 
   //----------Back Button----------
   useEffect(() => {

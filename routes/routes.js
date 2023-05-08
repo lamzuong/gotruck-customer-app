@@ -47,7 +47,7 @@ const publicRoutes = [
     name: 'NewOrder',
     component: NewOrder,
     header: true,
-    title: 'Lên đơn hàng',
+    title: 'Tạo đơn hàng',
   },
   {
     name: 'NewOrderDetail',

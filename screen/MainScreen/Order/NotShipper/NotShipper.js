@@ -51,6 +51,13 @@ export default function NotShipper() {
       setValid(false);
       setShowModal(!showModal);
       renderUI();
+    } else if (resOrderCancel.status === 'Đang giao' || resOrderCancel.status === 'Đã giao') {
+      Alert.alert('Thông báo', 'Đơn hàng đang được giao');
+      setItemCancel('');
+      setReason('');
+      setValid(false);
+      setShowModal(!showModal);
+      renderUI();
     }
   };
 

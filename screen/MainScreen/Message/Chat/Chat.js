@@ -22,11 +22,10 @@ export default function Chat({ navigation }) {
 
   useEffect(() => {
     renderUI();
-    socketClient.off(user._id + 'message');
     socketClient.on(user._id + 'message', (data) => {
-      data;
       renderUI();
     });
+    return () => socketClient.off(user._id + 'message');
   }, [isFocus]);
 
   return (
@@ -48,6 +47,16 @@ export default function Chat({ navigation }) {
                 style={styles.itemChat.avatar}
               />
               <View style={styles.itemChat.rightItem}>
+                <Text
+                  style={
+                    // item.message.read
+                    //   ?
+                    styles.itemChat.name.read
+                    // : styles.itemChat.name.unread
+                  }
+                >
+                  {item.id_form.id_order}
+                </Text>
                 <Text
                   style={
                     // item.message.read
