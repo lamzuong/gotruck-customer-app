@@ -21,35 +21,29 @@ export const getLocationCurrentOfUser = async () => {
     ]);
     return null;
   }
-  // const location = await Location.getCurrentPositionAsync({});
-  // const latLng = location.coords.latitude + ',' + location.coords.longitude;
-  // const url = `https://api.map4d.vn/sdk/v2/geocode?key=${MAP_4D_KEY}&location=${latLng}`;
-  // const result = await axiosClient.get(url);
-  // if (result.code === 'ok') {
-  //   let address = result.result[0].address;
+  const location = await Location.getCurrentPositionAsync({});
+  const latLng = location.coords.latitude + ',' + location.coords.longitude;
+  const url = `https://api.map4d.vn/sdk/v2/geocode?key=${MAP_4D_KEY}&location=${latLng}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    let address = result.result[0].address;
 
-  //   if (!address.includes('Việt Nam')) {
-  //     address += ', Việt Nam';
-  //   }
-  //   const currentLocation = {
-  //     address: address,
-  //     latitude: location.coords.latitude,
-  //     longitude: location.coords.longitude,
-  //   };
-  //   return currentLocation;
-  // } else {
-  //   return {
-  //     address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
-  //     latitude: 10.820685,
-  //     longitude: 106.687631,
-  //   };
-  // }
-
-  return {
-    address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
-    latitude: 10.820685,
-    longitude: 106.687631,
-  };
+    if (!address.includes('Việt Nam')) {
+      address += ', Việt Nam';
+    }
+    const currentLocation = {
+      address: address,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+    return currentLocation;
+  } else {
+    return {
+      address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
+      latitude: 10.820685,
+      longitude: 106.687631,
+    };
+  }
 };
 
 export const getRouteTwoLocation = async (origin, destination) => {

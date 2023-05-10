@@ -67,12 +67,12 @@ const fromAdd = {
 export default function NewOrder({ navigation }) {
   const { user, locationNow, listOrder } = useContext(AuthContext);
 
-  // const [addressFrom, setAddressFrom] = useState(locationNow);
-  // const [addressTo, setAddressTo] = useState();
+  const [addressFrom, setAddressFrom] = useState(locationNow);
+  const [addressTo, setAddressTo] = useState();
 
   //Test
-  const [addressFrom, setAddressFrom] = useState(fromAdd);
-  const [addressTo, setAddressTo] = useState(toAdd);
+  // const [addressFrom, setAddressFrom] = useState(fromAdd);
+  // const [addressTo, setAddressTo] = useState(toAdd);
 
   const [openTruck, setOpenTruck] = useState(false);
   const [valueTruck, setValueTruck] = useState('');
@@ -178,7 +178,30 @@ export default function NewOrder({ navigation }) {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    const resBlock = await axiosClient.get('gotruck/auth/block/' + user._id);
+    if (resBlock.block) {
+      Alert.alert('Thông báo', 'Tài bạn của bạn đã bị khóa nên không thể tạo đơn hàng');
+      return;
+    }
+
+    if (valueGoods === 'Khác' && otherGoods.trim() === '') {
+      Alert.alert('Thông báo', 'Vui lòng nhập loại hàng hóa');
+      return;
+    }
+
+    const res = await axiosClient.get('/gotruck/goodsType');
+    let checkHaveGood = false;
+    res.forEach((e) => {
+      if (valueGoods === e.value) {
+        checkHaveGood = true;
+      }
+    });
+    if (!checkHaveGood && !otherGoods) {
+      Alert.alert('Thông báo', 'Loại hàng hóa không tồn tại');
+      return;
+    }
+
     if (
       addressTo &&
       addressFrom
@@ -194,6 +217,7 @@ export default function NewOrder({ navigation }) {
           time,
           distance,
           price,
+          goodTypeOther: otherGoods,
         },
       });
     } else if (!addressFrom) {
@@ -267,7 +291,7 @@ export default function NewOrder({ navigation }) {
   useEffect(() => {
     (async function () {
       await setPriceNew(distance);
-    }.call(this));
+    }).call(this);
   }, [valueTruck]);
 
   useEffect(() => {
@@ -485,7 +509,7 @@ export default function NewOrder({ navigation }) {
           value={setOtherGoods}
           borderWidth={1}
           onlyBorderBottom={true}
-          placeholder="Nhập tên loại hàng hóa"
+          placeholder="Nhập loại hàng hóa"
         />
       )}
 
@@ -542,7 +566,7 @@ export default function NewOrder({ navigation }) {
           <Text style={styles.font18}>{time} phút</Text>
         </View>
         <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
-          <Text style={styles.font18}>Phí vận chuyển</Text>
+          <Text style={styles.font18}>Chi phí vận chuyển</Text>
           <Text style={styles.price}>
             {price.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ' đ'}
           </Text>

@@ -84,16 +84,20 @@ export default function EditProfile({ navigation }) {
         phoneProvider
           .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
           .then((result) => {
-            // customAlert('Thông báo', 'Chúng tôi đã gửi mã OTP về số điện thoại của bạn', null);
             setVerificationId(result);
             nextScreen();
           })
           .catch((error) => {
-            console.log(error);
-            // customAlert('Thông báo', 'Lỗi không xác định', null);
+            console.log(error?.code);
+            if (error.code === 'auth/too-many-requests') {
+              Alert.alert(
+                'Thông báo',
+                'Bạn đã yêu cầu gửi mã OTP quá nhiều lần\nVui lòng thử lại sau',
+              );
+            }
           });
       }
-    } catch (error) {
+    } catch (error2) {
       customAlert('Thông báo', 'Lỗi không xác định', null);
     }
   };
@@ -148,8 +152,14 @@ export default function EditProfile({ navigation }) {
           }
         })
         .catch((err) => {
-          console.log(err);
-          Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          console.log(err?.code);
+          if (err?.code === 'auth/invalid-verification-code') {
+            Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          } else if (err?.code === 'auth/code-expired') {
+            Alert.alert('Thông báo', 'Đã hết hạn nhập mã OTP\nVui lòng xác minh lại');
+          } else {
+            Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          }
         });
     }
   };

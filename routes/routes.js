@@ -43,12 +43,12 @@ const publicRoutes = [
   { name: 'MainScreen', component: MainScreen, header: false },
 
   // Screen options in Home
-  {
-    name: 'NewOrder',
-    component: NewOrder,
-    header: true,
-    title: 'Tạo đơn hàng',
-  },
+  // {
+  //   name: 'NewOrder',
+  //   component: NewOrder,
+  //   header: true,
+  //   title: 'Tạo đơn hàng',
+  // },
   {
     name: 'NewOrderDetail',
     component: NewOrderDetail,
@@ -139,7 +139,7 @@ const publicRoutes = [
     name: 'Help',
     component: Help,
     header: true,
-    title: 'Trợ giúp',
+    title: 'Điều khoản & chính sách',
     animation: 'slide_from_right',
   },
   {

@@ -78,6 +78,7 @@ export default function Info({ navigation }) {
   return (
     <View style={styles.container}>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={data}
         renderItem={({ item, index }) => {
           return (

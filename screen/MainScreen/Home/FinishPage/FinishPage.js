@@ -9,7 +9,7 @@ export default function FinishPage({ navigation }) {
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
-      navigation.navigate('Home');
+      navigation.navigate('NewOrder');
       return true;
     };
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -35,7 +35,7 @@ export default function FinishPage({ navigation }) {
         </View>
       </View>
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
-        <MyButton
+        {/* <MyButton
           type={'large'}
           text="Tiếp tục đặt giao"
           txtColor="white"
@@ -44,14 +44,14 @@ export default function FinishPage({ navigation }) {
           action={() => {
             navigation.navigate('NewOrder');
           }}
-        />
+        /> */}
         <MyButton
           type={'large'}
           text="Trở về trang chủ"
           btnColor={'black'}
           txtColor="white"
           action={() => {
-            navigation.navigate('Home');
+            navigation.navigate('NewOrder');
           }}
         />
       </View>

@@ -15,7 +15,9 @@ export default function FormSupportSent({ navigation }) {
   useEffect(() => {
     (async function () {
       const allFeedBack = await axiosClient.get('gotruck/profile/feedback/' + user._id);
-      setListReport(allFeedBack);
+      if (allFeedBack && allFeedBack.length > 0) {
+        setListReport(allFeedBack);
+      }
     }).call(this);
   }, []);
 
@@ -23,9 +25,7 @@ export default function FormSupportSent({ navigation }) {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ height: 10 }}></View>
-        {listReport.map((e, i) => (
-          <MyReport item={e} key={i} />
-        ))}
+        {listReport.length > 0 && listReport?.map((e, i) => <MyReport item={e} key={i} />)}
       </ScrollView>
     </View>
   );

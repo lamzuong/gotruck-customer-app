@@ -43,6 +43,23 @@ export default function NewOrderDetail({ route }) {
   const { user } = useContext(AuthContext);
 
   const handleFinishOrder = async () => {
+    const res = await axiosClient.get('/gotruck/goodsType');
+    let checkHaveGood = false;
+    res.forEach((e) => {
+      if (item.goodType === e.value) {
+        checkHaveGood = true;
+      }
+    });
+    if (!checkHaveGood && item.goodTypeOther.trim() === '') {
+      Alert.alert('Thông báo', 'Loại hàng hóa không tồn tại');
+      return;
+    }
+
+    const resBlock = await axiosClient.get('gotruck/auth/block/' + user._id);
+    if (resBlock.block) {
+      Alert.alert('Thông báo', 'Tài bạn của bạn đã bị khóa nên không thể tạo đơn hàng');
+      return;
+    }
     let listURLImage = [];
     // setCheckUpload(true);
     for (let i = 0; i < item.listImageSend.length; i++) {
@@ -286,7 +303,7 @@ export default function NewOrderDetail({ route }) {
               type={'large'}
               btnColor={stylesGlobal.mainGreen}
               txtColor={'white'}
-              text="Đặt giao đơn hàng"
+              text="Tạo đơn hàng"
               action={() => handleFinishOrder()}
             />
           ) : (
@@ -295,7 +312,7 @@ export default function NewOrderDetail({ route }) {
               type={'large'}
               btnColor={stylesGlobal.lightGreen}
               txtColor={'white'}
-              text="Đặt giao đơn hàng"
+              text="Tạo đơn hàng"
             />
           )}
         </View>

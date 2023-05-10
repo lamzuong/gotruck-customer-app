@@ -7,7 +7,7 @@ const options = [
     icon: <MaterialIcons name="feedback" size={24} color="black" />,
   },
   {
-    title: 'Trợ giúp',
+    title: 'Điều khoản & chính sách',
     navigateTo: 'Help',
     icon: <Entypo name="help-with-circle" size={24} color="black" />,
   },

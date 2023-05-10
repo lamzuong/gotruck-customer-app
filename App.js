@@ -5,14 +5,15 @@ import { AuthContextProvider } from './context/AuthContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, View } from 'react-native';
-
+import { LogBox } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  // LogBox.ignoreAllLogs();
   return (
     <AuthContextProvider>
       <NavigationContainer>
-        <Stack.Navigator 
+        <Stack.Navigator
         // initialRouteName="MainScreen"
         >
           {publicRoutes.map((route, index) => {

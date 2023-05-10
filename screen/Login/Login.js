@@ -42,7 +42,6 @@ export default function Login({ navigation }) {
   const [validData, setValidData] = useState(false);
   const [phone, setPhone] = useState('');
   const [codeOTP, setcodeOTP] = useState('');
-
   const { dispatch, user } = useContext(AuthContext);
 
   const scrollViewRef = useRef();
@@ -52,7 +51,7 @@ export default function Login({ navigation }) {
     // Đăng nhập k xác minh => xóa sau khi test xong
     const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
     if (!userLogin.phone) {
-      Alert.alert('Thông báo', 'Số điện thoại không chính xác');
+      Alert.alert('Thông báo', 'Số điện thoại chưa được đăng kí');
       return;
     }
     const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
@@ -63,7 +62,7 @@ export default function Login({ navigation }) {
       dispatch(SetListOrder(orderList));
       toMainScreen();
     }
-
+    //kết thúc
     // try {
     //   const currentLocation = await getLocationCurrentOfUser();
     //   if (currentLocation) {
@@ -80,12 +79,18 @@ export default function Login({ navigation }) {
     //           nextScreen();
     //         })
     //         .catch((error) => {
-    //           console.log(error);
+    //           console.log(error?.code);
+    //           if (error.code === 'auth/too-many-requests') {
+    //             Alert.alert(
+    //               'Thông báo',
+    //               'Bạn đã yêu cầu gửi mã OTP quá nhiều lần\nVui lòng thử lại sau',
+    //             );
+    //           }
     //         });
     //     }
     //   }
-    // } catch (error) {
-    //   console.log(error);
+    // } catch (error2) {
+    //   console.log('err', error2);
     //   customAlert('Thông báo', 'Lỗi không xác định', null);
     // }
   };
@@ -99,13 +104,23 @@ export default function Login({ navigation }) {
         .then(async () => {
           const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
           const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
-          dispatch(LoginSuccess(userLogin));
-          dispatch(SetListOrder(orderList));
-          toMainScreen();
+          const currentLocation = await getLocationCurrentOfUser();
+          if (currentLocation) {
+            dispatch(SetLocation(currentLocation));
+            dispatch(LoginSuccess(userLogin));
+            dispatch(SetListOrder(orderList));
+            toMainScreen();
+          }
         })
         .catch((err) => {
-          console.log(err);
-          Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          console.log(err?.code);
+          if (err?.code === 'auth/invalid-verification-code') {
+            Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          } else if (err?.code === 'auth/code-expired') {
+            Alert.alert('Thông báo', 'Đã hết hạn nhập mã OTP\nVui lòng xác minh lại');
+          } else {
+            Alert.alert('Thông báo', 'Mã OTP không chính xác');
+          }
         });
     }
   };
@@ -194,7 +209,6 @@ export default function Login({ navigation }) {
                   width={widthScreen - 60}
                   value={setcodeOTP}
                   valid={setValidData}
-                  initialValue={'123789'}
                   screen={screen}
                 />
               </View>

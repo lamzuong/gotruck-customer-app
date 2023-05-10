@@ -13,6 +13,7 @@ export default function FormSupportDetail({ route }) {
   const [haveConversation, setHaveConversation] = useState(false);
   const [conversation, setConversation] = useState();
   const navigation = useNavigation();
+  const [haveMessage, setHaveMessage] = useState(false);
   useEffect(() => {
     const getConversation = async () => {
       const res = await axiosClient.get('gotruck/conversation/form/' + item._id);
@@ -21,11 +22,16 @@ export default function FormSupportDetail({ route }) {
       } else {
         setConversation(res);
         setHaveConversation(true);
+
+        const listMess = await axiosClient.get('gotruck/conversation/message/' + res._id);
+        if (listMess && listMess.length > 0) {
+          setHaveMessage(true);
+        }
       }
     };
     getConversation();
   }, []);
-  
+
   const formatTime = (time) => {
     const dt = new Date(time);
     const padL = (nr, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
@@ -111,7 +117,7 @@ export default function FormSupportDetail({ route }) {
           )}
         </View>
         {/* Hình ảnh */}
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 20, marginBottom: 15 }}>
           <Text style={[styles.label, { width: 180 }]}>Hình ảnh minh chứng</Text>
           {item.list_image.length > 0 ? (
             sliceIntoChunks(item.list_image, 3).map((e, i) => (
@@ -121,7 +127,7 @@ export default function FormSupportDetail({ route }) {
             <Text style={{ marginTop: 5, fontSize: 18, fontStyle: 'italic' }}>Không có</Text>
           )}
         </View>
-        {haveConversation && (
+        {haveConversation && haveMessage && (
           <View
             style={{
               height: 100,

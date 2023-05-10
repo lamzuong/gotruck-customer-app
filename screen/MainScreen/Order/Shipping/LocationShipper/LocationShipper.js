@@ -12,6 +12,7 @@ import MyButton from '../../../../../components/MyButton/MyButton';
 import { Ionicons, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { socketClient } from '../../../../../global/socket';
 import { getPoLylineFromEncode, getRouteTwoLocation } from '../../../../../global/utilLocation';
+import axiosClient from '../../../../../api/axiosClient';
 
 export default function LocationShipper({ navigation }) {
   const route = useRoute();
@@ -20,7 +21,7 @@ export default function LocationShipper({ navigation }) {
   const [destination, setDestination] = useState(order.to_address);
   const [routePolyline, setRoutePolyline] = useState([]);
 
-  const [locationShipper, setLocationShipper] = useState('');
+  const [locationShipper, setLocationShipper] = useState(order.shipper.id_shipper.current_address);
 
   const [showDetailOrigin, setshowDetailOrigin] = useState(true);
   const [showDetailDestination, setshowDetailDestination] = useState(true);
@@ -59,12 +60,15 @@ export default function LocationShipper({ navigation }) {
   };
 
   useEffect(() => {
-    socketClient.off(order.id_order + '');
-    socketClient.on(order.id_order + '', (data) => {
-      setLocationShipper(data);
-    });
-
-    return () => socketClient.off(order.id_order + '');
+    const timeId = setInterval(async () => {
+      const resShp = await axiosClient.get('gotruck/order/shipper/' + order.shipper.id_shipper._id);
+      if (resShp && resShp.current_address) {
+        setLocationShipper(resShp.current_address);
+      }
+    }, 10000);
+    return () => {
+      clearInterval(timeId);
+    };
   }, []);
 
   const zoomMap = () => {
@@ -85,7 +89,7 @@ export default function LocationShipper({ navigation }) {
           zoomMap();
         }
       }
-    }.call(this));
+    }).call(this);
   }, [origin, destination]);
 
   return (
