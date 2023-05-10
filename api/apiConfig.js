@@ -4,7 +4,7 @@ const apiConfig = {
   // baseUrl: "http://192.168.1.115:8000",
   // baseUrl: 'http://192.168.1.114:8000',
   //Quoc
-  baseUrl: 'http://192.168.1.6:8000',
+  baseUrl: 'http://18.139.161.100:8000',
 };
 
 export default apiConfig;

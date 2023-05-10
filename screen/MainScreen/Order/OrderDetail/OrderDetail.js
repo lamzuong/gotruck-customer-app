@@ -112,24 +112,26 @@ export default function OrderDetail({ route, navigation }) {
               <Text style={{ fontStyle: 'italic' }}>Chưa có</Text>
             )}
           </Text>
-          {order?.shipper?.id_shipper.phone && order.status !== 'Chưa nhận' && (
-            <>
-              <Feather
-                style={{ marginLeft: 15 }}
-                name="message-square"
-                size={26}
-                color="black"
-                onPress={() => handleMessage()}
-              />
-              <Feather
-                style={{ marginLeft: 15, transform: [{ rotateY: '180deg' }] }}
-                name="phone"
-                size={26}
-                color="black"
-                onPress={() => handleCallPhone()}
-              />
-            </>
-          )}
+          {order?.shipper?.id_shipper.phone &&
+            (order.status === 'Đã nhận' || order.status === 'Đang giao') && (
+              <>
+                <Feather
+                  style={{ marginLeft: 15 }}
+                  name="message-square"
+                  size={26}
+                  color="black"
+                  onPress={() => handleMessage()}
+                />
+
+                <Feather
+                  style={{ marginLeft: 15 }}
+                  name="phone"
+                  size={26}
+                  color="black"
+                  onPress={() => handleCallPhone()}
+                />
+              </>
+            )}
         </View>
         {order.rate_shipper && (
           <>
