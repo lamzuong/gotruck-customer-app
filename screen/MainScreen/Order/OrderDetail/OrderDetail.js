@@ -28,19 +28,24 @@ export default function OrderDetail({ route, navigation }) {
       content: reason,
     };
     const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
-    if (resOrderCancel.status === 'Đã hủy') {
-      if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
-        Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
-      } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
-        Alert.alert('Thông báo', 'Đơn hàng đã xóa do quá thời hạn');
-      } else if (resOrderCancel.reason_cancel.user_cancel === 'Customer') {
+
+    if (resOrderCancel.status === 'Đang giao' || resOrderCancel.status === 'Đã giao') {
+      Alert.alert('Thông báo', 'Đơn hàng đang được giao');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
+      Alert.alert('Thông báo', 'Đơn hàng đã bị hủy bởi tài xế');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'AutoDelete') {
+      Alert.alert('Thông báo', 'Đơn hàng đã bị hủy do quá thời hạn');
+    } else if (resOrderCancel.reason_cancel.user_cancel === 'Customer') {
+      if (order.status === 'Chưa nhận') {
         socketClient.emit('customer_cancel', resOrderCancel);
+      } else if (order.status === 'Đã nhận') {
+        socketClient.emit('customer_cancel_received', resOrderCancel);
       }
-      setReason('');
-      setValid(false);
-      setShowModal(false);
-      navigation.goBack();
     }
+    setReason('');
+    setValid(false);
+    setShowModal(false);
+    navigation.goBack();
   };
 
   const handleCallPhone = () => {
