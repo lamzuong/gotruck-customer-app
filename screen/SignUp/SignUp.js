@@ -37,7 +37,16 @@ export default function SignUp({ navigation }) {
   const scrollViewRef = useRef();
   const recaptchaVerifier = useRef(null);
 
+  const formatPhone = () => {
+    let phoneTemp = phoneNumber;
+    if (phoneNumber.charAt(0) != '0') {
+      phoneTemp = '0' + phoneNumber;
+    }
+    return phoneTemp;
+  };
+
   const sendVerification = async () => {
+    const phoneNumber = formatPhone();
     try {
       const res = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
       if (res.phone) {
@@ -89,6 +98,7 @@ export default function SignUp({ navigation }) {
   };
 
   const saveUser = async () => {
+    const phoneNumber = formatPhone();
     try {
       await axiosClient.post('/gotruck/auth/register', {
         phone: phoneNumber,
@@ -108,6 +118,8 @@ export default function SignUp({ navigation }) {
     setScreen((prev) => prev + 1);
   };
   const finishSignUp = async () => {
+    const phoneNumber = formatPhone();
+
     const userLogin = await axiosClient.get('/gotruck/auth/user/' + phoneNumber);
     const currentLocation = await getLocationCurrentOfUser();
     if (currentLocation) {
@@ -167,7 +179,6 @@ export default function SignUp({ navigation }) {
             </View>
             <MyInput
               placeholder={'Số điện thoại'}
-              initialValue={'0359434723'}
               error={'Số điện thoại không hợp lệ'}
               regex={/^(((09|03|07|08|05)|(9|3|7|8|5))([0-9]{8}))$/g}
               width={230}

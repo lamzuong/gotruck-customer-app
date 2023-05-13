@@ -47,13 +47,19 @@ export default function Login({ navigation }) {
   const scrollViewRef = useRef();
   const recaptchaVerifier = useRef(null);
 
-  const sendVerification = async () => {
+  const formatPhone = () => {
     let phoneTemp = phone;
     if (phone.charAt(0) != '0') {
       phoneTemp = '0' + phone;
     }
-    // Đăng nhập k xác minh => xóa sau khi test xong
-    const userLogin = await axiosClient.get('gotruck/auth/user/' + phoneTemp);
+    return phoneTemp;
+  };
+
+  const sendVerification = async () => {
+    const phone = formatPhone();
+
+    // Login fast
+    const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
     if (!userLogin.phone) {
       Alert.alert('Thông báo', 'Số điện thoại chưa được đăng kí1');
       return;
@@ -67,17 +73,18 @@ export default function Login({ navigation }) {
       toMainScreen();
     }
     //kết thúc
+
     // try {
     //   const currentLocation = await getLocationCurrentOfUser();
     //   if (currentLocation) {
     //     dispatch(SetLocation(currentLocation));
-    //     const res = await axiosClient.get('/gotruck/auth/user/' + phoneTemp);
+    //     const res = await axiosClient.get('/gotruck/auth/user/' + phone);
     //     if (!res.phone) {
     //       customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
     //     } else {
     //       const phoneProvider = new firebase.auth.PhoneAuthProvider();
     //       phoneProvider
-    //         .verifyPhoneNumber('+84' + phoneTemp, recaptchaVerifier.current)
+    //         .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
     //         .then((result) => {
     //           setVerificationId(result);
     //           nextScreen();
@@ -101,16 +108,13 @@ export default function Login({ navigation }) {
 
   const checkOTP = () => {
     if (codeOTP) {
-      let phoneTemp = phone;
-      if (phone.charAt(0) != '0') {
-        phoneTemp = '0' + phone;
-      }
+      const phone = formatPhone();
       const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, codeOTP);
       return firebase
         .auth()
         .signInWithCredential(credential)
         .then(async () => {
-          const userLogin = await axiosClient.get('/gotruck/auth/user/' + phoneTemp);
+          const userLogin = await axiosClient.get('/gotruck/auth/user/' + phone);
           const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
           const currentLocation = await getLocationCurrentOfUser();
           if (currentLocation) {
