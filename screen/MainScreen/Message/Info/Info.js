@@ -3,7 +3,7 @@ import stylesGlobal from '../../../../global/stylesGlobal';
 
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
-import { Ionicons, Octicons, FontAwesome, Entypo } from '@expo/vector-icons';
+import { Ionicons, Octicons, FontAwesome, Entypo, AntDesign, Foundation } from '@expo/vector-icons';
 import ReadMore from 'react-native-read-more-text';
 import { useIsFocused } from '@react-navigation/native';
 import axiosClient from '../../../../api/axiosClient';
@@ -98,7 +98,7 @@ export default function Info({ navigation }) {
                 {item.type_notify === 'Discount' ? (
                   <Ionicons name="md-pricetags" size={24} color={stylesGlobal.darkOrange} />
                 ) : item.type_notify === 'Normal' ? (
-                  <FontAwesome name="truck" size={24} color={stylesGlobal.darkGreen} />
+                  <Foundation name="info" size={35} color={stylesGlobal.darkGreen} />
                 ) : item.type_notify === 'Warning' ? (
                   <Entypo name="warning" size={24} color={'red'} />
                 ) : item.type_notify === 'Order' ? (
