@@ -423,7 +423,11 @@ export default function NewOrder({ navigation }) {
             {addressFrom ? (
               <View style={{ width: '85%' }}>
                 <ReadMore numberOfLines={1} renderTruncatedFooter={() => null}>
-                  <Text style={styles.font18}>{addressFrom?.address}</Text>
+                  <Text style={styles.font18}>
+                    {addressFrom?.address === locationNow?.address
+                      ? 'Vị trí hiện tại'
+                      : addressFrom.address}
+                  </Text>
                 </ReadMore>
               </View>
             ) : (
