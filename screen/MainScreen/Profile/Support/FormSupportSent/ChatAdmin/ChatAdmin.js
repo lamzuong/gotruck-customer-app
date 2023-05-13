@@ -84,10 +84,10 @@ export default function ChatAdmin({ route }) {
 
   useEffect(() => {
     getAllMessage();
-    socketClient.on(user._id + 'message', (data) => {
+    socketClient.on('message' + user._id, (data) => {
       getAllMessage();
     });
-    return () => socketClient.off(user._id + 'message');
+    return () => socketClient.off('message' + user._id);
   }, []);
 
   return (

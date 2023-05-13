@@ -22,11 +22,11 @@ export default function Chat({ navigation }) {
 
   useEffect(() => {
     renderUI();
-    socketClient.on(user._id + 'message', (data) => {
+    socketClient.on('message' + user._id, (data) => {
       renderUI();
     });
-    return () => socketClient.off(user._id + 'message');
-  }, [isFocus]);
+    return () => socketClient.off('message' + user._id);
+  }, []);
 
   return (
     <View style={styles.container}>

@@ -15,15 +15,15 @@ const TopTab = createMaterialTopTabNavigator();
 
 export default function Order() {
   const { user, listOrder, dispatch } = useContext(AuthContext);
-  
+
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
     dispatch(SetListOrder(orderList));
   };
 
   useEffect(() => {
-    socketClient.off(user._id + '');
-    socketClient.on(user._id + '', (data) => {
+    socketClient.off('data' + user._id);
+    socketClient.on('data' + user._id, (data) => {
       renderUI();
     });
   }, []);
