@@ -88,11 +88,13 @@ export default function LocationShipper({ navigation }) {
     };
   }, []);
 
-
   const getShipperRoute = async () => {
     const resOrder = await axiosClient.get('gotruck/order/order/' + order._id);
     if (resOrder.shipper_route?.length > 1) {
-      let result = chunkArray(resOrder.shipper_route, 8);
+      // resOrder.shipper_route.push(destination);
+      let filteredList = [...new Set(resOrder.shipper_route.map(JSON.stringify))].map(JSON.parse);
+
+      let result = chunkArray(filteredList, 8);
       let routePolyTemp = [];
       for (let i = 0; i < result.length; i++) {
         const resultRoute = await getRouteManyLocation(
@@ -107,6 +109,7 @@ export default function LocationShipper({ navigation }) {
           });
         }
       }
+
       setRoutePolylineShipper(routePolyTemp);
     }
   };
@@ -120,8 +123,8 @@ export default function LocationShipper({ navigation }) {
 
   useEffect(() => {
     (async function () {
-      if (origin && destination) {
-        const resultRoute = await getRouteTwoLocation(origin, destination);
+      if (locationShipper && destination) {
+        const resultRoute = await getRouteTwoLocation(locationShipper, destination);
         let routePolyTemp = [];
         if (resultRoute) {
           const listPoly = getPoLylineFromEncode(resultRoute?.result.routes[0].overviewPolyline);
@@ -201,7 +204,7 @@ export default function LocationShipper({ navigation }) {
             />
           </Marker>
         )}
-         {origin && destination && (
+        {origin && destination && (
           <Polyline coordinates={routePolyline} strokeColor="rgb(0,176,255)" strokeWidth={8} />
         )}
         {origin && destination && routePolylineShipper && (
@@ -209,9 +212,9 @@ export default function LocationShipper({ navigation }) {
             coordinates={routePolylineShipper}
             strokeColor="rgba(0, 0, 0, 0.5)"
             strokeWidth={3}
+            lineDashPattern={[5, 15]}
           />
         )}
-       
       </MapView>
     </View>
   );
