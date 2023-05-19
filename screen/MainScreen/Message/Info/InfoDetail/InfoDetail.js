@@ -1,11 +1,14 @@
 import styles from './stylesInfoDetail';
 
 import { View, Text, ScrollView, Image, BackHandler } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../../../../context/AuthContext';
+import axiosClient from '../../../../../api/axiosClient';
 
 export default function InfoDetail({ route }) {
+  const { user } = useContext(AuthContext);
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
@@ -18,6 +21,17 @@ export default function InfoDetail({ route }) {
   //------------------------------
   const { item } = route.params;
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const updateNotify = async () => {
+      if (item.read.indexOf(user._id) === -1) {
+        item.read.push(user._id);
+        await axiosClient.put('gotruck/notify/read', item);
+      }
+    };
+    updateNotify();
+  }, []);
+
   return (
     <>
       <View style={styles.header}>

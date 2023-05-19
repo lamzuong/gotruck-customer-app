@@ -15,6 +15,7 @@ import axiosClient from '../../api/axiosClient';
 import { LoginSuccess, SetLocation } from '../../context/AuthAction';
 import { AuthContext } from '../../context/AuthContext';
 import { getLocationCurrentOfUser } from '../../global/utilLocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
@@ -99,6 +100,7 @@ export default function SignUp({ navigation }) {
 
   const saveUser = async () => {
     const phoneNumber = formatPhone();
+    await AsyncStorage.setItem('phoneCus', phoneNumber);
     try {
       await axiosClient.post('/gotruck/auth/register', {
         phone: phoneNumber,

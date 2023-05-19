@@ -26,7 +26,7 @@ export default function NotShipper() {
 
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+    if (orderList.length > 0 && JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
       dispatch(SetListOrder(orderList));
     }
   };
@@ -37,7 +37,13 @@ export default function NotShipper() {
       user_cancel: 'Customer',
       content: reason,
     };
+
     const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
+
+    if (resOrderCancel.status === 'Đã hủy') {
+      await axiosClient.put('/gotruck/conversation/disable', { _id: item._id });
+    }
+
     if (resOrderCancel.status === 'Đang giao' || resOrderCancel.status === 'Đã giao') {
       Alert.alert('Thông báo', 'Đơn hàng đang được giao');
     } else if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {

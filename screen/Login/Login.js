@@ -30,6 +30,8 @@ import {
 } from '../../context/AuthAction';
 import { getLocationCurrentOfUser } from '../../global/utilLocation';
 import AnimatedLoader from 'react-native-animated-loader';
+import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
@@ -43,6 +45,7 @@ export default function Login({ navigation }) {
   const [phone, setPhone] = useState('');
   const [codeOTP, setcodeOTP] = useState('');
   const { dispatch, user } = useContext(AuthContext);
+  const isFocus = useIsFocused();
 
   const scrollViewRef = useRef();
   const recaptchaVerifier = useRef(null);
@@ -55,55 +58,75 @@ export default function Login({ navigation }) {
     return phoneTemp;
   };
 
+  useEffect(() => {
+    const loginFast = async () => {
+      const phoneLocal = await AsyncStorage.getItem('phoneCus');
+
+      if (phoneLocal) {
+        const userLogin = await axiosClient.get('/gotruck/auth/user/' + phoneLocal);
+        const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
+        const currentLocation = await getLocationCurrentOfUser();
+        if (currentLocation) {
+          dispatch(LoginSuccess(userLogin));
+          dispatch(SetLocation(currentLocation));
+          dispatch(SetListOrder(orderList));
+          toMainScreen();
+        }
+      }
+    };
+    loginFast();
+  }, [isFocus]);
+
   const sendVerification = async () => {
     const phone = formatPhone();
 
     // Login fast
-    const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
-    if (!userLogin.phone) {
-      Alert.alert('Thông báo', 'Số điện thoại chưa được đăng kí1');
-      return;
-    }
-    const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
-    const currentLocation = await getLocationCurrentOfUser();
-    if (currentLocation) {
-      dispatch(SetLocation(currentLocation));
-      dispatch(LoginSuccess(userLogin));
-      dispatch(SetListOrder(orderList));
-      toMainScreen();
-    }
+    // const userLogin = await axiosClient.get('gotruck/auth/user/' + phone);
+    // if (!userLogin.phone) {
+    //   Alert.alert('Thông báo', 'Số điện thoại chưa được đăng kí1');
+    //   return;
+    // }
+    // const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
+    // const currentLocation = await getLocationCurrentOfUser();
+    // if (currentLocation) {
+    //   await AsyncStorage.setItem('phoneCus', phone);
+    //   dispatch(SetLocation(currentLocation));
+    //   dispatch(LoginSuccess(userLogin));
+    //   dispatch(SetListOrder(orderList));
+    //   toMainScreen();
+    // }
     //kết thúc
 
-    // try {
-    //   const currentLocation = await getLocationCurrentOfUser();
-    //   if (currentLocation) {
-    //     dispatch(SetLocation(currentLocation));
-    //     const res = await axiosClient.get('/gotruck/auth/user/' + phone);
-    //     if (!res.phone) {
-    //       customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
-    //     } else {
-    //       const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    //       phoneProvider
-    //         .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
-    //         .then((result) => {
-    //           setVerificationId(result);
-    //           nextScreen();
-    //         })
-    //         .catch((error) => {
-    //           console.log(error?.code);
-    //           if (error.code === 'auth/too-many-requests') {
-    //             Alert.alert(
-    //               'Thông báo',
-    //               'Bạn đã yêu cầu gửi mã OTP quá nhiều lần\nVui lòng thử lại sau',
-    //             );
-    //           }
-    //         });
-    //     }
-    //   }
-    // } catch (error2) {
-    //   console.log('err', error2);
-    //   customAlert('Thông báo', 'Lỗi không xác định', null);
-    // }
+    try {
+      const currentLocation = await getLocationCurrentOfUser();
+      if (currentLocation) {
+        dispatch(SetLocation(currentLocation));
+        const res = await axiosClient.get('/gotruck/auth/user/' + phone);
+        if (!res.phone) {
+          customAlert('Thông báo', 'Số điện thoại này chưa được đăng kí!', null);
+        } else {
+          const phoneProvider = new firebase.auth.PhoneAuthProvider();
+          phoneProvider
+            .verifyPhoneNumber('+84' + phone, recaptchaVerifier.current)
+            .then((result) => {
+              setVerificationId(result);
+              nextScreen();
+            })
+            .catch((error) => {
+              console.log(error?.code);
+              if (error.code === 'auth/too-many-requests') {
+                Alert.alert(
+                  'Thông báo',
+                  'Bạn đã yêu cầu gửi mã OTP quá nhiều lần\nVui lòng thử lại sau',
+                );
+              }
+            });
+        }
+      }
+    } catch (error2) {
+      console.log('err', error2);
+      customAlert('Thông báo', 'Lỗi không xác định', null);
+    }
   };
 
   const checkOTP = () => {
@@ -118,6 +141,7 @@ export default function Login({ navigation }) {
           const orderList = await axiosClient.get('gotruck/order/user/' + userLogin._id);
           const currentLocation = await getLocationCurrentOfUser();
           if (currentLocation) {
+            await AsyncStorage.setItem('phoneCus', phone);
             dispatch(SetLocation(currentLocation));
             dispatch(LoginSuccess(userLogin));
             dispatch(SetListOrder(orderList));

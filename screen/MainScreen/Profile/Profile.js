@@ -1,33 +1,33 @@
-import styles from "./stylesProfile";
-import options from "./optionsProfile";
+import styles from './stylesProfile';
+import options from './optionsProfile';
 
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  Alert,
-} from "react-native";
-import React, { useContext } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, Text, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
+import React, { useContext } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from '../../../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile({ navigation }) {
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const confirmRequest = (screen) => {
-    Alert.alert("Xác nhận", "Bạn có muốn đăng xuất khỏi ứng dụng ?", [
+    Alert.alert('Xác nhận', 'Bạn có muốn đăng xuất khỏi ứng dụng ?', [
       {
-        text: "Hủy",
+        text: 'Hủy',
         onPress: () => null,
-        style: "cancel",
+        style: 'cancel',
       },
-      { text: "OK", onPress: () => navigation.navigate(screen) },
+      {
+        text: 'OK',
+        onPress: async () => {
+          await AsyncStorage.removeItem('phoneCus');
+          navigation.navigate(screen);
+        },
+      },
     ]);
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.viewAccount}>
@@ -40,20 +40,13 @@ export default function Profile({ navigation }) {
         <View style={{ marginLeft: 20 }}>
           <Text style={styles.viewAccount.name}>{user.name}</Text>
           <TouchableOpacity
-            style={{ flexDirection: "row" }}
+            style={{ flexDirection: 'row' }}
             onPress={() => {
-              navigation.navigate("EditProfile");
+              navigation.navigate('EditProfile');
             }}
           >
-            <Text style={styles.viewAccount.editAccount}>
-              Chỉnh sửa tài khoản
-            </Text>
-            <MaterialIcons
-              name="navigate-next"
-              size={24}
-              color="grey"
-              style={{ marginTop: 10 }}
-            />
+            <Text style={styles.viewAccount.editAccount}>Chỉnh sửa tài khoản</Text>
+            <MaterialIcons name="navigate-next" size={24} color="grey" style={{ marginTop: 10 }} />
           </TouchableOpacity>
         </View>
       </View>
@@ -64,15 +57,13 @@ export default function Profile({ navigation }) {
             <TouchableOpacity
               style={styles.item}
               onPress={() => {
-                item.title === "Đăng xuất"
+                item.title === 'Đăng xuất'
                   ? confirmRequest(item.navigateTo)
                   : navigation.navigate(item.navigateTo);
               }}
             >
               <View>{item.icon}</View>
-              <Text style={[styles.txtItem, { color: item.color }]}>
-                {item.title}
-              </Text>
+              <Text style={[styles.txtItem, { color: item.color }]}>{item.title}</Text>
             </TouchableOpacity>
           );
         }}

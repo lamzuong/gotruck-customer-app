@@ -1,12 +1,12 @@
-import { Dimensions, StyleSheet } from "react-native";
-import stylesGlobal from "../../../../global/stylesGlobal";
+import { Dimensions, StyleSheet } from 'react-native';
+import stylesGlobal from '../../../../global/stylesGlobal';
 
 const widthScreen = Dimensions.get('window').width;
 const heightScreen = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
   },
   container2: {
@@ -21,15 +21,16 @@ const styles = StyleSheet.create({
     height: 250,
     top: heightScreen / 6,
     width: widthScreen / 1.2,
-    left:30,
+    left: 30,
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 10,
   },
   close: {
     top: 10,
-    left: 10,
+    marginRight: 10,
     marginBottom: 10,
+    alignItems: 'flex-end',
   },
   contentCancel: {
     flex: 1,

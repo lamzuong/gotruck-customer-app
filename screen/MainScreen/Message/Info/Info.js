@@ -113,7 +113,11 @@ export default function Info({ navigation }) {
                   renderRevealedFooter={() => null}
                 >
                   <Text
-                    style={item.title ? styles.itemChat.name.read : styles.itemChat.name.unread}
+                    style={
+                      item.read.indexOf(user._id) > -1
+                        ? styles.itemChat.name.read
+                        : styles.itemChat.name.unread
+                    }
                   >
                     {item.title}
                   </Text>
@@ -127,7 +131,7 @@ export default function Info({ navigation }) {
                     >
                       <Text
                         style={[
-                          item.title
+                          item.read.indexOf(user._id) > -1
                             ? styles.itemChat.viewMessage.read
                             : styles.itemChat.viewMessage.unread,
                           styles.itemChat.viewMessage.message,
@@ -141,7 +145,7 @@ export default function Info({ navigation }) {
                 <View style={{ flexDirection: 'row' }}>
                   <Text
                     style={[
-                      item.title
+                      item.read.indexOf(user._id) > -1
                         ? styles.itemChat.viewMessage.read
                         : styles.itemChat.viewMessage.unread,
                       styles.itemChat.viewMessage.time,
@@ -149,7 +153,9 @@ export default function Info({ navigation }) {
                   >
                     {formatTime(item.createdAt)}{' '}
                   </Text>
-                  {item.title ? null : <Octicons name="dot-fill" size={24} color="blue" />}
+                  {item.read.indexOf(user._id) > -1 ? null : (
+                    <Octicons name="dot-fill" size={24} color="blue" />
+                  )}
                 </View>
               </View>
             </TouchableOpacity>

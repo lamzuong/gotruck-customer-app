@@ -9,7 +9,7 @@ export default function FinishPage({ navigation }) {
   //----------Back Button----------
   useEffect(() => {
     const backAction = () => {
-      navigation.navigate('NewOrder');
+      navigation.navigate('NewOrder', { resetValue: true });
       return true;
     };
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -51,7 +51,7 @@ export default function FinishPage({ navigation }) {
           btnColor={'black'}
           txtColor="white"
           action={() => {
-            navigation.navigate('NewOrder');
+            navigation.navigate('NewOrder', { resetValue: true });
           }}
         />
       </View>

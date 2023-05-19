@@ -87,7 +87,6 @@ export default function NewOrder({ navigation }) {
   const [time, setTime] = useState(0);
   const [price, setPrice] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [truckstype, setTrucksType] = useState();
 
   const route = useRoute();
   const mapRef = useRef();
@@ -108,10 +107,7 @@ export default function NewOrder({ navigation }) {
     const result = await getRouteTwoLocation(addressFrom, addressTo);
 
     let distanceTemp = (result.result.routes[0].distance.value / 1000).toFixed(1);
-    let timeTemp = (result.result.routes[0].duration.value / 60).toFixed(1);
-
-    // let distanceTemp = '13.4';
-    // let timeTemp = '18.0';
+    let timeTemp = ((result.result.routes[0].duration.value / 60) * 2).toFixed(0);
 
     setDistance(distanceTemp);
     setTime(timeTemp);
@@ -207,10 +203,18 @@ export default function NewOrder({ navigation }) {
       addressFrom
       //  && listImageSend.length > 1
     ) {
+      let addressFromTemp = { name: '', phone: '', ...addressFrom };
+      let addressToTemp = { name: '', phone: '', ...addressTo };
+      if (!addressFrom.name) {
+        addressFromTemp.name = user.name;
+      }
+      if (!addressFrom.phone) {
+        addressFromTemp.phone = user.phone;
+      }
       navigation.navigate('NewOrderDetail', {
         item: {
-          addressFrom: addressFrom,
-          addressTo: addressTo,
+          addressFrom: addressFromTemp,
+          addressTo: addressToTemp,
           truckType: valueTruck,
           goodType: otherGoods ? otherGoods : valueGoods,
           listImageSend,
@@ -250,7 +254,6 @@ export default function NewOrder({ navigation }) {
           icon: iconTruck,
         });
       }
-      setTrucksType([...res]);
       setValueTruck(trucksType[0].value);
       setItemsTruck(trucksType);
     };
@@ -296,6 +299,19 @@ export default function NewOrder({ navigation }) {
 
   useEffect(() => {
     if (route.params) {
+      if (route.params.resetValue) {
+        setAddressFrom(locationNow);
+        setAddressTo('');
+        setListImage([]);
+        setListImageSend([]);
+        setValueGoods(itemsGoods[0].value);
+        setValueTruck(itemsTruck[0].value);
+        setDistance(0);
+        setTime(0);
+        setPrice(0);
+        setOtherGoods('');
+        return;
+      }
       const { addressRecieve, addressDelivery } = route.params;
       if (addressRecieve != undefined) setAddressFrom(addressRecieve);
       if (addressDelivery != undefined) setAddressTo(addressDelivery);
@@ -567,7 +583,9 @@ export default function NewOrder({ navigation }) {
         </View>
         <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
           <Text style={styles.font18}>Thời gian dự kiến</Text>
-          <Text style={styles.font18}>{time} phút</Text>
+          <Text style={styles.font18}>
+            {time > 60 ? (time / 60).toFixed(1) + ' giờ' : time + ' phút'}
+          </Text>
         </View>
         <View style={[stylesGlobal.inlineBetween, { marginTop: 8 }]}>
           <Text style={styles.font18}>Chi phí vận chuyển</Text>

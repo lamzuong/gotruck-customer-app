@@ -30,6 +30,7 @@ import firebase from 'firebase/compat';
 
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const widthScreen = Dimensions.get('window').width;
 export default function EditProfile({ navigation }) {
   //----------Back Button----------
@@ -115,7 +116,6 @@ export default function EditProfile({ navigation }) {
   const updateProfile1 = async () => {
     const phone = formatPhone();
     if (phone != phoneInit) {
-      console.log(1);
       Alert.alert(
         'Xác nhận',
         'Bạn chắc chắn đổi số điện thoại không?\nNếu có, số điện thoại này sẽ được sử dụng để đăng nhập thay cho số điện thoại hiện tại',
@@ -155,6 +155,7 @@ export default function EditProfile({ navigation }) {
             const phone = formatPhone();
             user.phone = phone;
             user.name = name;
+            await AsyncStorage.setItem('phoneCus', phone);
             await axiosClient.put('/gotruck/auth/user/edituser', {
               user: { ...user },
               phoneInit: phoneInit,
@@ -265,6 +266,7 @@ export default function EditProfile({ navigation }) {
         user.avatar = downloadURL;
         user.phone = phone;
         user.name = name;
+        await AsyncStorage.setItem('phoneCus', phone);
         await axiosClient.put('/gotruck/auth/user/edituser', {
           user: { ...user },
           phoneInit: phoneInit,

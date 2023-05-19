@@ -4,7 +4,7 @@ import stylesGlobal from '../../../../../global/stylesGlobal';
 import { View, Text, FlatList, Image, TextInput, BackHandler, Alert } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Ionicons, Feather } from '@expo/vector-icons';
-import { Link, useNavigation } from '@react-navigation/native';
+import { Link, useIsFocused, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../../../../context/AuthContext';
 import axiosClient from '../../../../../api/axiosClient';
 import { Linking } from 'react-native';
@@ -19,13 +19,23 @@ export default function ChatRoom({ route }) {
 
   const { item } = route.params;
   const { user } = useContext(AuthContext);
-
+  const isFocus = useIsFocused();
   const flatListRef = useRef();
 
   const getAllMessage = async () => {
     const listMess = await axiosClient.get('gotruck/conversation/message/' + item._id);
     listMess.reverse();
     setListMessage(listMess);
+
+    const listMessUnread = [];
+    listMess.map((item) => {
+      if (item.read.indexOf(user._id) === -1) {
+        item.read.push(user._id);
+        listMessUnread.push(item);
+      }
+    });
+
+    await axiosClient.put('gotruck/conversation/read', listMessUnread);
   };
 
   const handleMessage = async () => {
@@ -36,11 +46,15 @@ export default function ChatRoom({ route }) {
       userSendModel: 'Customer',
     };
     if (mess.trim()) {
-      await axiosClient.post('gotruck/conversation/message/', {
+      const resMess = await axiosClient.post('gotruck/conversation/message/', {
         ...messageSend,
       });
-      socketClient.emit('send_message', { id_receive: item.id_shipper._id });
-      getAllMessage();
+      if (resMess.disable) {
+        Alert.alert('Thông báo', 'Đơn hàng đã giao/đã hủy nên không thể trò chuyện tiếp');
+      } else {
+        socketClient.emit('send_message', { id_receive: item.id_shipper._id });
+        getAllMessage();
+      }
     }
     setMess('');
     Keyboard.dismiss();
@@ -88,13 +102,16 @@ export default function ChatRoom({ route }) {
   //------------------------------
   useEffect(() => {
     getAllMessage();
+  }, [isFocus]);
+
+  useEffect(() => {
     socketClient.on('message' + String(user._id), (data) => {
       getAllMessage();
     });
     return () => {
       socketClient.off('message' + String(user._id));
     };
-  }, []);
+  });
 
   return (
     <>

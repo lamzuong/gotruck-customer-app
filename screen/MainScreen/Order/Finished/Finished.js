@@ -16,7 +16,7 @@ export default function Finished() {
 
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+    if ( orderList.length > 0 && JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
       dispatch(SetListOrder(orderList));
     }
   };

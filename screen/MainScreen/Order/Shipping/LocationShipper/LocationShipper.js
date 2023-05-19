@@ -11,7 +11,11 @@ import { GOOGLE_API_KEY } from '../../../../../global/keyGG';
 import MyButton from '../../../../../components/MyButton/MyButton';
 import { Ionicons, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { socketClient } from '../../../../../global/socket';
-import { getPoLylineFromEncode, getRouteTwoLocation } from '../../../../../global/utilLocation';
+import {
+  getPoLylineFromEncode,
+  getRouteManyLocation,
+  getRouteTwoLocation,
+} from '../../../../../global/utilLocation';
 import axiosClient from '../../../../../api/axiosClient';
 
 export default function LocationShipper({ navigation }) {
@@ -20,6 +24,7 @@ export default function LocationShipper({ navigation }) {
   const [origin, setOrigin] = useState(order.from_address);
   const [destination, setDestination] = useState(order.to_address);
   const [routePolyline, setRoutePolyline] = useState([]);
+  const [routePolylineShipper, setRoutePolylineShipper] = useState([]);
 
   const [locationShipper, setLocationShipper] = useState(order.shipper.id_shipper.current_address);
 
@@ -59,16 +64,54 @@ export default function LocationShipper({ navigation }) {
     left: edgePaddingValue,
   };
 
+  function chunkArray(myArray, chunk_size) {
+    let i = 0;
+    let arrayLength = myArray.length;
+    let tempArray = [];
+    for (i = 0; i < arrayLength; i += chunk_size) {
+      let myChunk = myArray.slice(i, i + chunk_size);
+      tempArray.push(myChunk);
+    }
+    return tempArray;
+  }
+
   useEffect(() => {
     const timeId = setInterval(async () => {
       const resShp = await axiosClient.get('gotruck/order/shipper/' + order.shipper.id_shipper._id);
       if (resShp && resShp.current_address) {
         setLocationShipper(resShp.current_address);
       }
+      getShipperRoute();
     }, 10000);
     return () => {
       clearInterval(timeId);
     };
+  }, []);
+
+
+  const getShipperRoute = async () => {
+    const resOrder = await axiosClient.get('gotruck/order/order/' + order._id);
+    if (resOrder.shipper_route?.length > 1) {
+      let result = chunkArray(resOrder.shipper_route, 8);
+      let routePolyTemp = [];
+      for (let i = 0; i < result.length; i++) {
+        const resultRoute = await getRouteManyLocation(
+          result[i][0],
+          result[i][result[i].length - 1],
+          result[i],
+        );
+        if (resultRoute) {
+          const listPoly = getPoLylineFromEncode(resultRoute?.result.routes[0].overviewPolyline);
+          listPoly?.forEach((el) => {
+            routePolyTemp.push({ latitude: el.lat, longitude: el.lng });
+          });
+        }
+      }
+      setRoutePolylineShipper(routePolyTemp);
+    }
+  };
+  useEffect(() => {
+    getShipperRoute();
   }, []);
 
   const zoomMap = () => {
@@ -158,9 +201,17 @@ export default function LocationShipper({ navigation }) {
             />
           </Marker>
         )}
-        {origin && destination && (
+         {origin && destination && (
           <Polyline coordinates={routePolyline} strokeColor="rgb(0,176,255)" strokeWidth={8} />
         )}
+        {origin && destination && routePolylineShipper && (
+          <Polyline
+            coordinates={routePolylineShipper}
+            strokeColor="rgba(0, 0, 0, 0.5)"
+            strokeWidth={3}
+          />
+        )}
+       
       </MapView>
     </View>
   );
