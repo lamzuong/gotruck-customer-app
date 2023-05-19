@@ -28,7 +28,9 @@ export default function OrderDetail({ route, navigation }) {
       content: reason,
     };
     const resOrderCancel = await axiosClient.put('gotruck/ordershipper/', item);
-
+    if (resOrderCancel.status === 'Đã hủy') {
+      await axiosClient.put('/gotruck/conversation/disable', { _id: order._id });
+    }
     if (resOrderCancel.status === 'Đang giao' || resOrderCancel.status === 'Đã giao') {
       Alert.alert('Thông báo', 'Đơn hàng đang được giao');
     } else if (resOrderCancel.reason_cancel.user_cancel === 'Shipper') {
@@ -192,7 +194,11 @@ export default function OrderDetail({ route, navigation }) {
           </View>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Thời gian dự kiến:</Text>
-            <Text style={styles.content}>{order.expectedTime} phút</Text>
+            <Text style={styles.content}>
+              {order.expectedTime > 60
+                ? (order.expectedTime / 60).toFixed(1) + ' giờ'
+                : order.expectedTime + ' phút'}
+            </Text>
           </View>
           <View style={styles.inline}>
             <Text style={styles.labelFooter}>Chi phí vận chuyển:</Text>

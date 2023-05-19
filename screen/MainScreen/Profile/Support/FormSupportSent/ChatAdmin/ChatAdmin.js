@@ -36,11 +36,15 @@ export default function ChatAdmin({ route }) {
       userSendModel: 'Customer',
     };
     if (mess.trim()) {
-      await axiosClient.post('gotruck/conversation/message/', {
+      const resMess = await axiosClient.post('gotruck/conversation/message/', {
         ...messageSend,
       });
-      socketClient.emit('send_message', { id_receive: item.id_admin._id });
-      getAllMessage();
+      if (resMess.disable) {
+        Alert.alert('Thông báo', 'Đơn đã xử lý xong nên không thể trò chuyện tiếp');
+      } else {
+        socketClient.emit('send_message', { id_receive: item.id_admin._id });
+        getAllMessage();
+      }
     }
     setMess('');
     Keyboard.dismiss();

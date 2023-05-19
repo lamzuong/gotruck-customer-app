@@ -14,10 +14,10 @@ export default function Cancelled() {
   const [order, setOrder] = useState([]);
   const { user, listOrder, dispatch } = useContext(AuthContext);
   const isFocus = useIsFocused();
- 
+
   const renderUI = async () => {
     const orderList = await axiosClient.get('gotruck/order/user/' + user._id);
-    if (JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
+    if (orderList.length > 0 && JSON.stringify(listOrder) !== JSON.stringify(orderList)) {
       dispatch(SetListOrder(orderList));
     }
   };
@@ -25,7 +25,7 @@ export default function Cancelled() {
   useEffect(() => {
     renderUI();
   }, [isFocus]);
-  
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {listOrder?.map((item, index) =>

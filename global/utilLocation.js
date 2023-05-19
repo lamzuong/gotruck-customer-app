@@ -90,3 +90,24 @@ export const getAddressFromText = async (text) => {
 export const getPoLylineFromEncode = (path) => {
   return decodePathPoLyline(path);
 };
+
+export const getRouteManyLocation = async (origin, destination, options) => {
+  const originStr = origin.latitude + ',' + origin.longitude;
+  const destinationStr = destination.latitude + ',' + destination.longitude;
+  let points = '';
+  if (options.length > 0) {
+    options.map((item) => {
+      points += item.latitude + ',' + item.longitude + ';';
+    });
+  }
+
+  const mode = 'Car';
+  const url = `http://api.map4d.vn/sdk/route?key=${MAP_4D_KEY}&origin=${originStr}&destination=${destinationStr}&points=${points}&mode=${mode}&weighting=${0}`;
+  const result = await axiosClient.get(url);
+  if (result.code === 'ok') {
+    return result;
+  } else {
+    return null;
+  }
+  // return null;
+};
