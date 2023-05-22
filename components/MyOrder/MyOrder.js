@@ -88,7 +88,7 @@ export default function MyOrder({ order, setIsShowModal, isShowModal, setCancelI
         ) : order.status == 'Đang giao' ? (
           <MyButton
             type={'medium'}
-            text={'Xem vị trí shipper'}
+            text={'Xem vị trí tài xế'}
             btnColor={stylesGlobal.mainGreen}
             txtColor={'white'}
             style={styles.customerButton}
