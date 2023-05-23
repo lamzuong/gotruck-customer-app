@@ -39,7 +39,7 @@ export const getLocationCurrentOfUser = async () => {
     return currentLocation;
   } else {
     return {
-      address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh',
+      address: '12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Thành phố Hồ Chí Minh, Việt Nam',
       latitude: 10.820685,
       longitude: 106.687631,
     };

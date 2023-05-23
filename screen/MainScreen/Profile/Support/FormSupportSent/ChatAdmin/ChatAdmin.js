@@ -88,11 +88,14 @@ export default function ChatAdmin({ route }) {
 
   useEffect(() => {
     getAllMessage();
+  }, []);
+
+  useEffect(() => {
+    socketClient.off('message' + user._id);
     socketClient.on('message' + user._id, (data) => {
       getAllMessage();
     });
-    return () => socketClient.off('message' + user._id);
-  }, []);
+  });
 
   return (
     <>

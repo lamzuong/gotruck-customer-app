@@ -35,7 +35,7 @@ export default function DiaChiNhanHang() {
       longitude: address.location.lng || 0,
       address: address.address === 'Vị trí hiện tại' ? locationNow.address : address.address,
     };
-   
+
     if (noiLayHang) {
       if (addressTo) {
         if (addressTo.address === addressSelected.address) {
