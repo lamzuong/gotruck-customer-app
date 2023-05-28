@@ -26,7 +26,7 @@ import firebase from 'firebase/compat';
 import { AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 import uuid from 'react-native-uuid';
 import AnimatedLoader from 'react-native-animated-loader';
-
+import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function Feedback({ navigation }) {
@@ -93,6 +93,16 @@ export default function Feedback({ navigation }) {
   };
 
   const handleFeedback = async () => {
+    let imageSize = 0;
+    for (let i = 0; i < listImageSend.length; i++) {
+      const fileInfo = await FileSystem.getInfoAsync(listImageSend[i].uri);
+      imageSize += fileInfo.size;
+    }
+    if (imageSize > 10000000) {
+      Alert.alert('Thông báo', 'Kích thước ảnh quá lớn');
+      return;
+    }
+
     if (subject.trim().length != 0 && description.trim().length != 0 ) {
       let listURLImage = [];
       setCheckUpload(true);

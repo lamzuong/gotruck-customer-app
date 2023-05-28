@@ -38,6 +38,7 @@ import axiosClient from '../../../../api/axiosClient';
 import * as ImagePicker from 'expo-image-picker';
 import { getRouteTwoLocation } from '../../../../global/utilLocation';
 import { AuthContext } from '../../../../context/AuthContext';
+import * as FileSystem from 'expo-file-system';
 
 const toAdd = {
   _id: '63ef7acd66fdc4f6bdb50159',
@@ -175,6 +176,16 @@ export default function NewOrder({ navigation }) {
   };
 
   const handleContinue = async () => {
+    let imageSize = 0;
+    for (let i = 0; i < listImageSend.length; i++) {
+      const fileInfo = await FileSystem.getInfoAsync(listImageSend[i].uri);
+      imageSize += fileInfo.size;
+    }
+    if (imageSize > 10000000) {
+      Alert.alert('Thông báo', 'Kích thước ảnh quá lớn');
+      return;
+    }
+
     const resBlock = await axiosClient.get('gotruck/auth/block/' + user._id);
     if (resBlock.block) {
       Alert.alert('Thông báo', 'Tài bạn của bạn đã bị khóa nên không thể tạo đơn hàng');

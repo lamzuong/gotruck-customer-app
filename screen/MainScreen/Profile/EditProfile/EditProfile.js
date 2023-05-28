@@ -2,6 +2,7 @@ import styles from './stylesEditProfile';
 import stylesGlobal from '../../../../global/stylesGlobal';
 import MyInput from '../../../../components/MyInput/MyInput';
 import MyButton from '../../../../components/MyButton/MyButton';
+import * as FileSystem from 'expo-file-system';
 
 import {
   View,
@@ -114,6 +115,12 @@ export default function EditProfile({ navigation }) {
   };
 
   const updateProfile1 = async () => {
+    const fileInfo = await FileSystem.getInfoAsync(imageUserNow.uri);
+    if (fileInfo > 10000000) {
+      Alert.alert('Thông báo', 'Kích thước ảnh quá lớn');
+      return;
+    }
+
     const phone = formatPhone();
     if (phone != phoneInit) {
       Alert.alert(
