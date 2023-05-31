@@ -97,7 +97,7 @@ export default function NotShipper() {
                   type={'medium'}
                   btnColor={'red'}
                   txtColor={'white'}
-                  text="Hủy"
+                  text="Hủy đơn"
                   action={() => handleCancelOrder(itemCancel)}
                 />
               </View>
@@ -107,7 +107,7 @@ export default function NotShipper() {
                   type={'medium'}
                   btnColor={'rgb(240,128,128)'}
                   txtColor={'white'}
-                  text="Hủy"
+                  text="Hủy đơn"
                   disable={true}
                 />
               </View>

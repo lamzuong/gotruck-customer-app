@@ -277,7 +277,7 @@ export default function OrderDetail({ route, navigation }) {
                 type={'medium'}
                 btnColor={'red'}
                 txtColor={'white'}
-                text="Hủy"
+                text="Hủy đơn"
                 action={() => handleCancelOrder()}
               />
             </View>
@@ -287,7 +287,7 @@ export default function OrderDetail({ route, navigation }) {
                 type={'medium'}
                 btnColor={'rgb(240,128,128)'}
                 txtColor={'white'}
-                text="Hủy"
+                text="Hủy đơn"
                 disable={true}
               />
             </View>
