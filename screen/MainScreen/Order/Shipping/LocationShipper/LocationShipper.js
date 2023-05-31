@@ -70,6 +70,9 @@ export default function LocationShipper({ navigation }) {
     let tempArray = [];
     for (i = 0; i < arrayLength; i += chunk_size) {
       let myChunk = myArray.slice(i, i + chunk_size);
+      if (i != 0) {
+        myChunk.unshift(myArray[i - 1]);
+      }
       tempArray.push(myChunk);
     }
     return tempArray;
@@ -94,7 +97,7 @@ export default function LocationShipper({ navigation }) {
       // resOrder.shipper_route.push(destination);
       let filteredList = [...new Set(resOrder.shipper_route.map(JSON.stringify))].map(JSON.parse);
 
-      let result = chunkArray(filteredList, 8);
+      let result = chunkArray(filteredList, 7);
       let routePolyTemp = [];
       for (let i = 0; i < result.length; i++) {
         const resultRoute = await getRouteManyLocation(
