@@ -44,6 +44,7 @@ export default function ChatRoom({ route }) {
       message: mess.trim(),
       id_sender: user._id,
       userSendModel: 'Customer',
+      read: [user._id],
     };
     if (mess.trim()) {
       const resMess = await axiosClient.post('gotruck/conversation/message/', {
